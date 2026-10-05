@@ -1,0 +1,44 @@
+{
+  "_metadata": {"version": "2.0", "description": "五子棋游戏规则定义"},
+  "win_conditions": {
+    "five_in_a_row": {
+      "enabled": true,
+      "display_name": "连成五子",
+      "icon": "🔵",
+      "description": "率先在横、竖、斜方向上连成五子",
+      "priority": 1,
+      "category": "victory"
+    },
+    "stalemate": {
+      "enabled": true,
+      "display_name": "平局",
+      "icon": "🤝",
+      "description": "棋盘下满且无人获胜",
+      "result": "draw",
+      "priority": 2,
+      "category": "draw"
+    }
+  },
+  "special_rules": {},
+  "turn_rules": {
+    "turn_order": "alternating",
+    "first_player": "black"
+  },
+  "ai_difficulty": {
+    "current": "medium",
+    "levels": {
+      "easy": {"depth": 2, "randomness": 0.3},
+      "medium": {"depth": 3, "randomness": 0.1},
+      "hard": {"depth": 4, "randomness": 0.0}
+    },
+    "personality": {
+      "type": "normal",
+      "aggressiveness": 0.5,
+      "conservatism": 0.5,
+      "randomness_override": null,
+      "depth_override": null,
+      "value_biases": {},
+      "custom_prompt": null
+    }
+  }
+}

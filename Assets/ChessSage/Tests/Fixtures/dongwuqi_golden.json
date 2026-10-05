@@ -1,0 +1,1867 @@
+{
+ "variant": "dongwuqi",
+ "engine": "rule_engine.py",
+ "scenarios": [
+  {
+   "label": "initial",
+   "board_state": {
+    "_metadata": {
+     "version": "1.0",
+     "last_modified": "2026-07-22T00:00:00Z",
+     "format": "animal_chess_standard"
+    },
+    "pieces": [
+     {
+      "id": "b_lion_1",
+      "type": "lion",
+      "name": "🦁",
+      "side": "black",
+      "position": [
+       0,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_tiger_1",
+      "type": "tiger",
+      "name": "🐯",
+      "side": "black",
+      "position": [
+       6,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_dog_1",
+      "type": "dog",
+      "name": "🐶",
+      "side": "black",
+      "position": [
+       1,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_cat_1",
+      "type": "cat",
+      "name": "🐱",
+      "side": "black",
+      "position": [
+       5,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_rat_1",
+      "type": "rat",
+      "name": "🐭",
+      "side": "black",
+      "position": [
+       0,
+       2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_leopard_1",
+      "type": "leopard",
+      "name": "🐆",
+      "side": "black",
+      "position": [
+       2,
+       2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_wolf_1",
+      "type": "wolf",
+      "name": "🐺",
+      "side": "black",
+      "position": [
+       4,
+       2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_elephant_1",
+      "type": "elephant",
+      "name": "🐘",
+      "side": "black",
+      "position": [
+       6,
+       2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_elephant_1",
+      "type": "elephant",
+      "name": "🐘",
+      "side": "red",
+      "position": [
+       0,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_wolf_1",
+      "type": "wolf",
+      "name": "🐺",
+      "side": "red",
+      "position": [
+       2,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_leopard_1",
+      "type": "leopard",
+      "name": "🐆",
+      "side": "red",
+      "position": [
+       4,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_rat_1",
+      "type": "rat",
+      "name": "🐭",
+      "side": "red",
+      "position": [
+       6,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_cat_1",
+      "type": "cat",
+      "name": "🐱",
+      "side": "red",
+      "position": [
+       1,
+       7
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_dog_1",
+      "type": "dog",
+      "name": "🐶",
+      "side": "red",
+      "position": [
+       5,
+       7
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_tiger_1",
+      "type": "tiger",
+      "name": "🐯",
+      "side": "red",
+      "position": [
+       0,
+       8
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_lion_1",
+      "type": "lion",
+      "name": "🦁",
+      "side": "red",
+      "position": [
+       6,
+       8
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_trap_1",
+      "type": "trap",
+      "name": "✖️",
+      "side": "red",
+      "position": [
+       2,
+       8
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_trap_2",
+      "type": "trap",
+      "name": "✖️",
+      "side": "red",
+      "position": [
+       4,
+       8
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_trap_3",
+      "type": "trap",
+      "name": "✖️",
+      "side": "red",
+      "position": [
+       3,
+       7
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_trap_1",
+      "type": "trap",
+      "name": "✖️",
+      "side": "black",
+      "position": [
+       2,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_trap_2",
+      "type": "trap",
+      "name": "✖️",
+      "side": "black",
+      "position": [
+       4,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_trap_3",
+      "type": "trap",
+      "name": "✖️",
+      "side": "black",
+      "position": [
+       3,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "red",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null,
+     "custom_rules_active": []
+    },
+    "mechanisms": {
+     "skip_turns": [],
+     "ai_control": [],
+     "player_control": [],
+     "random_moves": [],
+     "extra_turns": [],
+     "move_limits": []
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "initial",
+     "current_turn": "red",
+     "moves": {
+      "b_lion_1": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        0
+       ]
+      ],
+      "b_tiger_1": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ],
+      "b_dog_1": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        0
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        2,
+        1
+       ]
+      ],
+      "b_cat_1": [
+       [
+        4,
+        1
+       ],
+       [
+        5,
+        0
+       ],
+       [
+        5,
+        2
+       ],
+       [
+        6,
+        1
+       ]
+      ],
+      "b_rat_1": [
+       [
+        0,
+        1
+       ],
+       [
+        0,
+        3
+       ],
+       [
+        1,
+        2
+       ]
+      ],
+      "b_leopard_1": [
+       [
+        1,
+        2
+       ],
+       [
+        2,
+        1
+       ],
+       [
+        3,
+        2
+       ]
+      ],
+      "b_wolf_1": [
+       [
+        3,
+        2
+       ],
+       [
+        4,
+        1
+       ],
+       [
+        5,
+        2
+       ]
+      ],
+      "b_elephant_1": [
+       [
+        5,
+        2
+       ],
+       [
+        6,
+        1
+       ],
+       [
+        6,
+        3
+       ]
+      ],
+      "r_elephant_1": [
+       [
+        0,
+        5
+       ],
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ]
+      ],
+      "r_wolf_1": [
+       [
+        1,
+        6
+       ],
+       [
+        2,
+        7
+       ],
+       [
+        3,
+        6
+       ]
+      ],
+      "r_leopard_1": [
+       [
+        3,
+        6
+       ],
+       [
+        4,
+        7
+       ],
+       [
+        5,
+        6
+       ]
+      ],
+      "r_rat_1": [
+       [
+        5,
+        6
+       ],
+       [
+        6,
+        5
+       ],
+       [
+        6,
+        7
+       ]
+      ],
+      "r_cat_1": [
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        1,
+        8
+       ],
+       [
+        2,
+        7
+       ]
+      ],
+      "r_dog_1": [
+       [
+        4,
+        7
+       ],
+       [
+        5,
+        6
+       ],
+       [
+        5,
+        8
+       ],
+       [
+        6,
+        7
+       ]
+      ],
+      "r_tiger_1": [
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        8
+       ]
+      ],
+      "r_lion_1": [
+       [
+        5,
+        8
+       ],
+       [
+        6,
+        7
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat_1",
+      "b_dog_1",
+      "b_elephant_1",
+      "b_leopard_1",
+      "b_lion_1",
+      "b_rat_1",
+      "b_tiger_1",
+      "b_wolf_1",
+      "r_cat_1",
+      "r_dog_1",
+      "r_elephant_1",
+      "r_leopard_1",
+      "r_lion_1",
+      "r_rat_1",
+      "r_tiger_1",
+      "r_wolf_1"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    }
+   ]
+  },
+  {
+   "label": "rat_water",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "r_rat",
+      "type": "rat",
+      "name": "rat",
+      "side": "red",
+      "position": [
+       1,
+       5
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_elephant",
+      "type": "elephant",
+      "name": "elephant",
+      "side": "black",
+      "position": [
+       1,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "black",
+      "position": [
+       6,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "red",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "rat_water",
+     "current_turn": "red",
+     "moves": {
+      "r_rat": [
+       [
+        0,
+        5
+       ],
+       [
+        1,
+        4
+       ],
+       [
+        2,
+        5
+       ]
+      ],
+      "b_elephant": [
+       [
+        0,
+        6
+       ],
+       [
+        1,
+        7
+       ],
+       [
+        2,
+        6
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "b_elephant",
+      "r_rat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    },
+    {
+     "label": "rat_water#1",
+     "current_turn": "black",
+     "moves": {
+      "r_rat": [
+       [
+        1,
+        5
+       ],
+       [
+        2,
+        4
+       ],
+       [
+        2,
+        6
+       ],
+       [
+        3,
+        5
+       ]
+      ],
+      "b_elephant": [
+       [
+        0,
+        6
+       ],
+       [
+        1,
+        7
+       ],
+       [
+        2,
+        6
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "b_elephant",
+      "r_rat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": {
+      "piece_id": "r_rat",
+      "to": [
+       2,
+       5
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "label": "rat_eats_elephant",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "r_rat",
+      "type": "rat",
+      "name": "rat",
+      "side": "red",
+      "position": [
+       1,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_elephant",
+      "type": "elephant",
+      "name": "elephant",
+      "side": "black",
+      "position": [
+       1,
+       2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "black",
+      "position": [
+       6,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "red",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "rat_eats_elephant",
+     "current_turn": "red",
+     "moves": {
+      "r_rat": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        0
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        2,
+        1
+       ]
+      ],
+      "b_elephant": [
+       [
+        0,
+        2
+       ],
+       [
+        2,
+        2
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "b_elephant",
+      "r_rat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    },
+    {
+     "label": "rat_eats_elephant#1",
+     "current_turn": "black",
+     "moves": {
+      "r_rat": [
+       [
+        0,
+        2
+       ],
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        3
+       ],
+       [
+        2,
+        2
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "r_rat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": {
+      "piece_id": "r_rat",
+      "to": [
+       1,
+       2
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "label": "trap",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "b_trap_a",
+      "type": "trap",
+      "name": "trap",
+      "side": "black",
+      "position": [
+       2,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_trap_b",
+      "type": "trap",
+      "name": "trap",
+      "side": "black",
+      "position": [
+       4,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_trap_c",
+      "type": "trap",
+      "name": "trap",
+      "side": "black",
+      "position": [
+       3,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_trap_a",
+      "type": "trap",
+      "name": "trap",
+      "side": "red",
+      "position": [
+       2,
+       8
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_trap_b",
+      "type": "trap",
+      "name": "trap",
+      "side": "red",
+      "position": [
+       4,
+       8
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_trap_c",
+      "type": "trap",
+      "name": "trap",
+      "side": "red",
+      "position": [
+       3,
+       7
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_rat",
+      "type": "rat",
+      "name": "rat",
+      "side": "red",
+      "position": [
+       2,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_elephant",
+      "type": "elephant",
+      "name": "elephant",
+      "side": "black",
+      "position": [
+       1,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_dog",
+      "type": "dog",
+      "name": "dog",
+      "side": "red",
+      "position": [
+       3,
+       2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_wolf",
+      "type": "wolf",
+      "name": "wolf",
+      "side": "red",
+      "position": [
+       0,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "black",
+      "position": [
+       6,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "black",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "trap",
+     "current_turn": "black",
+     "moves": {
+      "r_rat": [
+       [
+        1,
+        0
+       ],
+       [
+        2,
+        1
+       ],
+       [
+        3,
+        0
+       ]
+      ],
+      "b_elephant": [
+       [
+        0,
+        0
+       ],
+       [
+        1,
+        1
+       ],
+       [
+        2,
+        0
+       ]
+      ],
+      "r_dog": [
+       [
+        2,
+        2
+       ],
+       [
+        3,
+        1
+       ],
+       [
+        3,
+        3
+       ],
+       [
+        4,
+        2
+       ]
+      ],
+      "r_wolf": [
+       [
+        0,
+        5
+       ],
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "b_elephant",
+      "r_dog",
+      "r_rat",
+      "r_wolf"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    },
+    {
+     "label": "trap#1",
+     "current_turn": "red",
+     "moves": {
+      "b_elephant": [
+       [
+        1,
+        0
+       ],
+       [
+        2,
+        1
+       ]
+      ],
+      "r_dog": [
+       [
+        2,
+        2
+       ],
+       [
+        3,
+        1
+       ],
+       [
+        3,
+        3
+       ],
+       [
+        4,
+        2
+       ]
+      ],
+      "r_wolf": [
+       [
+        0,
+        5
+       ],
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "b_elephant",
+      "r_dog",
+      "r_wolf"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": {
+      "piece_id": "b_elephant",
+      "to": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "label": "trap#2",
+     "current_turn": "black",
+     "moves": {
+      "b_elephant": [
+       [
+        1,
+        0
+       ],
+       [
+        2,
+        1
+       ]
+      ],
+      "r_wolf": [
+       [
+        0,
+        5
+       ],
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "b_elephant",
+      "r_wolf"
+     ],
+     "consumed_traps": [
+      [
+       3,
+       1
+      ]
+     ],
+     "winner": null,
+     "move": {
+      "piece_id": "r_dog",
+      "to": [
+       3,
+       1
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "label": "lion_jump",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "b_lion",
+      "type": "lion",
+      "name": "lion",
+      "side": "black",
+      "position": [
+       0,
+       3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_tiger",
+      "type": "tiger",
+      "name": "tiger",
+      "side": "black",
+      "position": [
+       6,
+       4
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "red",
+      "position": [
+       6,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "black",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "lion_jump",
+     "current_turn": "black",
+     "moves": {
+      "b_lion": [
+       [
+        0,
+        2
+       ],
+       [
+        0,
+        4
+       ],
+       [
+        3,
+        3
+       ]
+      ],
+      "b_tiger": [
+       [
+        3,
+        4
+       ],
+       [
+        6,
+        3
+       ],
+       [
+        6,
+        5
+       ]
+      ],
+      "r_cat": [
+       [
+        5,
+        6
+       ],
+       [
+        6,
+        5
+       ],
+       [
+        6,
+        7
+       ]
+      ]
+     },
+     "alive": [
+      "b_lion",
+      "b_tiger",
+      "r_cat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    },
+    {
+     "label": "lion_jump#1",
+     "current_turn": "red",
+     "moves": {
+      "b_lion": [
+       [
+        0,
+        3
+       ],
+       [
+        3,
+        2
+       ],
+       [
+        3,
+        4
+       ],
+       [
+        6,
+        3
+       ]
+      ],
+      "b_tiger": [
+       [
+        3,
+        4
+       ],
+       [
+        6,
+        3
+       ],
+       [
+        6,
+        5
+       ]
+      ],
+      "r_cat": [
+       [
+        5,
+        6
+       ],
+       [
+        6,
+        5
+       ],
+       [
+        6,
+        7
+       ]
+      ]
+     },
+     "alive": [
+      "b_lion",
+      "b_tiger",
+      "r_cat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": {
+      "piece_id": "b_lion",
+      "to": [
+       3,
+       3
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "label": "lion_blocked",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "b_lion",
+      "type": "lion",
+      "name": "lion",
+      "side": "black",
+      "position": [
+       0,
+       3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_rat",
+      "type": "rat",
+      "name": "rat",
+      "side": "red",
+      "position": [
+       2,
+       3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "red",
+      "position": [
+       6,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "black",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "lion_blocked",
+     "current_turn": "black",
+     "moves": {
+      "b_lion": [
+       [
+        0,
+        2
+       ],
+       [
+        0,
+        4
+       ]
+      ],
+      "r_rat": [
+       [
+        1,
+        3
+       ],
+       [
+        2,
+        2
+       ],
+       [
+        2,
+        4
+       ],
+       [
+        3,
+        3
+       ]
+      ],
+      "r_cat": [
+       [
+        5,
+        6
+       ],
+       [
+        6,
+        5
+       ],
+       [
+        6,
+        7
+       ]
+      ]
+     },
+     "alive": [
+      "b_lion",
+      "r_cat",
+      "r_rat"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    }
+   ]
+  },
+  {
+   "label": "enter_den",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "r_lion",
+      "type": "lion",
+      "name": "lion",
+      "side": "red",
+      "position": [
+       3,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "b_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "black",
+      "position": [
+       6,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "red",
+      "position": [
+       0,
+       6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "red",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "enter_den",
+     "current_turn": "red",
+     "moves": {
+      "r_lion": [
+       [
+        2,
+        1
+       ],
+       [
+        3,
+        0
+       ],
+       [
+        3,
+        2
+       ],
+       [
+        4,
+        1
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ],
+      "r_cat": [
+       [
+        0,
+        5
+       ],
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "r_cat",
+      "r_lion"
+     ],
+     "consumed_traps": [],
+     "winner": null,
+     "move": null
+    },
+    {
+     "label": "enter_den#1",
+     "current_turn": "red",
+     "moves": {
+      "r_lion": [
+       [
+        2,
+        0
+       ],
+       [
+        3,
+        1
+       ],
+       [
+        4,
+        0
+       ]
+      ],
+      "b_cat": [
+       [
+        5,
+        0
+       ],
+       [
+        6,
+        1
+       ]
+      ],
+      "r_cat": [
+       [
+        0,
+        5
+       ],
+       [
+        0,
+        7
+       ],
+       [
+        1,
+        6
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "r_cat",
+      "r_lion"
+     ],
+     "consumed_traps": [],
+     "winner": "red",
+     "move": {
+      "piece_id": "r_lion",
+      "to": [
+       3,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "label": "annihilation",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "b_lion",
+      "type": "lion",
+      "name": "lion",
+      "side": "black",
+      "position": [
+       3,
+       3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "red",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "annihilation",
+     "current_turn": "red",
+     "moves": {
+      "b_lion": [
+       [
+        0,
+        3
+       ],
+       [
+        3,
+        2
+       ],
+       [
+        3,
+        4
+       ],
+       [
+        6,
+        3
+       ]
+      ]
+     },
+     "alive": [
+      "b_lion"
+     ],
+     "consumed_traps": [],
+     "winner": "black",
+     "move": null
+    }
+   ]
+  },
+  {
+   "label": "stalemate",
+   "board_state": {
+    "pieces": [
+     {
+      "id": "b_cat",
+      "type": "cat",
+      "name": "cat",
+      "side": "black",
+      "position": [
+       0,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_elephant",
+      "type": "elephant",
+      "name": "elephant",
+      "side": "red",
+      "position": [
+       1,
+       0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_elephant2",
+      "type": "elephant",
+      "name": "elephant",
+      "side": "red",
+      "position": [
+       0,
+       1
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     },
+     {
+      "id": "r_wolf",
+      "type": "wolf",
+      "name": "wolf",
+      "side": "red",
+      "position": [
+       6,
+       5
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+     }
+    ],
+    "current_turn": "black",
+    "move_history": [],
+    "game_status": {
+     "state": "playing",
+     "winner": null,
+     "win_condition": null
+    },
+    "consumed_traps": []
+   },
+   "steps": [
+    {
+     "label": "stalemate",
+     "current_turn": "black",
+     "moves": {
+      "b_cat": [],
+      "r_elephant": [
+       [
+        0,
+        0
+       ],
+       [
+        1,
+        1
+       ],
+       [
+        2,
+        0
+       ]
+      ],
+      "r_elephant2": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        2
+       ],
+       [
+        1,
+        1
+       ]
+      ],
+      "r_wolf": [
+       [
+        6,
+        4
+       ],
+       [
+        6,
+        6
+       ]
+      ]
+     },
+     "alive": [
+      "b_cat",
+      "r_elephant",
+      "r_elephant2",
+      "r_wolf"
+     ],
+     "consumed_traps": [],
+     "winner": "red",
+     "move": null
+    }
+   ]
+  }
+ ]
+}

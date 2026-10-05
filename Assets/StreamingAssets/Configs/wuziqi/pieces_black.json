@@ -1,0 +1,17 @@
+{
+  "_metadata": {
+    "version": "3.0",
+    "description": "黑方棋子规则（黑子）"
+  },
+  "side": "black",
+  "pieces": {
+    "stone": {
+      "label": "●",
+      "is_king": false,
+      "moves": [],
+      "capture_rules": []
+    }
+  },
+  "custom_pieces": [],
+  "side_overrides": {}
+}

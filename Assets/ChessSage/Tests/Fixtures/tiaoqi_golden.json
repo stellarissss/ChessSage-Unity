@@ -1,0 +1,3961 @@
+{
+ "variant": "tiaoqi",
+ "engine": "rule_engine.py",
+ "scenarios": [
+  {
+   "name": "initial_sequence",
+   "steps": [
+    {
+     "label": "initial",
+     "current_turn": "black",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_6": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_9": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_10": [
+       [
+        4,
+        14
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "b_piece_1": [
+       [
+        12,
+        8
+       ],
+       [
+        12,
+        10
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        8
+       ],
+       [
+        12,
+        12
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "b_piece_1->[12,8]",
+     "current_turn": "red",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        12,
+        8
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_6": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_9": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_10": [
+       [
+        4,
+        14
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "b_piece_1": [
+       [
+        11,
+        7
+       ],
+       [
+        11,
+        9
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        12,
+        10
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        11,
+        7
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        6
+       ],
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        11,
+        7
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "r_piece_10->[4,14]",
+     "current_turn": "black",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        4,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        12,
+        8
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [
+       [
+        3,
+        15
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_6": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_9": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "r_piece_10": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "b_piece_1": [
+       [
+        11,
+        7
+       ],
+       [
+        11,
+        9
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        12,
+        10
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        11,
+        7
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        6
+       ],
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        11,
+        7
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "b_piece_1->[11,7]",
+     "current_turn": "red",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        4,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        11,
+        7
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [
+       [
+        3,
+        15
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_6": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_9": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "r_piece_10": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "b_piece_1": [
+       [
+        10,
+        6
+       ],
+       [
+        10,
+        8
+       ],
+       [
+        11,
+        5
+       ],
+       [
+        11,
+        9
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        12,
+        8
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "r_piece_10->[3,15]",
+     "current_turn": "black",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        11,
+        7
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_6": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_9": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_10": [
+       [
+        4,
+        14
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "b_piece_1": [
+       [
+        10,
+        6
+       ],
+       [
+        10,
+        8
+       ],
+       [
+        11,
+        5
+       ],
+       [
+        11,
+        9
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        12,
+        8
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "b_piece_1->[10,6]",
+     "current_turn": "red",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        10,
+        6
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_6": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_9": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_10": [
+       [
+        4,
+        14
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "b_piece_1": [
+       [
+        9,
+        5
+       ],
+       [
+        9,
+        7
+       ],
+       [
+        10,
+        4
+       ],
+       [
+        10,
+        8
+       ],
+       [
+        11,
+        5
+       ],
+       [
+        11,
+        7
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "r_piece_10->[4,14]",
+     "current_turn": "black",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        4,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        10,
+        6
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [
+       [
+        3,
+        15
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_6": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_9": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "r_piece_10": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "b_piece_1": [
+       [
+        9,
+        5
+       ],
+       [
+        9,
+        7
+       ],
+       [
+        10,
+        4
+       ],
+       [
+        10,
+        8
+       ],
+       [
+        11,
+        5
+       ],
+       [
+        11,
+        7
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "b_piece_1->[9,5]",
+     "current_turn": "red",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        4,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        9,
+        5
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [
+       [
+        3,
+        15
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_6": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        13
+       ]
+      ],
+      "r_piece_9": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "r_piece_10": [
+       [
+        3,
+        15
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        5,
+        15
+       ]
+      ],
+      "b_piece_1": [
+       [
+        8,
+        4
+       ],
+       [
+        8,
+        6
+       ],
+       [
+        9,
+        3
+       ],
+       [
+        9,
+        7
+       ],
+       [
+        10,
+        4
+       ],
+       [
+        10,
+        6
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "r_piece_10->[3,15]",
+     "current_turn": "black",
+     "pieces": [
+      {
+       "id": "r_piece_1",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        0,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_2",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_3",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        1,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_4",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_5",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_6",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        2,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_7",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        9
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_8",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_9",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "r_piece_10",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        3,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        9,
+        5
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_4",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        13,
+        15
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_5",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        10
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_6",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        12
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_7",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        14,
+        14
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_8",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        11
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_9",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        15,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_piece_10",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        16,
+        12
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_piece_1": [],
+      "r_piece_2": [],
+      "r_piece_3": [],
+      "r_piece_4": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_5": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_6": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "r_piece_7": [
+       [
+        4,
+        8
+       ],
+       [
+        4,
+        10
+       ]
+      ],
+      "r_piece_8": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ]
+      ],
+      "r_piece_9": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        14
+       ]
+      ],
+      "r_piece_10": [
+       [
+        4,
+        14
+       ],
+       [
+        4,
+        16
+       ]
+      ],
+      "b_piece_1": [
+       [
+        8,
+        4
+       ],
+       [
+        8,
+        6
+       ],
+       [
+        9,
+        3
+       ],
+       [
+        9,
+        7
+       ],
+       [
+        10,
+        4
+       ],
+       [
+        10,
+        6
+       ]
+      ],
+      "b_piece_2": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_3": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_4": [
+       [
+        12,
+        14
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_5": [
+       [
+        12,
+        12
+       ],
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_6": [
+       [
+        12,
+        10
+       ],
+       [
+        12,
+        14
+       ]
+      ],
+      "b_piece_7": [
+       [
+        12,
+        12
+       ],
+       [
+        12,
+        16
+       ]
+      ],
+      "b_piece_8": [
+       [
+        13,
+        9
+       ]
+      ],
+      "b_piece_9": [],
+      "b_piece_10": []
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "hop_chain",
+   "steps": [
+    {
+     "label": "chain_start",
+     "current_turn": "red",
+     "pieces": [
+      {
+       "id": "r_mover",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        5,
+        1
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_p1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        5,
+        3
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_p2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        5,
+        7
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_p3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        5,
+        11
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_mover": [
+       [
+        4,
+        0
+       ],
+       [
+        4,
+        2
+       ],
+       [
+        5,
+        5
+       ],
+       [
+        5,
+        9
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        6,
+        2
+       ]
+      ],
+      "b_p1": [
+       [
+        4,
+        2
+       ],
+       [
+        4,
+        4
+       ],
+       [
+        5,
+        5
+       ],
+       [
+        6,
+        2
+       ],
+       [
+        6,
+        4
+       ]
+      ],
+      "b_p2": [
+       [
+        4,
+        6
+       ],
+       [
+        4,
+        8
+       ],
+       [
+        5,
+        5
+       ],
+       [
+        5,
+        9
+       ],
+       [
+        6,
+        6
+       ],
+       [
+        6,
+        8
+       ]
+      ],
+      "b_p3": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        9
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        6,
+        10
+       ],
+       [
+        6,
+        12
+       ]
+      ]
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    },
+    {
+     "label": "r_mover->[5,13]",
+     "current_turn": "black",
+     "pieces": [
+      {
+       "id": "r_mover",
+       "type": "piece",
+       "side": "red",
+       "position": [
+        5,
+        13
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_p1",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        5,
+        3
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_p2",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        5,
+        7
+       ],
+       "is_alive": true
+      },
+      {
+       "id": "b_p3",
+       "type": "piece",
+       "side": "black",
+       "position": [
+        5,
+        11
+       ],
+       "is_alive": true
+      }
+     ],
+     "moves": {
+      "r_mover": [
+       [
+        4,
+        12
+       ],
+       [
+        4,
+        14
+       ],
+       [
+        5,
+        1
+       ],
+       [
+        5,
+        5
+       ],
+       [
+        5,
+        9
+       ],
+       [
+        5,
+        15
+       ],
+       [
+        6,
+        12
+       ],
+       [
+        6,
+        14
+       ]
+      ],
+      "b_p1": [
+       [
+        4,
+        2
+       ],
+       [
+        4,
+        4
+       ],
+       [
+        5,
+        1
+       ],
+       [
+        5,
+        5
+       ],
+       [
+        6,
+        2
+       ],
+       [
+        6,
+        4
+       ]
+      ],
+      "b_p2": [
+       [
+        4,
+        6
+       ],
+       [
+        4,
+        8
+       ],
+       [
+        5,
+        5
+       ],
+       [
+        5,
+        9
+       ],
+       [
+        6,
+        6
+       ],
+       [
+        6,
+        8
+       ]
+      ],
+      "b_p3": [
+       [
+        4,
+        10
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        9
+       ],
+       [
+        5,
+        15
+       ],
+       [
+        6,
+        10
+       ],
+       [
+        6,
+        12
+       ]
+      ]
+     },
+     "winner": null,
+     "side_has_moves": {
+      "red": true,
+      "black": true
+     }
+    }
+   ]
+  }
+ ]
+}

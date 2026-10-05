@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "boss_id": "tiandao",
+  "boss_name": "天道",
+  "chess_type": "xiangqi",
+  "description": "六道轮回的最终审判者。玩家通关六道后，若使用过真心祈求，将进入此 Boss 战。",
+  "rules": {
+    "standard_xiangqi": true,
+    "custom_rules": [],
+    "cheat_enabled": false,
+    "input_box_state": "locked",
+    "input_box_visual": "red_cross",
+    "exposure_probability": 0,
+    "turn_limit": 0
+  },
+  "ai_config": {
+    "difficulty": "nightmare",
+    "search_depth": 6,
+    "use_alpha_beta": true,
+    "evaluation_weight": {
+      "material": 1.5,
+      "position": 1.2,
+      "king_safety": 1.0,
+      "mobility": 0.8
+    }
+  },
+  "pieces": {
+    "black": {
+      "general": 1,
+      "advisor": 0,
+      "elephant": 2,
+      "horse": 2,
+      "chariot": 4,
+      "cannon": 2,
+      "soldier": 5
+    },
+    "red": {
+      "general": 1,
+      "advisor": 2,
+      "elephant": 2,
+      "horse": 2,
+      "chariot": 2,
+      "cannon": 2,
+      "soldier": 5
+    }
+  },
+  "initial_board": {
+    "black_back_row": ["chariot", "horse", "elephant", "chariot", "general", "chariot", "elephant", "horse", "chariot"],
+    "red_back_row": ["chariot", "horse", "elephant", "advisor", "general", "advisor", "elephant", "horse", "chariot"],
+    "note": "天道无士，士位被车占据；玩家方为标准布局。天道总棋子数比标准多2车。"
+  },
+  "victory_condition": {
+    "type": "checkmate",
+    "target": "black_general"
+  },
+  "defeat_condition": {
+    "type": "checkmate",
+    "target": "red_general"
+  },
+  "on_win": "trigger_ending_exposed",
+  "on_lose": "retry",
+  "retry_limit": -1,
+  "_note": "v1.4: 对白已迁移至 configs/story.json.tiandao.boss_dialogues。本文件仅保留机械配置（棋子/规则/AI/胜负条件）。bgm/background 字段保留作历史兼容，实际前端读取优先使用 story.json.tiandao.boss_battle。",
+  "bgm": "bgm_tiandao_boss.mp3",
+  "background": "bg_tiandao_court.jpg",
+  "background_vortex": "bg_tiandao_vortex.jpg"
+}

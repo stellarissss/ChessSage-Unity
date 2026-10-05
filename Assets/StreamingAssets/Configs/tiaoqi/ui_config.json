@@ -1,0 +1,28 @@
+{
+  "_metadata": {"version": "1.0"},
+  "theme": {
+    "board": {
+      "background_color": "#f5e6c8",
+      "line_color": "#000000"
+    },
+    "pieces": {
+      "red_color": "#cc0000",
+      "black_color": "#1a1a1a",
+      "red_bg": "transparent",
+      "black_bg": "transparent",
+      "font_family": "'Noto Serif SC', serif"
+    },
+    "highlight": {
+      "selected": "#ffd700",
+      "valid_move": "rgba(0,0,0,0.3)",
+      "last_move": "#333333"
+    }
+  },
+  "layout": {
+    "board_size": "90vmin",
+    "input_position": "bottom",
+    "response_area": "right_side"
+  },
+  "custom_css": "",
+  "custom_js": ""
+}

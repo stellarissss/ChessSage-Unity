@@ -1,0 +1,5683 @@
+{
+ "variant": "heibaiqi",
+ "engine": "rule_engine.py",
+ "steps": [
+  {
+   "label": "step0",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      2,
+      3
+     ],
+     [
+      3,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ]
+    ],
+    "white": [
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     2,
+     3
+    ],
+    "placed_id": "black_disc_3",
+    "flipped": [
+     "white_disc_1"
+    ],
+    "board_after": {
+     "2,3": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step1",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      2,
+      2
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      4,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     2,
+     2
+    ],
+    "placed_id": "white_disc_3",
+    "flipped": [
+     "white_disc_1"
+    ],
+    "board_after": {
+     "2,2": "white",
+     "2,3": "black",
+     "3,3": "white",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step2",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      2,
+      1
+     ],
+     [
+      3,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ]
+    ],
+    "white": [
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     2,
+     1
+    ],
+    "placed_id": "black_disc_4",
+    "flipped": [
+     "white_disc_3"
+    ],
+    "board_after": {
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,3": "white",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step3",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      3,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     1,
+     1
+    ],
+    "placed_id": "white_disc_3",
+    "flipped": [
+     "white_disc_3"
+    ],
+    "board_after": {
+     "1,1": "white",
+     "2,1": "black",
+     "2,2": "white",
+     "2,3": "black",
+     "3,3": "white",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step4",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      0,
+      1
+     ],
+     [
+      3,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ]
+    ],
+    "white": [
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      0
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     0,
+     1
+    ],
+    "placed_id": "black_disc_5",
+    "flipped": [
+     "white_disc_3"
+    ],
+    "board_after": {
+     "0,1": "black",
+     "1,1": "black",
+     "2,1": "black",
+     "2,2": "white",
+     "2,3": "black",
+     "3,3": "white",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step5",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      3,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      0
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     0,
+     0
+    ],
+    "placed_id": "white_disc_4",
+    "flipped": [
+     "white_disc_3"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "black",
+     "1,1": "white",
+     "2,1": "black",
+     "2,2": "white",
+     "2,3": "black",
+     "3,3": "white",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step6",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      3,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ]
+    ],
+    "white": [
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      0
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     3,
+     2
+    ],
+    "placed_id": "black_disc_6",
+    "flipped": [
+     "white_disc_1"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "black",
+     "1,1": "white",
+     "2,1": "black",
+     "2,2": "white",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step7",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      1,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      0,
+      2
+     ],
+     [
+      2,
+      0
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     0,
+     2
+    ],
+    "placed_id": "white_disc_5",
+    "flipped": [
+     "black_disc_5"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "1,1": "white",
+     "2,1": "black",
+     "2,2": "white",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step8",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      1,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      2,
+      0
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     1,
+     2
+    ],
+    "placed_id": "black_disc_7",
+    "flipped": [
+     "white_disc_3"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "1,1": "white",
+     "1,2": "black",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step9",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      1,
+      0
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      4,
+      5
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     1,
+     3
+    ],
+    "placed_id": "white_disc_6",
+    "flipped": [
+     "black_disc_7"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step10",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     0,
+     3
+    ],
+    "placed_id": "black_disc_7",
+    "flipped": [
+     "black_disc_7",
+     "white_disc_6"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "black",
+     "1,1": "white",
+     "1,2": "black",
+     "1,3": "black",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step11",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      1,
+      0
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      4,
+      5
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     0,
+     4
+    ],
+    "placed_id": "white_disc_6",
+    "flipped": [
+     "black_disc_7"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "1,1": "white",
+     "1,2": "black",
+     "1,3": "black",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step12",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      1,
+      0
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     1,
+     0
+    ],
+    "placed_id": "black_disc_8",
+    "flipped": [
+     "white_disc_3"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "1,0": "black",
+     "1,1": "black",
+     "1,2": "black",
+     "1,3": "black",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step13",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      2,
+      0
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     2,
+     0
+    ],
+    "placed_id": "white_disc_7",
+    "flipped": [
+     "black_disc_8",
+     "white_disc_3"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "black",
+     "1,3": "black",
+     "2,0": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step14",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      4,
+      5
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     4,
+     5
+    ],
+    "placed_id": "black_disc_8",
+    "flipped": [
+     "white_disc_2"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "black",
+     "1,3": "black",
+     "2,0": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step15",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     1,
+     4
+    ],
+    "placed_id": "white_disc_8",
+    "flipped": [
+     "black_disc_7",
+     "white_disc_6"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "2,0": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step16",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      0,
+      5
+     ]
+    ],
+    "white": [
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     0,
+     5
+    ],
+    "placed_id": "black_disc_9",
+    "flipped": [
+     "white_disc_8"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "black",
+     "2,0": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step17",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      0,
+      6
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     0,
+     6
+    ],
+    "placed_id": "white_disc_8",
+    "flipped": [
+     "black_disc_9"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "black",
+     "2,0": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step18",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     1,
+     5
+    ],
+    "placed_id": "white_disc_9",
+    "flipped": [
+     "white_disc_8"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "black",
+     "2,2": "black",
+     "2,3": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step19",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      0
+     ],
+     [
+      3,
+      1
+     ],
+     [
+      4,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     2,
+     4
+    ],
+    "placed_id": "white_disc_10",
+    "flipped": [
+     "black_disc_3",
+     "black_disc_4",
+     "white_disc_3"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step20",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      4,
+      1
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     4,
+     1
+    ],
+    "placed_id": "white_disc_11",
+    "flipped": [
+     "black_disc_6"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,2": "white",
+     "3,3": "black",
+     "3,4": "black",
+     "4,1": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step21",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      3,
+      1
+     ]
+    ],
+    "white": [
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     3,
+     1
+    ],
+    "placed_id": "black_disc_9",
+    "flipped": [
+     "black_disc_6"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,1": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,1": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step22",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      5,
+      0
+     ],
+     [
+      5,
+      1
+     ]
+    ],
+    "white": [
+     [
+      4,
+      0
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     4,
+     0
+    ],
+    "placed_id": "white_disc_12",
+    "flipped": [
+     "black_disc_9"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,1": "white",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step23",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      3,
+      0
+     ],
+     [
+      5,
+      0
+     ]
+    ],
+    "white": [
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     3,
+     0
+    ],
+    "placed_id": "black_disc_9",
+    "flipped": [
+     "black_disc_9"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,0": "black",
+     "3,1": "black",
+     "3,2": "black",
+     "3,3": "black",
+     "3,4": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step24",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      5,
+      0
+     ],
+     [
+      5,
+      1
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      4,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     4,
+     2
+    ],
+    "placed_id": "white_disc_13",
+    "flipped": [
+     "black_disc_6",
+     "black_disc_9",
+     "white_disc_1"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step25",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      5,
+      0
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     5,
+     0
+    ],
+    "placed_id": "black_disc_10",
+    "flipped": [
+     "white_disc_12"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step26",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      3,
+      5
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     3,
+     5
+    ],
+    "placed_id": "white_disc_14",
+    "flipped": [
+     "black_disc_2"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step27",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      2,
+      5
+     ],
+     [
+      2,
+      6
+     ],
+     [
+      3,
+      6
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     2,
+     5
+    ],
+    "placed_id": "black_disc_11",
+    "flipped": [
+     "black_disc_2",
+     "white_disc_14"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step28",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      2,
+      6
+     ],
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     2,
+     6
+    ],
+    "placed_id": "white_disc_14",
+    "flipped": [
+     "black_disc_11"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step29",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      1,
+      6
+     ],
+     [
+      1,
+      7
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     1,
+     6
+    ],
+    "placed_id": "black_disc_11",
+    "flipped": [
+     "black_disc_11"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "black",
+     "2,6": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step30",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      1,
+      7
+     ],
+     [
+      2,
+      7
+     ],
+     [
+      3,
+      6
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      1,
+      7
+     ],
+     [
+      2,
+      7
+     ],
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     1,
+     7
+    ],
+    "placed_id": "white_disc_15",
+    "flipped": [
+     "black_disc_11"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "black",
+     "2,6": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step31",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      0,
+      7
+     ],
+     [
+      2,
+      7
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     0,
+     7
+    ],
+    "placed_id": "black_disc_12",
+    "flipped": [
+     "black_disc_11"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "black",
+     "1,7": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "black",
+     "2,6": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step32",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      2,
+      7
+     ],
+     [
+      3,
+      6
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      2,
+      7
+     ],
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     2,
+     7
+    ],
+    "placed_id": "white_disc_16",
+    "flipped": [
+     "black_disc_11"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "white",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "black",
+     "2,6": "white",
+     "2,7": "white",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step33",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      3,
+      7
+     ],
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     3,
+     7
+    ],
+    "placed_id": "black_disc_13",
+    "flipped": [
+     "white_disc_15",
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "black",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "black",
+     "3,5": "black",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step34",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      3,
+      6
+     ],
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     3,
+     6
+    ],
+    "placed_id": "white_disc_15",
+    "flipped": [
+     "black_disc_11",
+     "black_disc_2",
+     "white_disc_14"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step35",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      5,
+      2
+     ]
+    ],
+    "white": [
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     5,
+     2
+    ],
+    "placed_id": "black_disc_14",
+    "flipped": [
+     "white_disc_11"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "black",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "5,0": "black",
+     "5,2": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step36",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      4,
+      6
+     ],
+     [
+      5,
+      1
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     4,
+     6
+    ],
+    "placed_id": "white_disc_16",
+    "flipped": [
+     "black_disc_1",
+     "black_disc_8",
+     "white_disc_2"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "black",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "white",
+     "5,0": "black",
+     "5,2": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step37",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      4,
+      7
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ]
+    ],
+    "white": [
+     [
+      5,
+      1
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     4,
+     7
+    ],
+    "placed_id": "black_disc_15",
+    "flipped": [
+     "black_disc_1",
+     "black_disc_8",
+     "white_disc_13",
+     "white_disc_16",
+     "white_disc_2"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "black",
+     "4,2": "black",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,2": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step38",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      5,
+      1
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     5,
+     1
+    ],
+    "placed_id": "white_disc_16",
+    "flipped": [
+     "white_disc_11",
+     "white_disc_13"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "white",
+     "5,2": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step39",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      6,
+      2
+     ]
+    ],
+    "white": [
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      2
+     ],
+     [
+      6,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     6,
+     2
+    ],
+    "placed_id": "black_disc_16",
+    "flipped": [
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "black",
+     "4,4": "black",
+     "4,5": "black",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "6,2": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step40",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      5,
+      3
+     ],
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     5,
+     3
+    ],
+    "placed_id": "white_disc_16",
+    "flipped": [
+     "black_disc_1",
+     "white_disc_2"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "5,3": "white",
+     "6,2": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step41",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      5,
+      4
+     ]
+    ],
+    "white": [
+     [
+      5,
+      4
+     ],
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     5,
+     4
+    ],
+    "placed_id": "black_disc_17",
+    "flipped": [
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "5,3": "black",
+     "5,4": "black",
+     "6,2": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step42",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      5,
+      5
+     ],
+     [
+      5,
+      6
+     ],
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     5,
+     5
+    ],
+    "placed_id": "white_disc_16",
+    "flipped": [
+     "black_disc_8"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "5,3": "black",
+     "5,4": "black",
+     "5,5": "white",
+     "6,2": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step43",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      5,
+      6
+     ],
+     [
+      6,
+      4
+     ]
+    ],
+    "white": [
+     [
+      5,
+      6
+     ],
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     5,
+     6
+    ],
+    "placed_id": "black_disc_18",
+    "flipped": [
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "black",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "5,3": "black",
+     "5,4": "black",
+     "5,5": "black",
+     "5,6": "black",
+     "6,2": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step44",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      5,
+      7
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      6,
+      7
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     5,
+     7
+    ],
+    "placed_id": "white_disc_16",
+    "flipped": [
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "5,3": "black",
+     "5,4": "black",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "white",
+     "6,2": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step45",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      6,
+      7
+     ]
+    ],
+    "white": [
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      6,
+      7
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     6,
+     7
+    ],
+    "placed_id": "black_disc_19",
+    "flipped": [
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "black",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "black",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "black",
+     "5,1": "black",
+     "5,2": "black",
+     "5,3": "black",
+     "5,4": "black",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "black",
+     "6,2": "black",
+     "6,7": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step46",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     6,
+     0
+    ],
+    "placed_id": "white_disc_17",
+    "flipped": [
+     "black_disc_10",
+     "black_disc_9",
+     "white_disc_12",
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "black",
+     "5,3": "black",
+     "5,4": "black",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,2": "black",
+     "6,7": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step47",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      6,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     6,
+     1
+    ],
+    "placed_id": "white_disc_18",
+    "flipped": [
+     "black_disc_14"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "black",
+     "5,4": "black",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "black",
+     "6,7": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step48",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     6,
+     3
+    ],
+    "placed_id": "white_disc_19",
+    "flipped": [
+     "black_disc_16",
+     "black_disc_17",
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "white",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "white",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "white",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,7": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step49",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      7,
+      1
+     ],
+     [
+      7,
+      2
+     ]
+    ],
+    "white": [
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     7,
+     1
+    ],
+    "placed_id": "black_disc_20",
+    "flipped": [
+     "black_disc_16",
+     "white_disc_14",
+     "white_disc_14",
+     "white_disc_16",
+     "white_disc_2"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "black",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "black",
+     "5,4": "white",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "black",
+     "6,3": "white",
+     "6,7": "black",
+     "7,1": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step50",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      6,
+      4
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ]
+    ],
+    "white": [
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     6,
+     4
+    ],
+    "placed_id": "white_disc_20",
+    "flipped": [
+     "white_disc_16",
+     "white_disc_16"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "black",
+     "4,5": "white",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "white",
+     "5,5": "white",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "black",
+     "6,3": "white",
+     "6,4": "white",
+     "6,7": "black",
+     "7,1": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step51",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ],
+     [
+      7,
+      4
+     ]
+    ],
+    "white": [
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     6,
+     5
+    ],
+    "placed_id": "black_disc_21",
+    "flipped": [
+     "black_disc_8",
+     "white_disc_16",
+     "white_disc_19",
+     "white_disc_20"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "black",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "white",
+     "5,5": "black",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "black",
+     "6,3": "black",
+     "6,4": "black",
+     "6,5": "black",
+     "6,7": "black",
+     "7,1": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step52",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      6,
+      6
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      7,
+      5
+     ],
+     [
+      7,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     6,
+     6
+    ],
+    "placed_id": "white_disc_19",
+    "flipped": [
+     "black_disc_16",
+     "black_disc_18",
+     "black_disc_21",
+     "white_disc_16",
+     "white_disc_19",
+     "white_disc_2",
+     "white_disc_20"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "white",
+     "5,5": "white",
+     "5,6": "white",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,4": "white",
+     "6,5": "white",
+     "6,6": "white",
+     "6,7": "black",
+     "7,1": "black"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step53",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      7,
+      2
+     ],
+     [
+      7,
+      3
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      7,
+      5
+     ],
+     [
+      7,
+      6
+     ]
+    ],
+    "white": []
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     7,
+     2
+    ],
+    "placed_id": "black_disc_21",
+    "flipped": [
+     "black_disc_17",
+     "white_disc_19"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "black",
+     "5,5": "white",
+     "5,6": "white",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "black",
+     "6,4": "white",
+     "6,5": "white",
+     "6,6": "white",
+     "6,7": "black",
+     "7,1": "black",
+     "7,2": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step54",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      7,
+      3
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      7,
+      5
+     ],
+     [
+      7,
+      6
+     ]
+    ],
+    "white": [
+     [
+      7,
+      3
+     ],
+     [
+      7,
+      4
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     7,
+     3
+    ],
+    "placed_id": "white_disc_21",
+    "flipped": [
+     "white_disc_19"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "black",
+     "5,5": "white",
+     "5,6": "white",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,4": "white",
+     "6,5": "white",
+     "6,6": "white",
+     "6,7": "black",
+     "7,1": "black",
+     "7,2": "black",
+     "7,3": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step55",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      7,
+      4
+     ],
+     [
+      7,
+      5
+     ],
+     [
+      7,
+      6
+     ]
+    ],
+    "white": [
+     [
+      7,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     7,
+     4
+    ],
+    "placed_id": "black_disc_22",
+    "flipped": [
+     "black_disc_18",
+     "black_disc_21",
+     "white_disc_20",
+     "white_disc_21"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "black",
+     "5,5": "white",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,4": "black",
+     "6,5": "black",
+     "6,6": "white",
+     "6,7": "black",
+     "7,1": "black",
+     "7,2": "black",
+     "7,3": "black",
+     "7,4": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step56",
+   "current_turn": "white",
+   "placements": {
+    "black": [
+     [
+      7,
+      5
+     ],
+     [
+      7,
+      6
+     ]
+    ],
+    "white": [
+     [
+      7,
+      5
+     ],
+     [
+      7,
+      6
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     7,
+     5
+    ],
+    "placed_id": "white_disc_20",
+    "flipped": [
+     "black_disc_21",
+     "white_disc_20"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "black",
+     "5,5": "white",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,4": "white",
+     "6,5": "white",
+     "6,6": "white",
+     "6,7": "black",
+     "7,1": "black",
+     "7,2": "black",
+     "7,3": "black",
+     "7,4": "black",
+     "7,5": "white"
+    }
+   },
+   "next_turn": "black"
+  },
+  {
+   "label": "step57",
+   "current_turn": "black",
+   "placements": {
+    "black": [
+     [
+      7,
+      6
+     ]
+    ],
+    "white": [
+     [
+      7,
+      0
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "black",
+    "to": [
+     7,
+     6
+    ],
+    "placed_id": "black_disc_23",
+    "flipped": [
+     "black_disc_21",
+     "white_disc_19",
+     "white_disc_20"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "black",
+     "5,5": "white",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,4": "white",
+     "6,5": "black",
+     "6,6": "black",
+     "6,7": "black",
+     "7,1": "black",
+     "7,2": "black",
+     "7,3": "black",
+     "7,4": "black",
+     "7,5": "black",
+     "7,6": "black"
+    }
+   },
+   "next_turn": "white"
+  },
+  {
+   "label": "step58",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": [
+     [
+      7,
+      7
+     ]
+    ]
+   },
+   "game_over": false,
+   "winner": null,
+   "reason": null,
+   "move": {
+    "side": "white",
+    "to": [
+     7,
+     7
+    ],
+    "placed_id": "white_disc_21",
+    "flipped": [
+     "white_disc_19"
+    ],
+    "board_after": {
+     "0,0": "white",
+     "0,1": "white",
+     "0,2": "white",
+     "0,3": "white",
+     "0,4": "white",
+     "0,5": "white",
+     "0,6": "white",
+     "0,7": "black",
+     "1,0": "white",
+     "1,1": "white",
+     "1,2": "white",
+     "1,3": "white",
+     "1,4": "white",
+     "1,5": "white",
+     "1,6": "white",
+     "1,7": "black",
+     "2,0": "white",
+     "2,1": "white",
+     "2,2": "white",
+     "2,3": "white",
+     "2,4": "white",
+     "2,5": "white",
+     "2,6": "black",
+     "2,7": "black",
+     "3,0": "white",
+     "3,1": "white",
+     "3,2": "white",
+     "3,3": "white",
+     "3,4": "white",
+     "3,5": "black",
+     "3,6": "white",
+     "3,7": "black",
+     "4,0": "white",
+     "4,1": "white",
+     "4,2": "white",
+     "4,3": "white",
+     "4,4": "white",
+     "4,5": "black",
+     "4,6": "white",
+     "4,7": "black",
+     "5,0": "white",
+     "5,1": "white",
+     "5,2": "white",
+     "5,3": "white",
+     "5,4": "black",
+     "5,5": "white",
+     "5,6": "black",
+     "5,7": "black",
+     "6,0": "white",
+     "6,1": "white",
+     "6,2": "white",
+     "6,3": "white",
+     "6,4": "white",
+     "6,5": "black",
+     "6,6": "white",
+     "6,7": "black",
+     "7,1": "black",
+     "7,2": "black",
+     "7,3": "black",
+     "7,4": "black",
+     "7,5": "black",
+     "7,6": "black",
+     "7,7": "white"
+    }
+   },
+   "next_turn": null
+  },
+  {
+   "label": "step59",
+   "current_turn": "white",
+   "placements": {
+    "black": [],
+    "white": []
+   },
+   "game_over": true,
+   "winner": "white",
+   "reason": "no_valid_moves_both",
+   "move": null,
+   "next_turn": null
+  }
+ ]
+}

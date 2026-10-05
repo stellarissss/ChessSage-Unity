@@ -1,0 +1,123 @@
+{
+  "xiangqi": {
+    "xiangqi_1": {
+      "name": "绝杀",
+      "description": "红方三步内将死黑方",
+      "difficulty": 4,
+      "board_state": {
+        "pieces": {
+          "red": {
+            "general": [4, 8],
+            "cannon": [4, 4],
+            "pawn": [5, 3],
+            "knight": [2, 7]
+          },
+          "black": {
+            "general": [4, 0],
+            "rook": [5, 1],
+            "elephant": [3, 2]
+          }
+        }
+      },
+      "turn_limit": 3,
+      "solution": ["cannon_move", "pawn_advance", "checkmate"]
+    }
+  },
+  "wuziqi": {
+    "wuziqi_1": {
+      "name": "一步登天",
+      "description": "白方一步获胜",
+      "difficulty": 3,
+      "board_state": {
+        "board": [
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,1,1,1,1,0,0,0],
+          [0,0,0,0,0,2,2,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0]
+        ],
+        "current_player": 1
+      },
+      "solution": [[4, 8]]
+    }
+  },
+  "weiqi": {
+    "weiqi_1": {
+      "name": "活棋",
+      "description": "黑方在角部做活",
+      "difficulty": 4,
+      "board_state": {
+        "board": {
+          "black": [[0,0],[0,1],[1,0]],
+          "white": [[0,2],[1,1],[2,0]]
+        },
+        "current_player": 1
+      },
+      "turn_limit": 3,
+      "solution": ["corner_life"]
+    }
+  },
+  "dongwuqi": {
+    "dongwuqi_1": {
+      "name": "逆袭",
+      "description": "低等级棋子吃掉高等级棋子",
+      "difficulty": 3,
+      "board_state": {
+        "pieces": {
+          "red": {
+            "rat": [0, 0],
+            "cat": [1, 0]
+          },
+          "black": {
+            "tiger": [0, 5],
+            "dog": [1, 5]
+          }
+        },
+        "board_size": [6, 6],
+        "water_positions": [[3, 2], [3, 3]]
+      },
+      "turn_limit": 3,
+      "solution": ["rat_swim", "capture_tiger"]
+    }
+  },
+  "tiaoqi": {
+    "tiaoqi_1": {
+      "name": "断桥",
+      "description": "跳过障碍到达目标",
+      "difficulty": 3,
+      "board_state": {
+        "pieces": {
+          "red": {"piece1": [0, 3]},
+          "black": {"blocker": [3, 3]}
+        },
+        "target_position": [6, 3]
+      },
+      "turn_limit": 2,
+      "solution": ["jump_over"]
+    }
+  },
+  "heibaiqi": {
+    "heibaiqi_1": {
+      "name": "逆转",
+      "description": "在劣势下翻转局势",
+      "difficulty": 4,
+      "board_state": {
+        "board": [
+          [2,2,2,0],
+          [2,1,1,0],
+          [0,1,1,0],
+          [0,0,0,0]
+        ],
+        "current_player": 1
+      },
+      "turn_limit": 3,
+      "solution": ["corner_flip"]
+    }
+  }
+}

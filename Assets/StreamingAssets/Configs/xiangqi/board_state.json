@@ -1,0 +1,409 @@
+{
+  "_metadata": {
+    "version": "2.0",
+    "last_modified": "2026-07-13T00:00:00Z",
+    "format": "chinese_chess_standard"
+  },
+  "pieces": [
+    {
+      "id": "b_chariot_1",
+      "type": "chariot",
+      "name": "車",
+      "side": "black",
+      "position": [
+        0,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_horse_1",
+      "type": "horse",
+      "name": "馬",
+      "side": "black",
+      "position": [
+        1,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_elephant_1",
+      "type": "elephant",
+      "name": "象",
+      "side": "black",
+      "position": [
+        2,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_advisor_1",
+      "type": "advisor",
+      "name": "士",
+      "side": "black",
+      "position": [
+        3,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_general",
+      "type": "general",
+      "name": "將",
+      "side": "black",
+      "position": [
+        4,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_advisor_2",
+      "type": "advisor",
+      "name": "士",
+      "side": "black",
+      "position": [
+        5,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_elephant_2",
+      "type": "elephant",
+      "name": "象",
+      "side": "black",
+      "position": [
+        6,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_horse_2",
+      "type": "horse",
+      "name": "馬",
+      "side": "black",
+      "position": [
+        7,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_chariot_2",
+      "type": "chariot",
+      "name": "車",
+      "side": "black",
+      "position": [
+        8,
+        0
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_cannon_1",
+      "type": "cannon",
+      "name": "砲",
+      "side": "black",
+      "position": [
+        1,
+        2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_cannon_2",
+      "type": "cannon",
+      "name": "砲",
+      "side": "black",
+      "position": [
+        7,
+        2
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_soldier_1",
+      "type": "soldier",
+      "name": "卒",
+      "side": "black",
+      "position": [
+        0,
+        3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_soldier_2",
+      "type": "soldier",
+      "name": "卒",
+      "side": "black",
+      "position": [
+        2,
+        3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_soldier_3",
+      "type": "soldier",
+      "name": "卒",
+      "side": "black",
+      "position": [
+        4,
+        3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_soldier_4",
+      "type": "soldier",
+      "name": "卒",
+      "side": "black",
+      "position": [
+        6,
+        3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "b_soldier_5",
+      "type": "soldier",
+      "name": "卒",
+      "side": "black",
+      "position": [
+        8,
+        3
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_chariot_1",
+      "type": "chariot",
+      "name": "車",
+      "side": "red",
+      "position": [
+        0,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_horse_1",
+      "type": "horse",
+      "name": "馬",
+      "side": "red",
+      "position": [
+        1,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_elephant_1",
+      "type": "elephant",
+      "name": "相",
+      "side": "red",
+      "position": [
+        2,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_advisor_1",
+      "type": "advisor",
+      "name": "仕",
+      "side": "red",
+      "position": [
+        3,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_general",
+      "type": "general",
+      "name": "帥",
+      "side": "red",
+      "position": [
+        4,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_advisor_2",
+      "type": "advisor",
+      "name": "仕",
+      "side": "red",
+      "position": [
+        5,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_elephant_2",
+      "type": "elephant",
+      "name": "相",
+      "side": "red",
+      "position": [
+        6,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_horse_2",
+      "type": "horse",
+      "name": "馬",
+      "side": "red",
+      "position": [
+        7,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_chariot_2",
+      "type": "chariot",
+      "name": "車",
+      "side": "red",
+      "position": [
+        8,
+        9
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_cannon_1",
+      "type": "cannon",
+      "name": "炮",
+      "side": "red",
+      "position": [
+        1,
+        7
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_cannon_2",
+      "type": "cannon",
+      "name": "炮",
+      "side": "red",
+      "position": [
+        7,
+        7
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_soldier_1",
+      "type": "soldier",
+      "name": "兵",
+      "side": "red",
+      "position": [
+        0,
+        6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_soldier_2",
+      "type": "soldier",
+      "name": "兵",
+      "side": "red",
+      "position": [
+        2,
+        6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_soldier_3",
+      "type": "soldier",
+      "name": "兵",
+      "side": "red",
+      "position": [
+        4,
+        6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_soldier_4",
+      "type": "soldier",
+      "name": "兵",
+      "side": "red",
+      "position": [
+        6,
+        6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    },
+    {
+      "id": "r_soldier_5",
+      "type": "soldier",
+      "name": "兵",
+      "side": "red",
+      "position": [
+        8,
+        6
+      ],
+      "is_alive": true,
+      "custom_properties": {}
+    }
+  ],
+  "current_turn": "red",
+  "move_history": [],
+  "game_status": {
+    "state": "playing",
+    "winner": null,
+    "win_condition": null,
+    "custom_rules_active": []
+  },
+  "mechanisms": {
+    "skip_turns": [],
+    "ai_control": [],
+    "player_control": [],
+    "random_moves": [],
+    "extra_turns": [],
+    "move_limits": []
+  }
+}

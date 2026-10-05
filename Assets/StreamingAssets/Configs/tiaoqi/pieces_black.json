@@ -1,0 +1,27 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "黑方跳棋规则 - step/hop原语"
+  },
+  "side": "black",
+  "pieces": {
+    "piece": {
+      "label": {"red": "●", "black": "●"},
+      "is_king": false,
+      "moves": [
+        {
+          "kind": "step",
+          "land": "empty",
+          "sym": "hex6"
+        },
+        {
+          "kind": "hop",
+          "land": "empty",
+          "chain": true,
+          "sym": "hex6"
+        }
+      ]
+    }
+  },
+  "custom_pieces": []
+}

@@ -1,0 +1,30 @@
+{
+  "_metadata": {
+    "version": "1.0"
+  },
+  "theme": {
+    "board": {
+      "background_color": "#dcb35c",
+      "line_color": "#5c3a1e",
+      "star_point_color": "#5c3a1e"
+    },
+    "pieces": {
+      "black_color": "#1a1a1a",
+      "white_color": "#f5f5f5",
+      "black_border": "#000000",
+      "white_border": "#888888"
+    },
+    "highlight": {
+      "selected": "#ffd700",
+      "valid_move": "#4caf50",
+      "last_move": "#ff9800"
+    }
+  },
+  "layout": {
+    "board_size": "90vmin",
+    "input_position": "bottom",
+    "response_area": "right_side"
+  },
+  "custom_css": "",
+  "custom_js": ""
+}

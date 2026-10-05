@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "棋盘配置",
+  "type": "object",
+  "properties": {
+    "_metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "integer", "minimum": 5, "maximum": 20 },
+        "height": { "type": "integer", "minimum": 5, "maximum": 20 },
+        "river_line": { "type": "integer", "minimum": 1 },
+        "palace": {
+          "type": "object",
+          "properties": {
+            "red": {
+              "type": "object",
+              "properties": {
+                "top_left": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+                "bottom_right": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }
+              },
+              "required": ["top_left", "bottom_right"]
+            },
+            "black": {
+              "type": "object",
+              "properties": {
+                "top_left": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+                "bottom_right": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }
+              },
+              "required": ["top_left", "bottom_right"]
+            }
+          },
+          "required": ["red", "black"]
+        },
+        "regions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "x_range": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+              "y_range": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }
+            }
+          }
+        }
+      },
+      "required": ["width", "height"]
+    },
+    "appearance": {
+      "type": "object",
+      "properties": {
+        "background_color": { "type": ["string", "null"] },
+        "line_color": { "type": ["string", "null"] },
+        "palace_line_color": { "type": ["string", "null"] },
+        "grid": {
+          "type": "object",
+          "properties": {
+            "line_thickness": { "type": "number" },
+            "show_horizontal": { "type": "boolean" },
+            "show_vertical": { "type": "boolean" },
+            "river_gap": { "type": "boolean" }
+          }
+        },
+        "palace": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "show_diagonals": { "type": "boolean" },
+            "line_thickness": { "type": "number" }
+          }
+        },
+        "river": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "text": { "type": "string" },
+            "text_size": { "type": "number" },
+            "gap_ratio": { "type": "number" }
+          }
+        },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "viewbox_padding_left": { "type": "number" },
+            "viewbox_padding_right": { "type": "number" },
+            "viewbox_padding_top": { "type": "number" },
+            "viewbox_padding_bottom": { "type": "number" },
+            "board_size": { "type": "string" }
+          }
+        },
+        "decorations": {
+          "type": "object",
+          "properties": {
+            "border": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "thickness": { "type": "number" },
+                "color": { "type": ["string", "null"] }
+              }
+            },
+            "custom_lines": {
+              "type": "array",
+              "items": { "type": "object" }
+            },
+            "background_pattern": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  },
+  "required": ["geometry"]
+}

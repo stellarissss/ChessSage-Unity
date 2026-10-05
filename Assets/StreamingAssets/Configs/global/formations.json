@@ -1,0 +1,43 @@
+{
+  "xiangqi": {
+    "yilianhuan": {
+      "name": "连环阵",
+      "description": "车马炮呈一字长蛇",
+      "positions": {"rook": [3, 0], "knight": [4, 0], "cannon": [5, 0]}
+    },
+    "fengxiang": {
+      "name": "飞象阵",
+      "description": "双象护住中线",
+      "positions": {"elephant_red": [2, 2], "elephant_red_2": [6, 2]}
+    },
+    "gongxin": {
+      "name": "攻心计",
+      "description": "双车夹击中路",
+      "positions": {"rook_red": [4, 3], "rook_red_2": [4, 5]}
+    }
+  },
+  "weiqi": {
+    "corner_life": {
+      "name": "角活",
+      "description": "角部做出两个眼",
+      "pattern": {"type": "corner_life", "size": 5}
+    },
+    "wall": {
+      "name": "围墙",
+      "description": "筑起一道防线",
+      "pattern": {"type": "straight_wall", "length": 6}
+    }
+  },
+  "wuziqi": {
+    "double_four": {
+      "name": "双四",
+      "description": "同时形成两个冲四",
+      "pattern": {"type": "double_four", "lines": 2}
+    },
+    "cross": {
+      "name": "十字",
+      "description": "形成十字交叉",
+      "pattern": {"type": "cross", "center": true}
+    }
+  }
+}

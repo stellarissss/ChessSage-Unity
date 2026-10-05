@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UI Config",
+  "description": "界面配置",
+  "type": "object",
+  "required": ["theme", "layout", "custom_css", "custom_js"],
+  "properties": {
+    "_metadata": {
+      "type": "object",
+      "description": "元数据，保留扩展空间"
+    },
+    "theme": {
+      "type": "object",
+      "description": "主题配置"
+    },
+    "layout": {
+      "type": "object",
+      "description": "布局配置"
+    },
+    "custom_css": {
+      "type": "string",
+      "description": "自定义CSS"
+    },
+    "custom_js": {
+      "type": "string",
+      "description": "自定义JavaScript"
+    }
+  },
+  "additionalProperties": true
+}

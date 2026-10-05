@@ -1,0 +1,301 @@
+{
+ "cases": [
+  {
+   "name": "add_obj",
+   "doc": {
+    "a": 1
+   },
+   "patch": [
+    {
+     "op": "add",
+     "path": "/b",
+     "value": 2
+    }
+   ],
+   "result": {
+    "a": 1,
+    "b": 2
+   },
+   "error": null
+  },
+  {
+   "name": "add_arr",
+   "doc": {
+    "a": [
+     1,
+     2
+    ]
+   },
+   "patch": [
+    {
+     "op": "add",
+     "path": "/a/1",
+     "value": 9
+    }
+   ],
+   "result": {
+    "a": [
+     1,
+     9,
+     2
+    ]
+   },
+   "error": null
+  },
+  {
+   "name": "add_dash",
+   "doc": {
+    "a": [
+     1,
+     2
+    ]
+   },
+   "patch": [
+    {
+     "op": "add",
+     "path": "/a/-",
+     "value": 3
+    }
+   ],
+   "result": {
+    "a": [
+     1,
+     2,
+     3
+    ]
+   },
+   "error": null
+  },
+  {
+   "name": "remove_obj",
+   "doc": {
+    "a": 1,
+    "b": 2
+   },
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/a"
+    }
+   ],
+   "result": {
+    "b": 2
+   },
+   "error": null
+  },
+  {
+   "name": "remove_arr",
+   "doc": {
+    "a": [
+     1,
+     2,
+     3
+    ]
+   },
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/a/1"
+    }
+   ],
+   "result": {
+    "a": [
+     1,
+     3
+    ]
+   },
+   "error": null
+  },
+  {
+   "name": "replace",
+   "doc": {
+    "a": 1
+   },
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/a",
+     "value": {
+      "x": 1
+     }
+    }
+   ],
+   "result": {
+    "a": {
+     "x": 1
+    }
+   },
+   "error": null
+  },
+  {
+   "name": "copy",
+   "doc": {
+    "a": 1
+   },
+   "patch": [
+    {
+     "op": "copy",
+     "from": "/a",
+     "path": "/b"
+    }
+   ],
+   "result": {
+    "a": 1,
+    "b": 1
+   },
+   "error": null
+  },
+  {
+   "name": "move",
+   "doc": {
+    "a": 1,
+    "b": 2
+   },
+   "patch": [
+    {
+     "op": "move",
+     "from": "/a",
+     "path": "/c"
+    }
+   ],
+   "result": {
+    "b": 2,
+    "c": 1
+   },
+   "error": null
+  },
+  {
+   "name": "escape",
+   "doc": {
+    "a/b": 1
+   },
+   "patch": [
+    {
+     "op": "copy",
+     "from": "/a~1b",
+     "path": "/c"
+    }
+   ],
+   "result": {
+    "a/b": 1,
+    "c": 1
+   },
+   "error": null
+  },
+  {
+   "name": "missing",
+   "doc": {
+    "a": 1
+   },
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/z"
+    }
+   ],
+   "result": null,
+   "error": "KeyError"
+  },
+  {
+   "name": "oob",
+   "doc": {
+    "a": [
+     1
+    ]
+   },
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/a/5"
+    }
+   ],
+   "result": null,
+   "error": "IndexError"
+  },
+  {
+   "name": "nested",
+   "doc": {
+    "a": {
+     "b": {
+      "c": 1
+     }
+    }
+   },
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/a/b/c",
+     "value": 2
+    }
+   ],
+   "result": {
+    "a": {
+     "b": {
+      "c": 2
+     }
+    }
+   },
+   "error": null
+  },
+  {
+   "name": "diff_roundtrip",
+   "doc": {
+    "a": 1,
+    "b": [
+     1,
+     2
+    ],
+    "c": {
+     "d": 4
+    }
+   },
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/b",
+     "value": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "op": "replace",
+     "path": "/a",
+     "value": 2
+    },
+    {
+     "op": "add",
+     "path": "/c/e",
+     "value": 5
+    }
+   ],
+   "result": {
+    "c": {
+     "d": 4,
+     "e": 5
+    },
+    "b": [
+     1,
+     2,
+     3
+    ],
+    "a": 2
+   },
+   "error": null,
+   "is_diff": true,
+   "modified": {
+    "a": 2,
+    "b": [
+     1,
+     2,
+     3
+    ],
+    "c": {
+     "d": 4,
+     "e": 5
+    }
+   }
+  }
+ ]
+}

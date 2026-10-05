@@ -1,0 +1,49 @@
+{
+  "xiangqi": {
+    "capture_pawn": 8,
+    "capture_medium": 15,
+    "capture_rook": 25,
+    "check": 20,
+    "checkmate": 35,
+    "pawn_cross": 10,
+    "captured": 5
+  },
+  "wuziqi": {
+    "three": 10,
+    "four": 20,
+    "block_three": 8,
+    "block_four": 18,
+    "double_three": 15,
+    "win": 35
+  },
+  "weiqi": {
+    "capture_small": 10,
+    "capture_large": 20,
+    "life": 15,
+    "captured": 5,
+    "corner": 12,
+    "endgame": 8
+  },
+  "dongwuqi": {
+    "capture_normal": 10,
+    "capture_overrank": 25,
+    "captured": 5,
+    "approach": 12,
+    "win": 35
+  },
+  "tiaoqi": {
+    "jump_3": 10,
+    "jump_5": 20,
+    "home": 15,
+    "single_move": 3,
+    "all_home": 35
+  },
+  "heibaiqi": {
+    "flip_small": 8,
+    "flip_medium": 15,
+    "flip_large": 25,
+    "corner": 20,
+    "flipped": 5,
+    "win": 35
+  }
+}

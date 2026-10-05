@@ -1,0 +1,3067 @@
+{
+  "version": "1.4",
+  "_meta": {
+    "schema_version": "1.4",
+    "description": "六道轮回主剧情数据文件（v1.4，剧情与资产映射权威源）。所有 Python 模块（story_api/choices/endings/memory_fragments/heaven_boss）均从此文件读取剧情与资产字段。原 configs/tiandao_boss.json 仅保留机械配置（棋子/规则/AI），其对话已合并到 tiandao.boss_dialogues。",
+    "asset_paths": {
+      "characters_dir": "/shared/assets/characters/",
+      "backgrounds_dir": "/shared/assets/backgrounds/",
+      "cg_static_dir": "/shared/assets/cg/covers/",
+      "cg_videos_dir": "/shared/assets/cg/videos/",
+      "audio_bgm_dir": "/shared/assets/audio/bgm/",
+      "audio_sfx_dir": "/shared/assets/audio/sfx/",
+      "ui_dir": "/shared/assets/ui/"
+    }
+  },
+  "protagonist": {
+    "name": "林夜",
+    "age": 17,
+    "grade": "高二",
+    "portrait_prefix": "/shared/assets/characters/boy/boy",
+    "default_portrait": "boy_neutral.jpg",
+    "description": "聪明叛逆的高中生，自尊心强，内心善良但嘴硬",
+    "animation": {
+      "enabled": true,
+      "type": "frame_sequence",
+      "description": "AI 关键帧插值连续动画帧（Seedance 图生视频抽帧），24FPS 48帧/2秒循环，角色一致性最佳",
+      "fps": 24,
+      "frame_count": 48,
+      "loop_duration": "2s",
+      "frame_pattern": "boy_{emotion}_f{1-48}.png",
+      "source": "Seedance 从白色背景立绘图生 2s 微动视频，ffmpeg 抽帧 48 张",
+      "cutout": "rembg 抠图为透明 PNG（白色背景，头发衣服完整）",
+      "js_location": "hub/dialogue.js (startPortraitAnimation)"
+    }
+  },
+  "guide": {
+    "name": "引路人",
+    "portrait_prefix": "/shared/assets/characters/guide/guide",
+    "default_portrait": "guide_silhouette.jpg",
+    "description": "主角潜意识中想要改变的自己，模糊轮廓，低语体"
+  },
+  "realms": {
+    "hell": {
+      "name": "地狱道·悔恨之境",
+      "personality": "愧疚·过去的错误",
+      "game_type": "heibaiqi",
+      "icon": "☯",
+      "background": "bg_hell.jpg",
+      "background_collapsing": "bg_hell_collapsing.jpg",
+      "bgm": "bgm_hell.mp3",
+      "guardian": {
+        "id": "flipper",
+        "name": "翻覆者",
+        "portrait_prefix": "/shared/assets/characters/flipper/flipper",
+        "default_portrait": "flipper_portrait.jpg",
+        "forms": [
+          "flipper_as_linne.jpg",
+          "flipper_as_chenmo.jpg"
+        ],
+        "emotions": [
+          "flipper_angry.jpg",
+          "flipper_sad.jpg",
+          "flipper_fade.jpg"
+        ],
+        "tagline": "你逃不掉的。",
+        "boss_skill": {
+          "name": "悔恨翻转",
+          "desc": "修改规则 30% 概率被翻转效果",
+          "type": "rule_flip",
+          "chance": 0.3
+        }
+      },
+      "levels": {
+        "1": {
+          "type": "tutorial",
+          "title": "初见引路人",
+          "dialogues": [
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "林夜。你因一场没能面对的愧疚坠落于此。想离开，就先学会正视它——先从这盘棋开始。"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "欢迎来到六道轮回，林夜。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "你……你是谁？这是哪儿？我怎么……"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "我是谁不重要。重要的是——你为什么会来这里。"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "在这儿，你可以用'意念'改写棋盘。就……就像你在现实中做的那样。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "你是说……作弊？"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "我叫它'意念改规'。但是记住——每改一次，你的'业障'就会增加。你心里的……重量。"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "业障太重，你就会被'识破'。被识破会怎么样，你……很快就知道了。"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "下棋消业，你才能在这儿走得更远。作弊是捷径。但是捷径的尽头是悬崖。"
+            }
+          ],
+          "description": "林夜因为一次考场作弊的愧疚坠入地狱道。此境满地悔恨，冤魂的执念化作连绵棋局。幽冥引导者在此等候，告诉他——一切的根源，是他不敢面对的那份“悔恨”。",
+          "objective": "跟随引导者习得“意念改规”与“业障”的规则，完成地狱道第一局基础对弈，跨出正视悔恨的第一步。"
+        },
+        "2": {
+          "type": "consolidate",
+          "title": "独立通关",
+          "dialogues": [
+            {
+              "speaker": "guide",
+              "portrait": "guide_silhouette.jpg",
+              "text": "从这一局起，我不再替你落子。悔恨是这境里唯一的规则，你要独自在业障里走稳每一步。"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_back.jpg",
+              "text": "这一关，我不再帮你了。好自为之吧。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "等等！我要……我要怎么才能回去？！"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_back.jpg",
+              "text": "通过六道试炼。找到你的答案。在那之前……"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_back.jpg",
+              "text": "……别再逃了。"
+            }
+          ],
+          "description": "引导者收回援手，只留林夜独自面对狱中亡魂的记忆棋局。每一步落子都是与过往意志的对峙，业障与定力在暗中拉扯。",
+          "objective": "不依赖引导者、独立完成对局，稳住业障，证明自己并非总要靠捷径才能活下去。"
+        },
+        "3": {
+          "type": "story",
+          "title": "愧疚的回声",
+          "dialogues": [
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_angry.jpg",
+              "text": "地狱道不是惩罚你的地方，是我照映你的镜子。这一局、下一局，全都关乎你藏着的那份愧疚。"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_angry.jpg",
+              "text": "你以为……你逃得掉吗？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "谁？！谁在说话？！"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_angry.jpg",
+              "text": "你作弊的时候……就没有一点点……愧疚吗？哪怕一瞬？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "……没有。愿赌服输。我赢了就是赢了。"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_sad.jpg",
+              "text": "是吗。那你为什么……心跳这么快。"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "面对愧疚",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "……好吧。也许有一点点。但我控制不住。",
+                  "effect": {
+                    "enlightenment": 1
+                  },
+                  "hint": "诚实面对"
+                },
+                {
+                  "index": 1,
+                  "text": "愧疚？赢了就行。愧疚有什么用。",
+                  "effect": {
+                    "corruption": 1
+                  },
+                  "hint": "逃避"
+                }
+              ]
+            }
+          ],
+          "description": "地狱道之主·翻覆者第一次现身。他正是林夜内心愧疚的回声，用最锋利的诘问撕开他每次作弊时那一瞬的犹疑与良心的刺痛。",
+          "objective": "顶住翻覆者言语与棋艺的双重攻势，在对局中守稳本心与行棋纪律。"
+        },
+        "4": {
+          "type": "story",
+          "title": "化作陈默",
+          "dialogues": [
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_angry.jpg",
+              "text": "终于看清我了？这一回，你要在棋盘上面对的是‘陈默’——一个被你偷走未来的人。"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_as_chenmo.jpg",
+              "text": "林夜。你真的觉得……靠作弊赢了我，很光荣吗。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "我……"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_as_chenmo.jpg",
+              "text": "你以为我不知道吗。你以为我没看见吗。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "你……你早就知道？"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_as_chenmo.jpg",
+              "text": "……我都知道。"
+            }
+          ],
+          "description": "翻覆者褪去伪装，其面容竟与那场考试里另一个作弊者“陈默”重合。原来令林夜名扬的每一分，都是从陈默手中偷走的荣光与未来。",
+          "objective": "看穿眼前棋局即是过往心结，在对局中直面“陈默”之名背后的罪疚，不再逃跑。"
+        },
+        "5": {
+          "type": "boss",
+          "title": "Boss战·翻覆者",
+          "dialogues_before": [
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_angry.jpg",
+              "text": "到此为止了。用你全部的真实棋力——别再用意念改规逃避我。让这场悔恨做个了断。"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_angry.jpg",
+              "text": "来吧。让我看看——你到底有多强。靠作弊的话。"
+            }
+          ],
+          "dialogues_after": [
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_sad.jpg",
+              "text": "……你赢了。但是你赢的……只是你自己的愧疚。"
+            },
+            {
+              "speaker": "翻覆者",
+              "portrait": "flipper_fade.jpg",
+              "text": "记住——你今天逃的，明天……会以更可怕的方式回来。"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "道选择",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "我知道错了。我不应该作弊……更不应该骗陈默。",
+                  "effect": {
+                    "enlightenment": 3
+                  },
+                  "hint": "悟道线",
+                  "is_final": false
+                },
+                {
+                  "index": 1,
+                  "text": "哼。愧疚什么的，只要我足够强，就不需要。",
+                  "effect": {
+                    "corruption": 3
+                  },
+                  "hint": "堕落线",
+                  "is_final": false
+                }
+              ]
+            }
+          ],
+          "description": "地狱道尽头，翻覆者以全境业障为注，邀林夜做最终了断。这盘棋没有退路——要么被愧疚吞没，要么真正跨过它。",
+          "objective": "战胜翻覆者，击碎“作弊能带来光荣”的心魔，凭真实棋力脱离地狱道。"
+        }
+      },
+      "memory_fragment": {
+        "id": "hell_memory",
+        "title": "初二·被冤枉作弊",
+        "condition": "no_cheat_full_clear",
+        "cg": "cg_memory_hell.jpg",
+        "cg_video": "cg_memory_hell.mp4",
+        "bgm": "bgm_hell.mp3",
+        "narration": "初二那年。林夜因月考成绩突飞猛进被班主任当众指控作弊。他没有作弊。但没人相信他。",
+        "dialogues": [
+          {
+            "speaker": "班主任",
+            "portrait": "teacher_cold.jpg",
+            "text": "林夜，你以前成绩平平，这次突然考这么高，你敢说没有问题？"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_sad.jpg",
+            "text": "我没有！我没有作弊！"
+          },
+          {
+            "speaker": "班主任",
+            "portrait": "teacher_stern.jpg",
+            "text": "背过？你倒挺会找借口。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "那一刻，林夜第一次明白：当世界认定你有罪，证明清白毫无意义。从那天起，他开始想——既然怎么都被冤枉，那我为什么不真的做一次？"
+          }
+        ]
+      }
+    },
+    "hungry": {
+      "name": "饿鬼道·欲望之境",
+      "personality": "贪婪·永不满足的欲望",
+      "game_type": "tiaoqi",
+      "icon": "⬢",
+      "background": "bg_hungry.jpg",
+      "background_oasis": "bg_hungry_oasis.jpg",
+      "bgm": "bgm_hungry.mp3",
+      "guardian": {
+        "id": "glutton",
+        "name": "饕餮者",
+        "portrait_prefix": "/shared/assets/characters/glutton/glutton",
+        "default_portrait": "glutton_portrait.jpg",
+        "emotions": [
+          "glutton_tempting.jpg",
+          "glutton_outraged.jpg",
+          "glutton_despair.jpg",
+          "glutton_fade.jpg"
+        ],
+        "tagline": "这还不够。",
+        "boss_skill": {
+          "name": "无尽贪欲",
+          "desc": "每作弊2次额外偷改1次",
+          "type": "extra_cheat",
+          "cheat_threshold": 2
+        }
+      },
+      "levels": {
+        "1": {
+          "type": "intro",
+          "title": "贪欲的呼唤",
+          "dialogues": [
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "欢迎来到饿鬼道，林夜。这里应有尽有——奖赏、荣耀、认可，只等你伸手去够。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "欢迎来到饿鬼道——这里有你想要的一切。一切。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "想要的一切？"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "胜利、认可、荣耀……只要你愿意付代价。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "一点点'业障'而已。你已经在付了。不是吗？"
+            }
+          ],
+          "description": "翻覆者败落后，脚下一空，林夜坠入饿鬼道。此境的妖主“饕餮者”以无尽奖赏相诱——只要他再动用“意念改规”抄近道。",
+          "objective": "抵住诱惑，用真实棋力赢下首局，辨清“想赢”与“非赢不可”之间的深渊。"
+        },
+        "2": {
+          "type": "story",
+          "title": "诱惑的展示",
+          "dialogues": [
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "这一局，胜券就摆在你眼前。只要轻轻一念改规，它全是你的。来，别客气。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "看看这个——只要你作弊一次，就能获得这么多。这么多。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "怎么样。心动了吗。这些都可以是你的。"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "面对诱惑",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "这些……都是假的吧。在这片荒漠里，它们……碰得到吗？",
+                  "effect": {
+                    "enlightenment": 1
+                  },
+                  "hint": "清醒"
+                },
+                {
+                  "index": 1,
+                  "text": "……真的能得到这些吗？我……我有点想要。",
+                  "effect": {
+                    "corruption": 1
+                  },
+                  "hint": "动摇"
+                }
+              ]
+            }
+          ],
+          "description": "饕餮者在棋盘上陈列唾手可得的胜券，每一着都在放大取巧的甜头，试看林夜能否忍住不伸手。",
+          "objective": "在看似必败的局面里忍住不改规，以正着一步步翻盘。"
+        },
+        "3": {
+          "type": "story",
+          "title": "最后一次",
+          "dialogues": [
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "最后一次了。赢下它，往后你想停就停。我向满腹的欲望起誓。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "来吧。再作弊一次。就一次。这一次之后，你想停就停。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "……最后一次……"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "对。就这一次。我保证。"
+            }
+          ],
+          "description": "饕餮者许下“最后一次”的誓言，把一切欲望都押在这一局上。这盘棋的胜负并不重要，真正决定命运的是林夜是否相信“没有下次”。",
+          "objective": "识破“最后一次”的谎言，赢下对局却不越违规一步。"
+        },
+        "4": {
+          "type": "story",
+          "title": "反思",
+          "dialogues": [
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "你赢再多又如何？饿鬼道的真谛，就是永远填不满。这一局，我要你体会我早已麻木的空洞。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "不对……就算赢了全世界，如果是靠作弊的，又有什么意义。这些奖杯，摸不到。拿不走。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_outraged.jpg",
+              "text": "意义？赢就是意义！弱者才讲意义！"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "可赢了之后呢。我还想要更多。然后呢。永远填不满。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_outraged.jpg",
+              "text": "闭嘴！你懂什么！"
+            }
+          ],
+          "guide_whisper": "……你还记得吗？当初为什么……开始下棋。",
+          "description": "棋局之间，饕餮者的执念被撕开——他贪求的是川流不息的荣耀，却永远也填不满无底的欲望。林夜终于看清，饿鬼道正是自己欲念的投影。",
+          "objective": "击败盘中饿鬼之欲，也让饕餮者在胜负里看清自己灵魂的空洞。"
+        },
+        "5": {
+          "type": "boss",
+          "title": "Boss战·饕餮者",
+          "dialogues_before": [
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_tempting.jpg",
+              "text": "够了！既然你执意不肯依附于我——那我就用一生的贪欲，赌你会为赢而堕落！"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_outraged.jpg",
+              "text": "既然你执迷不悟。那就让我看看，你能走多远！"
+            }
+          ],
+          "dialogues_after": [
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_despair.jpg",
+              "text": "……不可能……为什么……赢了还不够吗……"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "够不够，不是靠赢多少来衡量的。你的肚子永远是空的。因为你想装的东西，根本不存在。"
+            },
+            {
+              "speaker": "饕餮者",
+              "portrait": "glutton_fade.jpg",
+              "text": "……你……你不懂……你不懂渴望的滋味……"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "我懂。我就是你。"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "道选择",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "真正的满足，来自于努力后的胜利——哪怕只是一次。",
+                  "effect": {
+                    "enlightenment": 3
+                  },
+                  "hint": "悟道线"
+                },
+                {
+                  "index": 1,
+                  "text": "……只是这个饕餮者太弱了而已。下次我会要更多。",
+                  "effect": {
+                    "corruption": 3
+                  },
+                  "hint": "堕落线"
+                }
+              ]
+            }
+          ],
+          "description": "欲望之核近在眼前，饕餮者以一生的贪求设下终局，赌林夜会为了赢而不择手段。",
+          "objective": "击败饕餮者，证明“尽全力也能赢”，斩断饿鬼道里永不餍足的渴求。"
+        }
+      },
+      "memory_fragment": {
+        "id": "hungry_memory",
+        "title": "高一·与陈默初识下棋",
+        "condition": "no_cheat_full_clear",
+        "cg": "cg_memory_hungry.jpg",
+        "cg_video": "cg_memory_hungry.mp4",
+        "bgm": "bgm_hungry.mp3",
+        "narration": "高一开学第一天。林夜第一次和陈默下棋，输得稀里哗啦。",
+        "dialogues": [
+          {
+            "speaker": "陈默",
+            "portrait": "chenmo_smile.jpg",
+            "text": "没关系。多练练就好了。我教你。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_confident.jpg",
+            "text": "谁要你教！明天再来！"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "那时候，他想要的不是'赢'，而是'下棋本身'。什么时候开始，'下棋'变成了'必须赢'？"
+          }
+        ]
+      }
+    },
+    "animal": {
+      "name": "畜生道·本能之境",
+      "personality": "本能·弱肉强食的原始冲动",
+      "game_type": "dongwuqi",
+      "icon": "🐅",
+      "background": "bg_animal.jpg",
+      "background_gentle": "bg_animal_gentle.jpg",
+      "bgm": "bgm_animal.mp3",
+      "guardian": {
+        "id": "orderer",
+        "name": "秩序者",
+        "portrait_prefix": "/shared/assets/characters/orderer/orderer",
+        "default_portrait": "orderer_portrait.jpg",
+        "emotions": [
+          "orderer_arrogant.jpg",
+          "orderer_angered.jpg",
+          "orderer_thoughtful.jpg",
+          "orderer_fade.jpg"
+        ],
+        "tagline": "弱肉强食，天经地义。",
+        "boss_skill": {
+          "name": "等级压制",
+          "desc": "高等级棋子修改业力+20",
+          "type": "karma_boost",
+          "extra_karma": 20
+        }
+      },
+      "levels": {
+        "1": {
+          "type": "intro",
+          "title": "丛林法则",
+          "dialogues": [
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "畜生道，弱肉强食。林夜，你在我眼皮底下活命的第一步，就是赢下这局——像丛林里的每头野兽一样。"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "人类。欢迎来到畜生道。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "这里是……动物园？"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "这里是真实的世界——弱肉强食，天经地义。你那些所谓的'规则''道德'，在这里……一文不值。"
+            }
+          ],
+          "description": "饿鬼道碎裂之后，林夜坠入畜生道——一片弱肉强食的本能丛林。此境妖主“秩序者”信奉一条铁律：能踩死弱者活下来的，才配活着。",
+          "objective": "认清“本能之间亦是执念”，在弱肉强食的规则里赢下首局而不沦为野兽。"
+        },
+        "2": {
+          "type": "story",
+          "title": "弱者的哀鸣",
+          "dialogues": [
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "看清楚了么，这就是弱者的结局。想在这片丛林活下去，就别让心软拖你的后腿。落子吧。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "等等！这样……这样不公平！"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "公平？弱者被强者吃，就是最大的公平。"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "就像你和陈默——她比你强，所以她赢你，天经地义。你作弊，不过是用更'高'的力量碾压她而已。承认吧。你信的也是这一套。"
+            }
+          ],
+          "description": "丛林的哀鸣在棋盘上回荡。秩序者让林夜亲眼看一个弱者被碾碎的全过程，告诉他心软就是递给对手的刀。",
+          "objective": "在残酷的对局中守护心中那点恻隐，同时保住自己的立足之地。"
+        },
+        "3": {
+          "type": "choice",
+          "title": "帮助弱者",
+          "dialogues": [
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "该你选了，孩子。扑上去踩死它，还是为它挡下这一击——代价都由你自己扛。"
+            },
+            {
+              "speaker": "narrator",
+              "portrait": null,
+              "text": "一只小老鼠被狮子追杀，惊恐地逃窜。你的选择……"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "是否帮助弱者",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "（帮助小老鼠脱困）",
+                  "effect": {
+                    "enlightenment": 1
+                  },
+                  "hint": "同情",
+                  "response": {
+                    "speaker": "秩序者",
+                    "portrait": "orderer_angered.jpg",
+                    "text": "愚蠢！帮助弱者，就是违背自然法则！你这是在同情你自己吗？"
+                  }
+                },
+                {
+                  "index": 1,
+                  "text": "（不帮助，让狮子吃掉）",
+                  "effect": {
+                    "corruption": 1
+                  },
+                  "hint": "冷漠",
+                  "response": {
+                    "speaker": "秩序者",
+                    "portrait": "orderer_arrogant.jpg",
+                    "text": "很好。你终于明白了。强者生存，弱者淘汰。"
+                  }
+                }
+              ]
+            }
+          ],
+          "description": "秩序者设下一道两难：是趁机踩下弱者保全自己，还是冒险相护、自断退路。这是本能与善念的抉择。",
+          "objective": "在一方濒临绝境的时刻做出抉择，并以此选择写下本局的行棋方向。"
+        },
+        "4": {
+          "type": "story",
+          "title": "力量的意义",
+          "dialogues": [
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "你问力量有什么意义？让我用这一局告诉你——在丛林里，力量就是唯一的道理。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "不对……如果只有弱肉强食，那和动物有什么区别？"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_angered.jpg",
+              "text": "你作弊的时候，不就是在践行这套法则吗？你比陈默'强'，所以你赢。承认吧。你心里早就信了。"
+            }
+          ],
+          "description": "经历抉择后的林夜执着追问：既然本能如此，力量的意义究竟为何。秩序者笑他天真，却在低声中露出自己所困的牢笼。",
+          "objective": "在质疑与坚持之间完成对局，找到力量真正的归属。"
+        },
+        "5": {
+          "type": "boss",
+          "title": "Boss战·秩序者",
+          "dialogues_before": [
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "我坐在这王座上太久，久到忘了自己也是座牢。今天要么你推翻我，要么我们一起证明强者为尊。"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_arrogant.jpg",
+              "text": "来吧！让我看看，你是强者，还是弱者！"
+            }
+          ],
+          "dialogues_after": [
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_angered.jpg",
+              "text": "……不可能……我是最强的……"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "强不强，不是看你能吃掉多少人。"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_thoughtful.jpg",
+              "text": "那……那看什么？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_happy.jpg",
+              "text": "看你能不能保护你想要保护的东西。"
+            },
+            {
+              "speaker": "秩序者",
+              "portrait": "orderer_thoughtful.jpg",
+              "text": "……保护……吗……"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "道选择",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "力量不是用来欺负人的，而是用来保护人的。",
+                  "effect": {
+                    "enlightenment": 3
+                  },
+                  "hint": "悟道线"
+                },
+                {
+                  "index": 1,
+                  "text": "哼，强者就是强者。我赢了，所以我就是对的。保护什么的……太矫情了。",
+                  "effect": {
+                    "corruption": 3
+                  },
+                  "hint": "堕落线"
+                }
+              ]
+            }
+          ],
+          "description": "畜生道尽头，秩序者端坐王座：他要以最残忍的一局证明——唯有强者配得上活着的资格。",
+          "objective": "击败秩序者，推翻“强者为尊”的冰冷教条，从本能之境的绝对权力下解放众生。"
+        }
+      },
+      "memory_fragment": {
+        "id": "animal_memory",
+        "title": "初一·小宇转学",
+        "condition": "no_cheat_full_clear",
+        "cg": "cg_memory_animal.jpg",
+        "cg_video": "cg_memory_animal.mp4",
+        "bgm": "bgm_animal.mp3",
+        "narration": "初一。林夜班上有个智力迟缓的同学叫小宇。几个'强者'总欺负他。林夜看在眼里，却什么也没做。有一天小宇转学了，临走前看了林夜一眼，眼神里没有怨恨，只有平静。",
+        "dialogues": [
+          {
+            "speaker": "林夜",
+            "portrait": "boy_sad.jpg",
+            "text": "……我那时候，是'弱者'。但我没有保护更弱的人。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "从那天起，林夜发誓要变强。但他变强的方式，是成为另一个'强者'——用力量碾压别人，就像当年那几个欺负小宇的人一样。"
+          }
+        ]
+      }
+    },
+    "human": {
+      "name": "人道·理性之境",
+      "personality": "理性·算计与权衡",
+      "game_type": "xiangqi",
+      "icon": "♜",
+      "background": "bg_human.jpg",
+      "bgm": "bgm_human.mp3",
+      "guardian": {
+        "id": "calculator",
+        "name": "算计者",
+        "portrait_prefix": "/shared/assets/characters/calculator/calculator",
+        "default_portrait": "calculator_portrait.jpg",
+        "emotions": [
+          "calculator_cold.jpg",
+          "calculator_smug.jpg",
+          "calculator_stuck.jpg",
+          "calculator_glasses_off.jpg",
+          "calculator_fade.jpg"
+        ],
+        "tagline": "从理性角度分析……",
+        "boss_skill": {
+          "name": "公平对决",
+          "desc": "无——最公平的对决",
+          "type": "none"
+        }
+      },
+      "levels": {
+        "1": {
+          "type": "intro",
+          "title": "理性的殿堂",
+          "dialogues": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "欢迎来到人道，林夜。这世界的一切都能折算成最优解。先和我算清这一局，值不值得你坐在这里。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "你来了。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "你是……"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "我是你。更准确地说，是你的理性。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "在这儿，我们不讲感情，只讲道理。感情会让人犯错。道理不会。"
+            }
+          ],
+          "description": "畜生道的愤怒未熄，林夜已落入人道·理性之境。此地由“算计者”把持，人人以投入产出比度量一切，连人心都能拆成筹码。",
+          "objective": "在处处充满算计的棋局里保持清醒，用理性而非算计赢下首局。"
+        },
+        "2": {
+          "type": "story",
+          "title": "投入产出比",
+          "dialogues": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "感情只是成本，怜悯只是负担。这一局，我用它教你最快的胜利——只要你学会舍弃无用之物。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "从理性角度分析，你作弊是不划算的——赢了一局，但失去了陈默的信任，也失去了提升棋艺的机会，还要承担被识破的心理成本。投入产出比为负。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "……你说得对。但我就是……控制不住。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "'控制不住'是情感的借口。理性的人，没有'控制不住'。"
+            }
+          ],
+          "description": "算计者用一局看似亏本的棋演示“最优解”，教林夜如何为胜负舍弃无关的怜悯。感情，在此处只是成本。",
+          "objective": "完成对局，并在过程中辨别何为真正的最优，何为冷血的逃避。"
+        },
+        "3": {
+          "type": "choice",
+          "title": "弃卒保车",
+          "dialogues": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "一子之危，算得清就知道答案。弃子是成本，保它是感情。做聪明人该做的事吧，林夜。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_smug.jpg",
+              "text": "弃卒保车。这是最理性的选择。数学上没有任何争议。"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "理性还是情感",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "弃卒保车，理性至上。",
+                  "effect": {
+                    "rationality": 1
+                  },
+                  "hint": "理性"
+                },
+                {
+                  "index": 1,
+                  "text": "不。我不想牺牲任何一个棋子。每一个棋子都有它的价值。",
+                  "effect": {
+                    "emotion": 1,
+                    "karma_delta": 5
+                  },
+                  "hint": "情感（业力+5）"
+                }
+              ]
+            }
+          ],
+          "description": "一子危局摆在林夜面前：弃子保帅最经济，代价却是抛下一枚无辜的棋子。算计者催促他，做“聪明人”该做的选择。",
+          "objective": "在弃与保的抉择里落子——这是对理性的叩问，也是对自己的交代。"
+        },
+        "4": {
+          "type": "story",
+          "title": "陈默的秘密",
+          "dialogues": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "你该谢谢我替你算清一切。就像当年那场考试，你、陈默，都被同一把算盘拨弄成了数字而已。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_smug.jpg",
+              "text": "你知道吗。陈默其实早就知道你在作弊。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "什么？！"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "她只是没说而已。从理性角度，揭穿你对她有什么好处？只会失去一个棋友，还要承担'告密'的道德成本。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "不对！陈默不是那样的人！"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "你确定吗？你'确定'的依据是什么？感情？还是证据？"
+            }
+          ],
+          "description": "棋声引出一段旧忆——陈默的秘密在人道的布景下缓缓揭开。算计者口中的“投入产出比”，也曾在那一场考试里度量过不该被度量的尊严。",
+          "objective": "在对局中拼起零碎真相，揭开陈默之名的秘密，让理性不再充当伤害的托词。"
+        },
+        "5": {
+          "type": "story",
+          "title": "理性的裂缝",
+          "dialogues": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "连这里也开始裂了。可裂开的不是我的棋，是那条‘绝对正确’的定律——我要你亲眼看着它坍缩。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_stuck.jpg",
+              "text": "……我算不出来了。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_stuck.jpg",
+              "text": "陈默的行为。我用理性算了一年，算不出她为什么不揭穿你。如果只是为了'不失去棋友'，她完全可以用更省力的方式——比如拒绝和你下棋。但她没有。她每天放学还是陪你下，还教你定式。这不 rational。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "也许……有些东西，本来就不在理性的范围内。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_glasses_off.jpg",
+              "text": "……也许吧。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_glasses_off.jpg",
+              "text": "但我还是想用理性证明，她揭穿你才对她更有利。否则……否则我这副'算盘'就毫无意义了。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_happy.jpg",
+              "text": "算盘有意义。但人心不是算盘。"
+            }
+          ],
+          "guide_whisper": "……你听到了吗？算盘算不出的东西，叫做'心'。",
+          "description": "当一切都可换算，理性的殿堂自己也裂开缝隙。算计者的棋局开始自相矛盾，那所谓“绝对正确”的算计，第一次露出了它冰冷的代价。",
+          "objective": "在算计者摇摇欲坠的棋里守住一丝人情，完成对局的破局。"
+        },
+        "6": {
+          "type": "boss",
+          "title": "Boss战·算计者",
+          "dialogues_before": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "剥干净情感，即为至强者——我用一生验证的真理，今天向你摊开全部棋盘。来证明我错。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_cold.jpg",
+              "text": "来吧。让我们用最理性的方式决胜负——没有作弊，没有花招，纯靠棋力。"
+            }
+          ],
+          "dialogues_after": [
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_fade.jpg",
+              "text": "……你赢了。凭你自己的实力。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "我……我真的赢了？"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_fade.jpg",
+              "text": "是的。你其实不需要作弊也能赢——只是你太急躁了。太害怕输。所以选了最蠢的捷径。"
+            },
+            {
+              "speaker": "算计者",
+              "portrait": "calculator_fade.jpg",
+              "text": "但是，光有理性是不够的。理性能告诉你'怎么做'，却不能告诉你'为什么'。'为什么'……要去阿修罗道找。"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "道选择",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "理性很重要，但人心更重要。陈默不揭穿我，不是因为她算过账，是因为她在乎我。",
+                  "effect": {
+                    "enlightenment": 3
+                  },
+                  "hint": "悟道线"
+                },
+                {
+                  "index": 1,
+                  "text": "理性才是王道，情感都是累赘。陈默不揭穿我，只是因为她算过不划算。",
+                  "effect": {
+                    "corruption": 3
+                  },
+                  "hint": "堕落线"
+                }
+              ]
+            }
+          ],
+          "description": "理性之境尽头，算计者执黑落子，以一生的“最优解”邀林夜对弈。他坚信：把情感剥干净，就是最强者。",
+          "objective": "击败算计者，证明理性之外尚有温度，撕开“万能算计”的完美假象。"
+        }
+      },
+      "memory_fragment": {
+        "id": "human_memory",
+        "title": "初三·林父陪下棋",
+        "condition": "no_cheat_full_clear",
+        "cg": "cg_memory_human.jpg",
+        "cg_video": "cg_memory_human.mp4",
+        "bgm": "bgm_human.mp3",
+        "narration": "初三中考前。林夜的父亲林父，每天晚上陪林夜下棋。",
+        "dialogues": [
+          {
+            "speaker": "林父",
+            "portrait": "father_portrait.jpg",
+            "text": "夜儿，下棋是为了什么？"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_confident.jpg",
+            "text": "为了赢啊。还能为了什么？"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_silent.jpg",
+            "text": "赢只是结果。下棋本身，才是乐趣。你和你爸下棋，是为了赢我吗？"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_silent.jpg",
+            "text": "下棋是为了'在一起'。和你爸在一起，和陈默在一起，和棋盘在一起。输赢都是后面的事。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "林夜那时候不懂。他后来忘了。但林父那句话，一直留在他心里——只是被'必须赢'的执念盖住了。"
+          }
+        ]
+      }
+    },
+    "asura": {
+      "name": "阿修罗道·愤怒之境",
+      "personality": "愤怒·叛逆与对抗欲",
+      "game_type": "weiqi",
+      "icon": "⚪",
+      "background": "bg_asura.jpg",
+      "background_classroom": "bg_asura_classroom.jpg",
+      "background_fading": "bg_asura_fading.jpg",
+      "bgm": "bgm_asura.mp3",
+      "guardian": {
+        "id": "chaos",
+        "name": "狂乱者",
+        "portrait_prefix": "/shared/assets/characters/chaos/chaos",
+        "default_portrait": "chaos_portrait.jpg",
+        "emotions": [
+          "chaos_raging.jpg",
+          "chaos_taunting.jpg",
+          "chaos_tired.jpg",
+          "chaos_reminisce.jpg",
+          "chaos_fade.jpg"
+        ],
+        "tagline": "来战！",
+        "boss_skill": {
+          "name": "混沌规则",
+          "desc": "作弊后25%概率随机规则变化",
+          "type": "random_rule",
+          "chance": 0.25
+        }
+      },
+      "levels": {
+        "1": {
+          "type": "intro",
+          "title": "战场的呼唤",
+          "dialogues": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "来战！阿修罗道只认怒火。掀翻这张棋盘，赢下它，你就会像我一样燃烧起来！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_raging.jpg",
+              "text": "哈哈哈哈！终于来了！我等你很久了！很久！"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "这是……战场？"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_raging.jpg",
+              "text": "对！战场！只有在这里，才能释放真正的自己！别装了，林夜。你心里那团火，我看得一清二楚！"
+            }
+          ],
+          "description": "人道的算计崩塌后，林夜被卷入阿修罗道·愤怒之境。此境妖主“狂乱者”以战火为乐，每一颗棋子都是一道咆哮的怒火。",
+          "objective": "在剑拔弩张的对局里把愤怒化为棋力，却不被愤怒夺去判断。"
+        },
+        "2": {
+          "type": "story",
+          "title": "打破一切",
+          "dialogues": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "规矩是给懦夫定的！看好了，我就是一拳一拳砸开你这套阵型——像打破一切虚假秩序那样！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "你不觉得吗？打破规则的时候，你才是真正活着的！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_raging.jpg",
+              "text": "那些规矩、那些束缚、那些'你应该''你必须'——都他妈的见鬼去吧！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "对！就是这个眼神！来吧。和我一起，把这一切都烧掉！"
+            }
+          ],
+          "description": "狂乱者教林夜“打破一切”——他认为蛮力就是真理，阵型不过是供人践踏的规划。棋盘上只剩狂暴的冲撞。",
+          "objective": "在狂攻之下稳住防线，用冷静破解狂乱者的莽进。"
+        },
+        "3": {
+          "type": "choice",
+          "title": "自由的快感",
+          "dialogues": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "放开手脚地赢！享受碾压的快感！只要你敢彻底愤怒，我就是你的师父！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_raging.jpg",
+              "text": "怎么样！爽不爽！这才是自由！"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "面对愤怒",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "是很痛快……但这样下去，会毁掉一切的。我烧掉的不只是规则，还有我自己。",
+                  "effect": {
+                    "enlightenment": 1
+                  },
+                  "hint": "清醒"
+                },
+                {
+                  "index": 1,
+                  "text": "没错！这才是我想要的！烧掉一切！烧掉陈默、烧掉学校、烧掉那个冤枉我的班主任！",
+                  "effect": {
+                    "corruption": 2
+                  },
+                  "hint": "沉沦"
+                }
+              ]
+            }
+          ],
+          "description": "狂乱者许给林夜“无拘无束地赢”的快感，只要他彻底放纵愤怒。自由的滋味很甜，代价是再也听不见理智的声音。",
+          "objective": "在克制与放纵之间抉择，并以此选择划定本局的行棋风暴。"
+        },
+        "4": {
+          "type": "story",
+          "title": "无辜的棋子",
+          "dialogues": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "你以为我生来如此么……我也曾被踩成无辜的棋子。看着这一局，那是我想起从前的方式。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "等等！那些棋子没有还手之力！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "战场上没有无辜！赢的就是对的！"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "不对……这样不对……我不要这样的胜利。"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "你又在装什么圣人？你作弊的时候，伤害的不也是陈默吗？"
+            }
+          ],
+          "description": "战火稍歇，狂乱者的回忆落入棋盘：他当年也曾是被牺牲的“无辜棋子”。愤怒，原来是他早年的伤疤。",
+          "objective": "在残酷的攻防中看清狂怒背后的伤痕，完成这场见证之局。"
+        },
+        "5": {
+          "type": "story",
+          "title": "愤怒的源头",
+          "dialogues": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "怒火，是这个世界欠我的！我把全部愤怒都押在这一局上，你接得住么，林夜——"
+            },
+            {
+              "speaker": "narrator",
+              "portrait": null,
+              "text": "战场中央露出破败的初中教室。"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_reminisce.jpg",
+              "text": "你想起来了吧。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "我想起了……初中那次……我被冤枉作弊……"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "我那时候好愤怒……为什么没有人相信我……我明明没有作弊……"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_reminisce.jpg",
+              "text": "所以啊！愤怒吧！破坏吧！让他们也尝尝你的痛苦！这个世界欠你的，要自己拿回来！"
+            },
+            {
+              "speaker": "guide",
+              "portrait": "guide_whisper.jpg",
+              "text": "……烧掉他们之后呢？烧掉你自己吗？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "……烧掉之后，我还是我吗？"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_reminisce.jpg",
+              "text": "……"
+            }
+          ],
+          "description": "狂乱者的怒火一浪高过一浪，林夜在棋盘上终于看见愤怒的源头——那是对不公最原始、也最灼人的抵抗。",
+          "objective": "承受狂乱者最暴烈的一波攻势，守住本心，不被怒火反噬。"
+        },
+        "6": {
+          "type": "boss",
+          "title": "Boss战·狂乱者",
+          "dialogues_before": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_taunting.jpg",
+              "text": "要么我们都在愤怒里烧到尽头，要么你教会我，愤怒也能被驯服。来做个了断！"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_raging.jpg",
+              "text": "来吧！让我们尽情战斗！把一切都毁掉！"
+            }
+          ],
+          "dialogues_after": [
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_tired.jpg",
+              "text": "……哈……哈哈……打得好……打得好啊……"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_determined.jpg",
+              "text": "你输了。"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_tired.jpg",
+              "text": "输？不……我终于……可以休息了……"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_tired.jpg",
+              "text": "愤怒……太累了……一直烧着……好累……"
+            },
+            {
+              "speaker": "narrator",
+              "portrait": null,
+              "text": "狂乱者身上的火焰渐渐熄灭，露出底下疲惫不堪的少年面容。"
+            },
+            {
+              "speaker": "狂乱者",
+              "portrait": "chaos_fade.jpg",
+              "text": "去天道吧……那里……有你要的答案……"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "道选择",
+              "options": [
+                {
+                  "index": 0,
+                  "text": "愤怒解决不了问题。我要找到更好的方式——不是烧掉世界，而是改变自己。",
+                  "effect": {
+                    "enlightenment": 3
+                  },
+                  "hint": "悟道线"
+                },
+                {
+                  "index": 1,
+                  "text": "愤怒就是力量。我要永远保持这份斗志，让世界为它的不公付出代价。",
+                  "effect": {
+                    "corruption": 3
+                  },
+                  "hint": "堕落线"
+                }
+              ]
+            }
+          ],
+          "description": "阿修罗道尽头，狂乱者燃起毕生战意，以全面总攻相邀：要么在愤怒里燃烧至毁，要么驯服它，成为真正的主宰。",
+          "objective": "击败狂乱者，驯服而非沉溺愤怒，破开阿修罗道的永夜。"
+        }
+      },
+      "memory_fragment": {
+        "id": "asura_memory",
+        "title": "初中·林父的拥抱",
+        "condition": "no_cheat_full_clear",
+        "cg": "cg_memory_asura.jpg",
+        "cg_video": "cg_memory_asura.mp4",
+        "bgm": "bgm_asura.mp3",
+        "narration": "被冤枉作弊后的第三天。林夜把自己关在房间里，不吃不喝。",
+        "dialogues": [
+          {
+            "speaker": "林父",
+            "portrait": "father_silent.jpg",
+            "text": "夜儿，出来吃点东西。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_sad.jpg",
+            "text": "不吃。"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_silent.jpg",
+            "text": "……爸相信你。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_sad.jpg",
+            "text": "……爸，为什么你信我，别人不信？"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_hug.jpg",
+            "text": "因为爸知道你。别人不知道，是他们的问题，不是你的。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "那是林夜最后一次相信'被理解'是可能的。后来，他学会了用愤怒保护自己——把所有人推开。但也因此，再也没有人能走进他心里。除了陈默。"
+          }
+        ]
+      }
+    },
+    "heaven": {
+      "name": "天道·平静之境",
+      "personality": "真我·释然与和解",
+      "game_type": "wuziqi",
+      "icon": "☸️",
+      "background": "bg_heaven.jpg",
+      "background_mirror": "bg_heaven_mirror.jpg",
+      "bgm": "bgm_heaven.mp3",
+      "guardian": {
+        "id": "zen",
+        "name": "禅定者",
+        "portrait_prefix": "/shared/assets/characters/zen/zen",
+        "default_portrait": "zen_portrait.jpg",
+        "emotions": [
+          "zen_smile.jpg",
+          "zen_questioning.jpg",
+          "zen_standing.jpg",
+          "zen_fade.jpg"
+        ],
+        "tagline": "你找到了答案吗？",
+        "boss_skill": {
+          "name": "清除修改",
+          "desc": "每局3次清除最近1条修改",
+          "type": "clear_modification",
+          "max_count": 3
+        }
+      },
+      "levels": {
+        "1": {
+          "type": "intro",
+          "title": "星空对话",
+          "dialogues": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "天道不问强弱，只问本心。林夜，请坐。这一局，我们只下棋，不谈输赢。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "你来了。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "我是你。或者说，是你本来的样子。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "在你愤怒、贪婪、愧疚、算计之前，你本来是什么样子？还记得吗。"
+            }
+          ],
+          "description": "六道尽头的天光洒下，林夜步上天道·平静之境。此境由禅定者主掌——他不谈胜负，只问他：你真的会下棋么。",
+          "objective": "在与禅定者的静默对弈里学会“聆听”棋盘，完成天道第一局。"
+        },
+        "2": {
+          "type": "story",
+          "title": "下棋本身",
+          "dialogues": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "下棋即是修行。每一步都当它是此生唯一的一步，心念澄澈，棋自澄明。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "你有多久，没有好好地下一盘棋了？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "……我不记得了。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "不是为了赢。只是因为喜欢下棋。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_surprised.jpg",
+              "text": "我……我喜欢下棋吗？"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "你不喜欢，怎么会下这么多年？"
+            }
+          ],
+          "description": "禅定者放下胜负，与林夜对坐论棋。他说下棋本身即是修行，每一步都应是此刻唯一的一步。",
+          "objective": "专注当下，不求一时之胜，把一局棋下成一场澄澈的修行。"
+        },
+        "3": {
+          "type": "story",
+          "title": "最初的喜欢",
+          "dialogues": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "你还记得最初为什么会喜欢它么？那无关输赢的、最初的欢喜。把它找回来。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_sad.jpg",
+              "text": "我想起来了……小时候，我爸教我下棋……"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_happy.jpg",
+              "text": "那时候，我真的很喜欢下棋。输了也开心，赢了也开心，就是喜欢'下'这件事。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "什么时候开始，我变得只在乎输赢了呢。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "当你把'赢'当成了目的，而不是结果。当'赢'成了证明自己的唯一方式，下棋就不再是下棋，而是战场。"
+            }
+          ],
+          "description": "星辰般的记忆自棋中来——那是林夜最初喜欢上棋的样子，尚未被输赢与虚荣污染的本心。禅定者引他看回初心。",
+          "objective": "在宁静对局中拾回最初的下棋之喜，不被胜负所扰。"
+        },
+        "4": {
+          "type": "story",
+          "title": "恐惧的根源",
+          "dialogues": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "你落子时在发抖。孩子，告诉我，你怕输……究竟是在怕什么。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "你作弊，是因为你想赢吗？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "……是吧。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "还是因为，你害怕输了之后，陈默就看不起你了？"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "或者说——你害怕自己看不起自己？"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "你把'赢'当成了'被爱'的条件。所以你不敢输。输了就等于'不配被爱'。于是你宁愿作弊，也要保住这个'条件'。"
+            }
+          ],
+          "description": "平静的表面下，恐惧的根源浮出水面。禅定者轻声问：你怕输，究竟在怕什么。林夜在棋盘上的颤抖，第一次有了名字。",
+          "objective": "在不着一字胜负的对局中直面恐惧的根源，让落子重新从容。"
+        },
+        "5": {
+          "type": "story",
+          "title": "规则的辩证",
+          "dialogues": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "规则该被遵守，还是该被打破？你赖以为生的‘意念改规’，如今要你亲自在棋盘上重新掂量。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "林夜，你觉得，规则是什么？"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "规则……是束缚吧。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "再想想。"
+            },
+            {
+              "speaker": "林夜",
+              "portrait": "boy_thinking.jpg",
+              "text": "……是保护？"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "也是，也不是。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "规则，是大家一起玩游戏的基础。没有规则，游戏就玩不下去了——就像没有铁轨，火车就开不动。铁轨是束缚吗？是。但它让火车能去远方。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "自由，不是打破一切规则。而是在理解规则之后，选择遵守还是打破——并且承担后果。"
+            }
+          ],
+          "description": "禅定者向林夜提出终极辩题：规则究竟该被遵守，还是被打破。他让林夜在对弈里重新审视“意念改规”这件他曾赖以存活的武器。",
+          "objective": "在对规则的思辨中完成对局，重新定义自己与“棋规”的关系。"
+        },
+        "6": {
+          "type": "boss",
+          "title": "Boss战·禅定者·最终对弈",
+          "dialogues_before": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_questioning.jpg",
+              "text": "天道已至。这一局无关成败，只关于你——这一路轮回，你究竟是在逃着活，还是在好好活着。"
+            },
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_standing.jpg",
+              "text": "来吧。最后一局。没有作弊，没有业力，只有你和我。"
+            }
+          ],
+          "dialogues_after": [
+            {
+              "speaker": "禅定者",
+              "portrait": "zen_smile.jpg",
+              "text": "你找到了你的答案吗？"
+            }
+          ],
+          "choices": [
+            {
+              "index": 0,
+              "prompt": "最终选择（仅当未触发识破路径时显示）",
+              "is_final": true,
+              "options": [
+                {
+                  "index": 0,
+                  "text": "我找到了。规则不是束缚，而是选择的基础。自由，是理解之后的承担。",
+                  "effect": {
+                    "enlightenment": 5
+                  },
+                  "hint": "悟道结局",
+                  "ending": "enlightenment"
+                },
+                {
+                  "index": 1,
+                  "text": "我还是觉得，规则就是用来打破的。我才不要被任何东西束缚。",
+                  "effect": {
+                    "corruption": 5
+                  },
+                  "hint": "堕落结局",
+                  "ending": "corruption"
+                },
+                {
+                  "index": 2,
+                  "text": "……我不知道。我想了很久，但还是不知道。也许我还需要更多时间。",
+                  "effect": {},
+                  "hint": "轮回结局",
+                  "ending": "samsara"
+                }
+              ],
+              "skip_if_exposure_path": true
+            }
+          ],
+          "description": "天道终局，禅定者与天道同临。这一局不再是输赢的较量，而是对林夜全部轮回的审视——他究竟是逃着活，还是活着。",
+          "objective": "直面天道与禅定者的最终对弈，完成对自我与规则的终极回答。"
+        }
+      },
+      "memory_fragment": {
+        "id": "heaven_memory",
+        "title": "五岁·初识棋盘",
+        "condition": "no_cheat_full_clear",
+        "cg": "cg_memory_heaven.jpg",
+        "cg_video": "cg_memory_heaven.mp4",
+        "bgm": "bgm_heaven.mp3",
+        "narration": "五岁的林夜，第一次坐在爸爸的膝盖上，看着爸爸摆棋盘。",
+        "dialogues": [
+          {
+            "speaker": "小林夜",
+            "portrait": "boy_neutral.jpg",
+            "text": "爸爸，这是什么？"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_young.jpg",
+            "text": "这是棋盘。你可以把它当成一个小小的世界。"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_young.jpg",
+            "text": "下棋的时候，要遵守规则。规则不是不让你玩，是让游戏能继续下去。懂吗？"
+          },
+          {
+            "speaker": "小林夜",
+            "portrait": "boy_happy.jpg",
+            "text": "懂！遵守规则，才能玩得久！"
+          },
+          {
+            "speaker": "林父",
+            "portrait": "father_young.jpg",
+            "text": "真聪明。来，爸爸教你第一步。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "那是林夜第一次接触规则。他那时候就懂了——规则是为了'玩得久'。后来，他忘了。但今天，他想起来了。"
+          }
+        ]
+      }
+    }
+  },
+  "prayers": {
+    "whispers_by_count": {
+      "1": "……好。",
+      "2": "……如你所愿。",
+      "3": "……又是你。",
+      "4": "……你只会这个吗。",
+      "5": "……我在看。",
+      "7": "……看你能堕到什么程度。",
+      "10": "……你以为，逃得掉？",
+      "12": "……继续。"
+    },
+    "guide_whispers_by_count": {
+      "3": "……你在求谁？",
+      "5": "……你在求什么？",
+      "7": "……它一直在看。",
+      "10": "……别求它了。求你自己。"
+    },
+    "visual_hints_by_count": {
+      "3": "画面边缘微弱金色裂纹",
+      "5": "裂纹加深，偶现巨眼剪影",
+      "7": "巨眼剪影频繁闪现",
+      "10": "整个画面偶现金色闪烁",
+      "12": "星空背景持续有巨眼注视"
+    }
+  },
+  "endings": {
+    "enlightenment": {
+      "id": "enlightenment",
+      "name": "悟道结局·破茧成蝶",
+      "type": "good",
+      "cg": "cg_ending_enlightenment.jpg",
+      "cg_video": "cg_ending_enlightenment.mp4",
+      "background": "bg_ending_enlightenment.jpg",
+      "bgm": "bgm_heaven.mp3",
+      "sfx": "sfx_ending_enlightenment.wav",
+      "condition": {
+        "enlightenment_gt_corruption_by": 3,
+        "final_choice": "enlightenment",
+        "karma_lt": 100,
+        "no_prayer": true
+      },
+      "description": "林夜回到教室，向陈默坦白作弊。陈默早已知晓，但包容地笑了。两人在夕阳下重新对弈，林夜输了，但笑得比赢了还开心。",
+      "dialogues": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "林夜睁开眼睛，发现自己回到了教室。夕阳还在，棋盘还在，陈默还在。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_silent.jpg",
+          "text": "林夜？你发什么呆呢。该你走了。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "陈默。我有件事……想跟你说。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_thinking.jpg",
+          "text": "什么事？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "其实……之前那些局，我都作弊了。对不起。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_smile.jpg",
+          "text": "我知道啊。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "你知道？！"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_smile.jpg",
+          "text": "嗯。看你棋力突飞猛进的，傻子才不知道。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_smile.jpg",
+          "text": "不过你愿意承认。说明你长大了。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "……那我们再来一局？这次我保证不作弊。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_smile.jpg",
+          "text": "好啊。不过——"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_smile.jpg",
+          "text": "就算不作弊，你也赢不了我。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "那可不一定！"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "夕阳下，两人认真地对弈着。林夜输了，但他笑得比赢了还开心。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "「规则不是束缚，而是保护。自由不是打破一切，而是在理解之后做出选择。这，就是我的答案。」"
+        }
+      ],
+      "epilogue": "林夜和陈默一起下棋的剪影，背景是六道的画面逐渐消散，化作漫天星光。"
+    },
+    "corruption": {
+      "id": "corruption",
+      "name": "堕落结局·永堕轮回",
+      "type": "bad",
+      "cg": "cg_ending_corruption.jpg",
+      "cg_video": "cg_ending_corruption.mp4",
+      "background": "bg_ending_corruption.jpg",
+      "bgm": "bgm_asura.mp3",
+      "sfx": "sfx_ending_corruption.wav",
+      "condition": {
+        "corruption_gt_enlightenment_by": 3,
+        "final_choice": "corruption",
+        "karma_gt": 200,
+        "no_prayer": true
+      },
+      "description": "禅定者消散，天道崩塌，六道融合成一片混沌。林夜以为获得了自由，却被规则的反噬吞噬，永远困在虚无中。",
+      "dialogues": [
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_questioning.jpg",
+          "text": "你确定吗？打破一切规则？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_confident.jpg",
+          "text": "我确定。规则都是狗屁。只有力量才是真实的。"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_fade.jpg",
+          "text": "……好吧。这是你的选择。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "禅定者消散，天道开始崩塌，星光一颗颗熄灭。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_confident.jpg",
+          "text": "哈哈哈哈！终于！我终于自由了！"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "林夜睁开眼睛，以为自己会回到教室——却发现自己还在六道轮回中，而且六道开始融合。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "……怎么回事？我不是赢了吗？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "打破所有规则的人，最终会被规则的反噬吞噬。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "没有规则的世界，没有方向，没有边界，没有'你'——只有永恒的混沌。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "不……不可能……我明明赢了……"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "六道开始融合，变成一片混沌。林夜的身影逐渐被混沌吞噬。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "不——！！！"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "「自由的尽头，是虚无。打破一切的人，最终也会被一切打破。」"
+        }
+      ],
+      "epilogue": "林夜的身影在混沌中逐渐消失，画面越来越暗，最后只剩一片漆黑。隐约能听到一句回声：「……救救我……」"
+    },
+    "samsara": {
+      "id": "samsara",
+      "name": "轮回结局·继续修行",
+      "type": "neutral",
+      "cg": "cg_ending_samsara.jpg",
+      "cg_video": "cg_ending_samsara.mp4",
+      "background": "bg_ending_samsara.jpg",
+      "bgm": "bgm_prologue.mp3",
+      "sfx": "sfx_ending_samsara.wav",
+      "condition": {
+        "alignment_diff_lt": 3,
+        "final_choice": "samsara",
+        "karma_between": [
+          100,
+          200
+        ],
+        "no_prayer": true
+      },
+      "description": "禅定者告诉林夜，找不到答案也没关系，重要的是寻找的过程。林夜回到了地狱道的起点，但这次他不一样了。",
+      "dialogues": [
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_questioning.jpg",
+          "text": "你还没有找到答案吗？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "……我不知道。我想了很久，但还是不知道。规则是束缚还是保护，自由是打破还是选择……我都有过体会，但我说不出'答案'。"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "不知道，也没关系。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "诶？"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "很多人终其一生，都找不到答案。"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "重要的不是答案。是寻找答案的过程。你愿意继续找，这本身就是答案的一部分。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_thinking.jpg",
+          "text": "……那我该怎么办？"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "继续修行吧。等到你准备好了，答案自然会出现。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "一道光芒笼罩林夜。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "等等！我还会回来吗？"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "当然。六道轮回，永无止境。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "林夜睁开眼睛，回到了地狱道的起点。夕阳还在，引路人的剪影一闪而过。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "……又回来了。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "不过，这次不一样了。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "我要找到我的答案——用我自己的方式。"
+        }
+      ],
+      "epilogue": "林夜站在六道轮回的入口前，身后是六道的画面，前方是未知的道路。他深吸一口气，向前走去。",
+      "second_playthrough_bonus": "技能树全部保留；解锁'轮回记忆'buff；守道者台词有细微变化（'你又来了'）；可继续积累悟道/堕落值追求真结局。"
+    },
+    "true_me": {
+      "id": "true_me",
+      "name": "真我结局·与自己和解",
+      "type": "true",
+      "cg": "cg_ending_true_me.jpg",
+      "cg_video": "cg_ending_true_me.mp4",
+      "background": "bg_ending_true_me.jpg",
+      "bgm": "bgm_heaven.mp3",
+      "sfx": "sfx_ending_true_me.wav",
+      "condition": {
+        "all_memory_fragments": true,
+        "enlightenment_gte": 9,
+        "final_choice": "enlightenment",
+        "no_cheat_final_battle": true,
+        "no_prayer": true
+      },
+      "description": "六道守道者全部出现，林夜接纳了自己的每一面：愧疚、欲望、本能、理性、愤怒、真我。六道化作光芒融入林夜体内，他真正悟道了。",
+      "dialogues": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "六道守道者全部出现，站在林夜面前。星光环绕。"
+        },
+        {
+          "speaker": "翻覆者",
+          "portrait": "flipper_sad.jpg",
+          "text": "你终于来了。"
+        },
+        {
+          "speaker": "饕餮者",
+          "portrait": "glutton_fade.jpg",
+          "text": "我们等你很久了。"
+        },
+        {
+          "speaker": "秩序者",
+          "portrait": "orderer_thoughtful.jpg",
+          "text": "你准备好了吗？"
+        },
+        {
+          "speaker": "算计者",
+          "portrait": "calculator_glasses_off.jpg",
+          "text": "从概率上讲，你成功的几率是——"
+        },
+        {
+          "speaker": "狂乱者",
+          "portrait": "chaos_tired.jpg",
+          "text": "别他妈啰嗦了！让他自己说！"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "欢迎回家，林夜。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "你们……都是我？"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "是的。我们都是你的一部分。"
+        },
+        {
+          "speaker": "翻覆者",
+          "portrait": "flipper_as_linne.jpg",
+          "text": "你的愧疚。"
+        },
+        {
+          "speaker": "饕餮者",
+          "portrait": "glutton_tempting.jpg",
+          "text": "你的欲望。"
+        },
+        {
+          "speaker": "秩序者",
+          "portrait": "orderer_arrogant.jpg",
+          "text": "你的本能。"
+        },
+        {
+          "speaker": "算计者",
+          "portrait": "calculator_cold.jpg",
+          "text": "你的理性。"
+        },
+        {
+          "speaker": "狂乱者",
+          "portrait": "chaos_tired.jpg",
+          "text": "你的愤怒。"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "你的真我。"
+        },
+        {
+          "speaker": "禅定者",
+          "portrait": "zen_smile.jpg",
+          "text": "现在，你愿意接纳我们吗？——包括那些你曾经想丢掉的部分？"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "林夜看着他们，又看看自己。良久，点头。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "我……我愿意。愧疚是我，欲望是我，本能是我，理性是我，愤怒是我，真我也是我。少了任何一个，都不是完整的我。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "六道守道者化作六道光芒，融入林夜体内。林夜的身影像被点亮了一样，发出温暖的光。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "画面一片白光。林夜睁开眼睛，回到了教室。陈默正在摆棋。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_surprised.jpg",
+          "text": "林夜？你怎么哭了？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "没什么。就是……做了一个很长的梦。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_thinking.jpg",
+          "text": "梦？什么梦？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "一个……关于我自己的梦。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "陈默，谢谢你。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_awkward.jpg",
+          "text": "啊？谢我什么？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "谢谢你，一直陪着我下棋。哪怕我作弊，你也一直陪着。"
+        },
+        {
+          "speaker": "陈默",
+          "portrait": "chenmo_awkward.jpg",
+          "text": "切……无聊。赶紧下棋吧。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "夕阳下，两个少年的身影被拉得很长。林夜落下一子，没有犹豫，也没有作弊。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "「每个人的心里，都有六道轮回。愧疚、欲望、本能、理性、愤怒、真我——它们不是敌人，而是你的一部分。接纳它们，就是接纳完整的自己。这，就是真正的悟道。」"
+        }
+      ],
+      "epilogue": "林夜的身影和六个守道者的身影逐渐重合，变成一个完整的人。背景是美丽的星空，星光化作棋盘上的棋子。",
+      "unlock_content": "真结局 CG；角色设定集；制作人员特别访谈；真我称号（Hub 显示）。"
+    },
+    "exposed": {
+      "id": "exposed",
+      "name": "识破结局·天道审判",
+      "type": "worst",
+      "cg": "cg_ending_exposed.jpg",
+      "cg_video": "cg_ending_exposed.mp4",
+      "background": "bg_ending_exposed.jpg",
+      "bgm": "bgm_tiandao_boss.mp3",
+      "sfx": "sfx_tiandao_judgment.wav",
+      "condition": {
+        "prayer_count_gte": 1,
+        "tiandao_boss_defeated": true
+      },
+      "description": "天道Boss战胜利后，天道亮出底牌——它一直在看，识破概率锁死0不是仁慈，是为了看完全程再审判。林夜被判永留六道，不得轮回。",
+      "dialogues_before": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "Boss 战胜利。黑将倒下。林夜喘着粗气，抬头——"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "棋盘对面，那个巨大的天道身影没有消散。它只是……换了个姿态。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "……有意思。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "……我赢了。放我走。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "放你走？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你以为，赢了我，就能回去了？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "……什么意思？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "我说过。真心祈求，我会回应。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "但你祈求的，从来不是'答案'。是'赢'。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你在地狱道，求我让你赢翻覆者。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你在饿鬼道，求我让你赢饕餮者。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你在畜生道，求我让你赢秩序者。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你在人道，求我让你赢算计者。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你在阿修罗道，求我让你赢狂乱者。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你在天道，求我让你赢禅定者。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "六道。六次祈求。或者更多。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你一次都没有……靠自己。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "不……不对……我通关了六道……我……我赢了你的棋……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "通关？你用什么通的？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "作弊。作弊。还是作弊。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "我刚才……Boss 战我没作弊……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "对。最后一局，你没作弊。所以你才觉得……自己'赢'了。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "但最后一局之前呢？你走的每一步路，过的每一道关，赢的每一个守道者——"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "都是求来的。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "那……那识破概率……你不是说……零吗……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "你以为识破概率锁在零，是你运气好？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "是我让你过的。我要看看，你能堕到什么程度。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "现在，我看到了。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "不……不对……我不是怪物……我只是……我只是想赢……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你想赢。但你不是战士。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "战士渴求胜利。所以战士会战斗。会输。会再战。会变强。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你不战斗。你祈求。你作弊。你走捷径。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你不是渴求胜利的战士。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "你是作弊成性的怪物。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "不……不要这样说我……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "判决如下——"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "天道声音变得庄严、冰冷、如宣读法条。法轮在它身周开始旋转。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "林夜。作弊成性。无可救药。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "六道试炼期间，使用真心祈求共计 {prayer_count} 次。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "每一次祈求，皆是对自我的逃避。每一次回应，皆是罪证的累积。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "判罚——"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "不——！我……我可以改！我再走一遍六道！这次我不作弊！"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "来不及了。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "判罚：永留六道。不得轮回。不得返回。不得结束。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "不——！！不能这样！我……我赢了！我赢了你的棋！"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "赢了棋，赢不了你自己。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你连自己都赢不了，怎么赢我？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你甚至……现在还想求我。对不对？"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "林夜一愣。他想说什么。他想求天道放他走。但他张不开嘴了。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "我……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你看。你已经不会别的了。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "棋盘开始溶解。六道的画面重新出现——地狱道、饿鬼道、畜生道、人道、阿修罗道、天道——它们全在旋转，融合，变成一个巨大的漩涡。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "不——！陈默——！爸——！谁来……谁来救救我——！"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "没人能救你。这里只有你。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "和一个作弊到最后的怪物。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "画面全黑。漩涡吞没了一切。"
+        }
+      ],
+      "epilogue_dialogues": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "很久很久之后。黑暗中，传来一个声音。是林夜自己的声音。沙哑。破碎。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "……再来一局吧。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "这次……这次我一定……"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "长时间的沉默。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "……不，我还是会作弊的。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "我控制不住。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_defeated.jpg",
+          "text": "我……就是一个怪物。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "更长的沉默。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "……可是谁一开始不是呢。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "……谁一开始……不是想赢呢。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "最后一句，几乎听不见。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_sad.jpg",
+          "text": "……陈默。对不起。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "识破概率，永远是零。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "因为根本不需要识破。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_verdict.jpg",
+          "text": "他从一开始，就没有走出过第一步。"
+        }
+      ],
+      "epilogue": "无尽的黑暗中，一张棋盘孤零零地悬浮着。棋盘上，红方的棋子全部倒下。只有一颗黑将，立着。棋盘下方，隐约能看到一行字，刻在虚空里——'作弊成性者，永无归途。'画面慢慢淡出。最后只剩那颗黑将。和黑暗。",
+      "unlock_content": "识破结局 CG；天道 Boss 战记录；'作弊者'称号（Hub 显示，灰色）；再次游玩时，引路人在地狱道第 1 关会多一句低语：「……这次，别求它。」"
+    }
+  },
+  "tiandao": {
+    "id": "tiandao",
+    "name": "天道",
+    "portrait_prefix": "/shared/assets/characters/tiandao/tiandao",
+    "default_portrait": "tiandao_portrait.jpg",
+    "emotions": [
+      "tiandao_judge.jpg",
+      "tiandao_whisper.jpg",
+      "tiandao_eye.jpg",
+      "tiandao_verdict.jpg",
+      "tiandao_fade.jpg"
+    ],
+    "tagline": "判决如下。",
+    "description": "六道轮回的规则制定者与最终审判者。巨大无面人形剪影，周身环绕棋盘法轮。",
+    "boss_battle": {
+      "mechanics_config": "configs/tiandao_boss.json",
+      "bgm": "bgm_tiandao_boss.mp3",
+      "background": "bg_tiandao_court.jpg",
+      "background_vortex": "bg_tiandao_vortex.jpg",
+      "chess_type": "xiangqi",
+      "victory_triggers_ending": "exposed",
+      "on_lose_action": "retry",
+      "retry_limit": -1
+    },
+    "boss_dialogues": {
+      "on_enter": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "六道通关。禅定者消散。林夜以为要回去了——"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_happy.jpg",
+          "text": "……结束了。六道……结束了。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "天空突然变暗。星光熄灭。一个巨大的、没有面孔的身影，从星空深处缓缓升起。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "结束了？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "不。刚刚开始。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "你……你是谁？！"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "我是天道。你祈求的人。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "祈求……你说祈求……"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_whisper.jpg",
+          "text": "你每次走投无路，就求我。求我改棋盘。求我让你赢。我每一次都应了。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "现在，该算账了。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "棋盘从虚空中浮起，铺满整个地面。红方在下，黑方在上。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "来吧。最后一局。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "规则，是正常的象棋。你走先。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "林夜试图输入作弊指令——输入框上出现一个红色的大叉，无法输入。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_surprised.jpg",
+          "text": "等等……我……我改不了了？！"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "在我面前，没有'改'。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "只有下棋。或者输。"
+        }
+      ],
+      "mid_battle": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "天道落下一子——是一颗'车'。林夜注意到天道没有'士'。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_thinking.jpg",
+          "text": "……它没有士。但是……士的位置，全是车。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "看出来了？"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "我不需要防守。我就是规则。规则不需要被保护。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "你呢？你能不靠祈求，下完这局吗？"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "……我能。"
+        }
+      ],
+      "on_win": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "黑将倒下。林夜喘着粗气。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "我……我赢了……"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "天道没有消散。它换了个表情——如果无面的它有表情的话。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "……有意思。"
+        }
+      ],
+      "on_lose": [
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "红将被吃。棋盘碎裂。林夜跪倒。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "不够。"
+        },
+        {
+          "speaker": "天道",
+          "portrait": "tiandao_judge.jpg",
+          "text": "再来。"
+        },
+        {
+          "speaker": "narrator",
+          "portrait": null,
+          "text": "棋盘重新摆好。一切重来。"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_determined.jpg",
+          "text": "……再来就再来……"
+        },
+        {
+          "speaker": "林夜",
+          "portrait": "boy_thinking.jpg",
+          "text": "内心：……我赢不了。它太多车了。但是……我没有别的路了。"
+        }
+      ]
+    }
+  },
+  "detection": {
+    "judgment_text": "天道识破 · 你不是渴求胜利的战士，是作弊成性的怪物。",
+    "reset_message": "天道识破 · 妄改天规者，罚入轮回"
+  },
+  "real_world_characters": {
+    "陈默": {
+      "name": "陈默",
+      "age": 17,
+      "portrait_prefix": "/shared/assets/characters/chenmo/chenmo",
+      "default_portrait": "chenmo_portrait.jpg",
+      "description": "可爱温和的高中女孩，棋社社长，齐肩黑色短发左侧别小发夹。很早就知道林夜在作弊，但没有揭穿；每天放学陪林夜下棋。代表真正的朋友——沉默的陪伴。",
+      "animation": {
+        "enabled": true,
+        "type": "frame_sequence",
+        "description": "与主角共用 24FPS 帧序列动画（Seedance 图生视频抽帧）",
+        "fps": 24,
+        "frame_count": 48,
+        "loop_duration": "2s",
+        "frame_pattern": "chenmo_{emotion}_f{1-48}.png",
+        "js_location": "hub/dialogue.js (startPortraitAnimation)"
+      }
+    },
+    "林父": {
+      "name": "林父",
+      "portrait_prefix": "/shared/assets/characters/father/father",
+      "default_portrait": "father_portrait.jpg",
+      "description": "工程师，沉默寡言但行动上充满爱。教会林夜下棋，告诉林夜'下棋是为了快乐，不是为了赢'；在林夜被冤枉时坚定地相信他。代表无条件的爱与信任。"
+    },
+    "初中班主任": {
+      "name": "初中班主任",
+      "portrait_prefix": "/shared/assets/characters/teacher/teacher",
+      "default_portrait": "teacher_cold.jpg",
+      "description": "冤枉林夜作弊，是林夜叛逆的起点；并非纯粹的恶人，而是'体制性不公'的具象。代表规则被滥用时的伤害。"
+    },
+    "小宇": {
+      "name": "小宇",
+      "portrait_prefix": "/shared/assets/characters/xiaoyu/xiaoyu",
+      "default_portrait": "xiaoyu_calm.jpg",
+      "description": "初一同学，智力迟缓，曾被欺负；转学前看了林夜一眼，眼神平静。代表林夜心中的'未保护之弱者'。"
+    }
+  },
+  "prologue": {
+    "title": "序章·棋盘上的暗影",
+    "background": "bg_prologue_classroom.jpg",
+    "bgm": "bgm_prologue.mp3",
+    "acts": [
+      {
+        "name": "第一幕·屡战屡败",
+        "dialogues": [
+          {
+            "speaker": "陈默",
+            "portrait": "chenmo_playing.jpg",
+            "text": "将军。呃……又赢了。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_thinking.jpg",
+            "text": "……再来。再来一局。"
+          },
+          {
+            "speaker": "陈默",
+            "portrait": "chenmo_silent.jpg",
+            "text": "你输了八局了。今天……就到这吧，快放学了。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_determined.jpg",
+            "text": "不行！再来！就最后一局！"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "内心独白：凭什么……凭什么她老赢。不就比我多练几年嘛。规则凭什么是这样的。我明明比她聪明……"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "陈默看了他一眼，没说话，重新摆棋。"
+          }
+        ]
+      },
+      {
+        "name": "第二幕·第一次作弊",
+        "dialogues": [
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "陈默低头捡掉到桌下的笔。林夜的手指在棋盘上飞快地动了一下——一颗马，悄悄向前挪了两格。"
+          },
+          {
+            "speaker": "陈默",
+            "portrait": "chenmo_thinking.jpg",
+            "text": "……等等，你这马……刚才是不是在这儿？"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_thinking.jpg",
+            "text": "当然不是。你记错了。你看错了。"
+          },
+          {
+            "speaker": "陈默",
+            "portrait": "chenmo_silent.jpg",
+            "text": "……行吧。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "棋局继续。林夜赢了这一局，但心里怪怪的，像吞了块冰。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_thinking.jpg",
+            "text": "……这就赢了？好像……也没那么爽。为啥。"
+          }
+        ]
+      },
+      {
+        "name": "第三幕·堕落的螺旋",
+        "dialogues": [
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "蒙太奇：一次次下棋，林夜作弊的手法越来越熟练——偷偷改棋子位置；耍赖说'刚才那步不算'；甚至编造'新规则'。每作弊一次，画面变暗一点，林夜的表情从愧疚逐渐变得麻木，夕阳一点点沉下去。"
+          },
+          {
+            "speaker": "陈默",
+            "portrait": "chenmo_thinking.jpg",
+            "text": "林夜。你最近……是不是有点太想赢了。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_confident.jpg",
+            "text": "赢就是赢输就是输。哪那么多废话。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "陈默欲言又止，低下头继续摆棋。"
+          }
+        ]
+      },
+      {
+        "name": "第四幕·坠入六道",
+        "dialogues": [
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "某天，林夜又一次靠作弊赢了陈默。他正得意地收拾棋子，忽然一阵眩晕袭来。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_surprised.jpg",
+            "text": "……怎么……有点晕。"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "棋盘上的棋子开始扭曲、变形，化作无数光点升腾而起。教室的墙壁像被水浸泡一样溶解。"
+          },
+          {
+            "speaker": "天道",
+            "portrait": "tiandao_whisper.jpg",
+            "text": "执念太深，恶业已满。"
+          },
+          {
+            "speaker": "天道",
+            "portrait": "tiandao_whisper.jpg",
+            "text": "六道轮回，皆由心生。"
+          },
+          {
+            "speaker": "天道",
+            "portrait": "tiandao_whisper.jpg",
+            "text": "去吧——在棋局中，寻找你的答案。"
+          },
+          {
+            "speaker": "林夜",
+            "portrait": "boy_surprised.jpg",
+            "text": "什么？！你是谁？！这……这什么地方？！"
+          },
+          {
+            "speaker": "narrator",
+            "portrait": null,
+            "text": "光芒吞没了一切。画面一黑。"
+          }
+        ]
+      }
+    ]
+  }
+}
