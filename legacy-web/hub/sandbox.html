@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>html { zoom: 0.75; }</style>
+    <title>沙盒模式 · 六道众生</title>
+    <link rel="preconnect" href="https://fonts.googleapis.cn">
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+    <link href="https://fonts.googleapis.cn/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* 沙盒总坛 · 玉色调（区别于 RPG 总坛的金色） */
+        :root { --mode-accent: var(--jade); --mode-glow: rgba(13,115,119,0.22); }
+        .back-link {
+            position: fixed; top: 20px; left: 24px; z-index: 10;
+            color: var(--text-muted); text-decoration: none; font-size: 13px;
+            display: flex; align-items: center; gap: 6px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--jade); }
+        .sandbox-badge {
+            display: inline-block; padding: 4px 14px; border-radius: 4px;
+            font-family: var(--font-tech); font-size: 11px; letter-spacing: 0.25em;
+            border: 1px solid var(--jade); color: var(--jade);
+            background: rgba(13,115,119,0.08); margin-bottom: 14px;
+        }
+        .sandbox-note {
+            max-width: 620px; margin: 0 auto 48px; text-align: center;
+            font-size: 13px; color: var(--text-muted); line-height: 1.9; font-weight: 300;
+        }
+        /* 覆盖卡片悬浮色为玉色 */
+        .card:hover { border-color: var(--jade) !important; }
+        .card .enter-btn { border-color: var(--jade); color: var(--jade); }
+        .card .enter-btn:hover { background: var(--jade); color: var(--paper); }
+        .card .realm-label { color: var(--jade); border-color: var(--jade); }
+        /* 卡片棋类定位标签（主推 / 不推荐的测试） */
+        .card-tag {
+            position: absolute; top: 14px; right: 16px; z-index: 2;
+            padding: 3px 10px; border-radius: 999px;
+            font-family: var(--font-body); font-size: 12px; letter-spacing: .03em;
+        }
+        .card-tag.recommended { color: #ffd700; border: 1px solid rgba(255,215,0,.6); background: rgba(255,215,0,.14); }
+        .card-tag.notrec { color: #d08a8a; border: 1px solid rgba(208,138,138,.5); background: rgba(208,138,138,.12); }
+    </style>
+</head>
+<body>
+    <div class="ambient">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <a href="/overworld" class="back-link">← 返回大陆</a>
+
+    <main class="container">
+        <header class="hero">
+            <span class="sandbox-badge">SANDBOX · 纯净模式</span>
+            <h1 class="hero-title">
+                <span class="title-main">沙盒 · 六棋</span>
+                <span class="title-sub">Pure Chess Arena</span>
+            </h1>
+            <p class="hero-desc">
+                无业力、无识破、无结局束缚。<br>
+                纯粹的 AI 改规棋类对弈，与剧情模式完全隔离。
+            </p>
+            <div class="hero-meta" id="sandbox-meta">正在连接沙盒棋境…</div>
+        </header>
+
+        <section class="grid" id="game-grid">
+            <!-- 卡片由 sandbox.js 注入 -->
+        </section>
+
+        <footer class="footer">
+            <p>沙盒模式 · 与剧情模式数据隔离</p>
+            <p class="footer-note">所有棋类服务均由 <code>main.py</code> 统一拉起（端口 8010-8015）</p>
+        </footer>
+    </main>
+
+    <script src="/static/sandbox.js"></script>
+</body>
+</html>

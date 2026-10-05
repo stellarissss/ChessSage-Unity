@@ -1,0 +1,55 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "围棋棋盘几何定义与渲染配置"
+  },
+  "geometry": {
+    "width": 19,
+    "height": 19,
+    "star_points": [
+      [3, 3],
+      [3, 9],
+      [3, 15],
+      [9, 3],
+      [9, 9],
+      [9, 15],
+      [15, 3],
+      [15, 9],
+      [15, 15]
+    ],
+    "regions": {}
+  },
+  "appearance": {
+    "background_color": "#dcb35c",
+    "line_color": "#5c3a1e",
+    "star_point_color": "#5c3a1e",
+    "grid": {
+      "line_thickness": 0.02,
+      "show_horizontal": true,
+      "show_vertical": true,
+      "river_gap": false
+    },
+    "palace": {
+      "enabled": false
+    },
+    "river": {
+      "enabled": false
+    },
+    "layout": {
+      "viewbox_padding_left": 0.5,
+      "viewbox_padding_right": 0.5,
+      "viewbox_padding_top": 0.5,
+      "viewbox_padding_bottom": 0.5,
+      "board_size": "90vmin"
+    },
+    "decorations": {
+      "border": {
+        "enabled": true,
+        "thickness": 0.15,
+        "color": "#5c3a1e"
+      },
+      "custom_lines": [],
+      "background_pattern": null
+    }
+  }
+}

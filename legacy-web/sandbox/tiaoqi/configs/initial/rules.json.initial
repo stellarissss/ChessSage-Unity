@@ -1,0 +1,52 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "中国跳棋规则"
+  },
+  "win_conditions": {
+    "all_in_camp": {
+      "enabled": true,
+      "display_name": "全部入营",
+      "icon": "🏠",
+      "description": "将己方所有棋子移入对方营区",
+      "priority": 1,
+      "category": "victory"
+    },
+    "stalemate": {
+      "enabled": true,
+      "display_name": "困毙对方",
+      "icon": "😶",
+      "description": "对方无棋可动",
+      "result": "win",
+      "priority": 2,
+      "category": "victory"
+    }
+  },
+  "special_rules": {
+    "no_blocking": {
+      "enabled": true,
+      "description": "不能在对方营区内留子阻止对方入营"
+    }
+  },
+  "turn_rules": {
+    "turn_order": "alternating",
+    "first_player": "red"
+  },
+  "ai_difficulty": {
+    "current": "medium",
+    "levels": {
+      "easy": {"depth": 2, "randomness": 0.3},
+      "medium": {"depth": 3, "randomness": 0.1},
+      "hard": {"depth": 4, "randomness": 0.0}
+    },
+    "personality": {
+      "type": "normal",
+      "aggressiveness": 0.5,
+      "conservatism": 0.5,
+      "randomness_override": null,
+      "depth_override": null,
+      "value_biases": {},
+      "custom_prompt": null
+    }
+  }
+}

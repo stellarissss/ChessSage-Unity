@@ -1,0 +1,29 @@
+# 棋圣 - 整体依赖（覆盖所有子项目）
+# 各子项目可独立安装各自的 requirements.txt
+
+# === 核心 Web 框架（象棋 / 五子棋 / 剧情编辑器共用） ===
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+
+# === AI / HTTP 客户端 ===
+httpx>=0.27.0
+
+# === JSON Schema / Patch ===
+jsonschema>=4.21.0
+jsonpatch>=1.33.0
+
+# === 独立桌面窗口（pywebview） ===
+# 默认以原生 WebView 打开（Windows 优先 WebView2/EdgeChromium，Chromium 内核高性能），
+# 不再依赖外部浏览器。安装失败时主流程自动回退为浏览器模式。
+# WebGPU：Windows 用 WebView2（无需额外依赖）；Linux/macOS 若要独立窗口内启用 WebGPU，
+# 需额外安装 QtWebEngine 后端之一后由启动器自动选用（缺失时自动升级到系统浏览器）：
+pywebview>=5.0
+# 可选：Linux/macOS 独立窗口 WebGPU 后端（二选一）——
+#   PyQt6        + PyQt6.QtWebEngineWidgets
+#   或 PySide6   + PySide6.QtWebEngineWidgets
+
+# === 剧情编辑器可选依赖（角色立绘生成） ===
+# 安装这些之后才支持 AI 生图自动抠图
+Pillow>=10.0.0
+rembg>=2.0.50

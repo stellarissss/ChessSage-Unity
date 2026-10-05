@@ -1,0 +1,41 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "last_modified": "2026-07-22T00:00:00Z",
+    "format": "animal_chess_standard"
+  },
+  "pieces": [
+    {"id": "b_lion_1", "type": "lion", "name": "🦁", "side": "black", "position": [0, 0], "is_alive": true, "custom_properties": {}},
+    {"id": "b_tiger_1", "type": "tiger", "name": "🐯", "side": "black", "position": [6, 0], "is_alive": true, "custom_properties": {}},
+    {"id": "b_dog_1", "type": "dog", "name": "🐶", "side": "black", "position": [1, 1], "is_alive": true, "custom_properties": {}},
+    {"id": "b_cat_1", "type": "cat", "name": "🐱", "side": "black", "position": [5, 1], "is_alive": true, "custom_properties": {}},
+    {"id": "b_rat_1", "type": "rat", "name": "🐭", "side": "black", "position": [0, 2], "is_alive": true, "custom_properties": {}},
+    {"id": "b_leopard_1", "type": "leopard", "name": "🐆", "side": "black", "position": [2, 2], "is_alive": true, "custom_properties": {}},
+    {"id": "b_wolf_1", "type": "wolf", "name": "🐺", "side": "black", "position": [4, 2], "is_alive": true, "custom_properties": {}},
+    {"id": "b_elephant_1", "type": "elephant", "name": "🐘", "side": "black", "position": [6, 2], "is_alive": true, "custom_properties": {}},
+    {"id": "r_elephant_1", "type": "elephant", "name": "🐘", "side": "red", "position": [0, 6], "is_alive": true, "custom_properties": {}},
+    {"id": "r_wolf_1", "type": "wolf", "name": "🐺", "side": "red", "position": [2, 6], "is_alive": true, "custom_properties": {}},
+    {"id": "r_leopard_1", "type": "leopard", "name": "🐆", "side": "red", "position": [4, 6], "is_alive": true, "custom_properties": {}},
+    {"id": "r_rat_1", "type": "rat", "name": "🐭", "side": "red", "position": [6, 6], "is_alive": true, "custom_properties": {}},
+    {"id": "r_cat_1", "type": "cat", "name": "🐱", "side": "red", "position": [1, 7], "is_alive": true, "custom_properties": {}},
+    {"id": "r_dog_1", "type": "dog", "name": "🐶", "side": "red", "position": [5, 7], "is_alive": true, "custom_properties": {}},
+    {"id": "r_tiger_1", "type": "tiger", "name": "🐯", "side": "red", "position": [0, 8], "is_alive": true, "custom_properties": {}},
+    {"id": "r_lion_1", "type": "lion", "name": "🦁", "side": "red", "position": [6, 8], "is_alive": true, "custom_properties": {}}
+  ],
+  "current_turn": "red",
+  "move_history": [],
+  "game_status": {
+    "state": "playing",
+    "winner": null,
+    "win_condition": null,
+    "custom_rules_active": []
+  },
+  "mechanisms": {
+    "skip_turns": [],
+    "ai_control": [],
+    "player_control": [],
+    "random_moves": [],
+    "extra_turns": [],
+    "move_limits": []
+  }
+}

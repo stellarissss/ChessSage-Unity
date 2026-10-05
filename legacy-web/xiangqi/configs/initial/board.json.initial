@@ -1,0 +1,51 @@
+{
+  "_metadata": {"version": "2.0", "description": "棋盘几何定义与渲染配置"},
+  "geometry": {
+    "width": 9,
+    "height": 10,
+    "river_line": 5,
+    "palace": {
+      "red": {"top_left": [3, 7], "bottom_right": [5, 9]},
+      "black": {"top_left": [3, 0], "bottom_right": [5, 2]}
+    },
+    "regions": {
+      "red_side": {"y_range": [5, 9]},
+      "black_side": {"y_range": [0, 4]},
+      "river": {"y_range": [4, 5]}
+    }
+  },
+  "appearance": {
+    "background_color": "#f0d9b5",
+    "line_color": "#5c3a1e",
+    "palace_line_color": null,
+    "grid": {
+      "line_thickness": 0.03,
+      "show_horizontal": true,
+      "show_vertical": true,
+      "river_gap": true
+    },
+    "palace": {
+      "enabled": true,
+      "show_diagonals": true,
+      "line_thickness": 0.03
+    },
+    "river": {
+      "enabled": true,
+      "text": "楚 河          漢 界",
+      "text_size": 0.5,
+      "gap_ratio": 1.0
+    },
+    "layout": {
+      "viewbox_padding_left": 0.444,
+      "viewbox_padding_right": 0.444,
+      "viewbox_padding_top": 0.5,
+      "viewbox_padding_bottom": 0.5,
+      "board_size": "90vmin"
+    },
+    "decorations": {
+      "border": {"enabled": false, "thickness": 0.1, "color": null},
+      "custom_lines": [],
+      "background_pattern": null
+    }
+  }
+}

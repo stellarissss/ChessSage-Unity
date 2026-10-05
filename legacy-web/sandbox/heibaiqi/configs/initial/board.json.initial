@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "game": "heibaiqi",
+    "description": "8×8 黑白棋标准棋盘"
+  },
+  "geometry": {
+    "width": 8,
+    "height": 8
+  },
+  "appearance": {
+    "background_color": "#666666",
+    "line_color": "#000000"
+  }
+}

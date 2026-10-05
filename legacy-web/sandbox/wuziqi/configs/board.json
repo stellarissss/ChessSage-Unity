@@ -1,0 +1,46 @@
+{
+  "_metadata": {"version": "2.0", "description": "五子棋棋盘几何定义与渲染配置"},
+  "geometry": {
+    "width": 15,
+    "height": 15,
+    "river_line": null,
+    "palace": null,
+    "regions": {
+      "center": {"x_range": [6, 8], "y_range": [6, 8]}
+    }
+  },
+  "appearance": {
+    "background_color": "#DEB887",
+    "line_color": "#333333",
+    "palace_line_color": null,
+    "grid": {
+      "line_thickness": 0.02,
+      "show_horizontal": true,
+      "show_vertical": true,
+      "river_gap": false
+    },
+    "palace": {
+      "enabled": false,
+      "show_diagonals": false,
+      "line_thickness": 0.03
+    },
+    "river": {
+      "enabled": false,
+      "text": "",
+      "text_size": 0.5,
+      "gap_ratio": 1.0
+    },
+    "layout": {
+      "viewbox_padding_left": 0.5,
+      "viewbox_padding_right": 0.5,
+      "viewbox_padding_top": 0.5,
+      "viewbox_padding_bottom": 0.5,
+      "board_size": "90vmin"
+    },
+    "decorations": {
+      "border": {"enabled": true, "thickness": 0.1, "color": "#8B4513"},
+      "custom_lines": [],
+      "background_pattern": null
+    }
+  }
+}

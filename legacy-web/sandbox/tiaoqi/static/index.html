@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>无限制跳棋</title>
+    <link rel="preconnect" href="https://fonts.googleapis.cn">
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+    <link href="https://fonts.googleapis.cn/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>html, body { height: 100vh; margin: 0; overflow: hidden; } #app { height: 100%; }</style>
+</head>
+<body>
+    
+  <div id="boot-loader" style="position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#070708;color:#d4af37;font-family:'DM Sans','Microsoft YaHei',sans-serif;">
+    <div style="font-size:20px;letter-spacing:.08em;">正在加载对局…</div>
+    <div style="width:min(340px,70vw);height:8px;border-radius:999px;background:rgba(212,175,55,.15);overflow:hidden;border:1px solid rgba(212,175,55,.32);box-shadow:0 0 18px rgba(212,175,55,.18) inset;">
+      <div id="boot-loader-fill" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#7a5a18,#d4af37,#ffe08a);transition:width .3s;"></div>
+    </div>
+    <div id="boot-loader-text" style="font-size:13px;color:#99948a;letter-spacing:.04em;">正在同步配置与棋盘…</div>
+  </div>
+    <div id="app"></div>
+
+    <script src="http://localhost:8080/shared/game_shared_rpg.js"></script>
+    <script src="/static/app.js?v=20260805d"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            console.log('CheckersBoard:', CheckersBoard);
+            var board = document.createElement('checkers-board');
+            document.getElementById('app').appendChild(board);
+            board.init();
+        });
+    </script>
+
+    <script>
+      (function () {
+        var l = document.getElementById('boot-loader'); if (!l) return;
+        var fill = document.getElementById('boot-loader-fill');
+        var txt = document.getElementById('boot-loader-text');
+        function fin() { if (!l) return; l.style.transition = 'opacity .4s'; l.style.opacity = '0'; setTimeout(function () { l.remove(); }, 460); }
+        var t = 0;
+        var iv = setInterval(function () {
+          t = Math.min(92, t + 8); fill.style.width = t + '%';
+          if (t >= 92) { clearInterval(iv); if (txt) txt.textContent = '即将进入…'; }
+        }, 300);
+        document.addEventListener('ready', fin, true);
+        setTimeout(function () { clearInterval(iv); fill.style.width = '100%'; }, 3500);
+        if (txt) setTimeout(function () { txt.textContent = '配置就绪，即将进入…'; }, 3200);
+        setTimeout(fin, 9000);
+      })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "棋子配置（单阵营）",
+  "type": "object",
+  "properties": {
+    "_metadata": {
+      "type": "object"
+    },
+    "side": {
+      "enum": ["red", "black"]
+    },
+    "pieces": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "is_king": { "type": "boolean" },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "enum": ["jump", "ray"] },
+                "to": {
+                  "anyOf": [
+                    { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+                    { "enum": ["$forward"] }
+                  ]
+                },
+                "dir": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "max": { "type": "integer" },
+                "screens": { "type": "integer", "minimum": 0 },
+                "block": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": { "type": "integer" },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "land": { "enum": ["empty", "enemy", "any"] },
+                "sym": { "enum": ["none", "rotate4", "rotate4_mirror", "mirror_x"] },
+                "where": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "in_region": {
+                        "oneOf": [
+                          { "type": "string" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "region": { "type": "string" }
+                            }
+                          }
+                        ]
+                      },
+                      "crossed_river": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "same_side": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "at_row": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "row": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "at_col": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "col": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "not": { "type": "object" },
+                      "and": { "type": "array" },
+                      "or": { "type": "array" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["kind", "land", "sym"],
+              "anyOf": [
+                { "required": ["to"] },
+                { "required": ["dir"] }
+              ]
+            }
+          }
+        },
+        "required": ["label", "moves"]
+      }
+    },
+    "custom_pieces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "is_king": { "type": "boolean" },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "enum": ["jump", "ray"] },
+                "to": {
+                  "anyOf": [
+                    { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+                    { "enum": ["$forward"] }
+                  ]
+                },
+                "dir": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "max": { "type": "integer" },
+                "screens": { "type": "integer", "minimum": 0 },
+                "block": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": { "type": "integer" },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "land": { "enum": ["empty", "enemy", "any"] },
+                "sym": { "enum": ["none", "rotate4", "rotate4_mirror", "mirror_x"] },
+                "where": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "in_region": {
+                        "oneOf": [
+                          { "type": "string" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "region": { "type": "string" }
+                            }
+                          }
+                        ]
+                      },
+                      "crossed_river": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "same_side": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "at_row": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "row": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "at_col": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "col": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "not": { "type": "object" },
+                      "and": { "type": "array" },
+                      "or": { "type": "array" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["kind", "land", "sym"],
+              "anyOf": [
+                { "required": ["to"] },
+                { "required": ["dir"] }
+              ]
+            }
+          }
+        },
+        "required": ["type", "label", "moves"]
+      }
+    }
+  },
+  "required": ["pieces"]
+}

@@ -1,0 +1,418 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "动物棋棋子配置（单阵营）",
+  "description": "动物棋（斗兽棋）棋子规则 - 支持等级吃子/水域/陷阱/兽穴/跳河",
+  "type": "object",
+  "properties": {
+    "_metadata": {
+      "type": "object"
+    },
+    "side": {
+      "enum": ["red", "black"]
+    },
+    "pieces": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "object",
+            "properties": {
+              "red": { "type": "string", "minLength": 1 },
+              "black": { "type": "string", "minLength": 1 }
+            }
+          },
+          "is_king": { "type": "boolean" },
+          "rank": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "吃子等级（1-8），0表示无吃子能力"
+          },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "enum": ["jump", "ray"] },
+                "to": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "dir": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "max": { "type": "integer" },
+                "screens": { "type": "integer", "minimum": 0 },
+                "block": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": { "type": "integer" },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "land": { "enum": ["empty", "enemy", "any"] },
+                "sym": { "enum": ["none", "rotate4", "rotate4_mirror", "mirror_x"] },
+                "path_constraint": {
+                  "type": "object",
+                  "description": "ray 路径约束（跳河用）",
+                  "properties": {
+                    "must_be": { "enum": ["water", "land", "any"] },
+                    "no_blocker": { "type": "boolean" }
+                  },
+                  "additionalProperties": false
+                },
+                "where": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "in_region": {
+                        "oneOf": [
+                          { "type": "string" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "region": { "type": "string" }
+                            }
+                          }
+                        ]
+                      },
+                      "in_water": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_trap": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_enemy_trap": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_own_den": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_enemy_den": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "at_row": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "row": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "at_col": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "col": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "not": { "type": "object" },
+                      "and": { "type": "array" },
+                      "or": { "type": "array" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["kind", "land", "sym"],
+              "anyOf": [
+                { "required": ["to"] },
+                { "required": ["dir"] }
+              ]
+            }
+          },
+          "capture": {
+            "type": "object",
+            "description": "吃子规则",
+            "properties": {
+              "mode": {
+                "enum": ["rank_ge", "any_enemy", "rank_le"],
+                "description": "rank_ge: 攻击方rank>=防守方rank可吃; any_enemy: 任意敌方可吃; rank_le: 反向"
+              },
+              "exceptions": {
+                "type": "array",
+                "description": "吃子例外（鼠克象等）",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "can_eat": { "type": "string", "description": "可吃的type" },
+                    "cannot_eat": { "type": "string", "description": "不可吃的type" }
+                  }
+                }
+              },
+              "water_rules": {
+                "type": "object",
+                "description": "水域吃子限制",
+                "properties": {
+                  "invulnerable_in_water": { "type": "boolean", "description": "在水中时不可被陆地动物吃" },
+                  "cannot_attack_from_water": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "在水中时不能吃的岸上动物type列表"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["label", "moves"]
+      }
+    },
+    "custom_pieces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "label": {
+            "type": "object",
+            "properties": {
+              "red": { "type": "string", "minLength": 1 },
+              "black": { "type": "string", "minLength": 1 }
+            }
+          },
+          "is_king": { "type": "boolean" },
+          "rank": { "type": "integer", "minimum": 0 },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "enum": ["jump", "ray"] },
+                "to": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "dir": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "max": { "type": "integer" },
+                "screens": { "type": "integer", "minimum": 0 },
+                "block": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": { "type": "integer" },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "land": { "enum": ["empty", "enemy", "any"] },
+                "sym": { "enum": ["none", "rotate4", "rotate4_mirror", "mirror_x"] },
+                "path_constraint": {
+                  "type": "object",
+                  "properties": {
+                    "must_be": { "enum": ["water", "land", "any"] },
+                    "no_blocker": { "type": "boolean" }
+                  },
+                  "additionalProperties": false
+                },
+                "where": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "in_region": {
+                        "oneOf": [
+                          { "type": "string" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "region": { "type": "string" }
+                            }
+                          }
+                        ]
+                      },
+                      "in_water": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_trap": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_enemy_trap": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_own_den": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "in_enemy_den": {
+                        "oneOf": [
+                          { "enum": ["$dest", "$self"] },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] }
+                            }
+                          }
+                        ]
+                      },
+                      "at_row": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "row": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "at_col": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "pos": { "enum": ["$dest", "$self"] },
+                              "col": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      },
+                      "not": { "type": "object" },
+                      "and": { "type": "array" },
+                      "or": { "type": "array" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["kind", "land", "sym"],
+              "anyOf": [
+                { "required": ["to"] },
+                { "required": ["dir"] }
+              ]
+            }
+          },
+          "capture": {
+            "type": "object",
+            "properties": {
+              "mode": { "enum": ["rank_ge", "any_enemy", "rank_le"] },
+              "exceptions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "can_eat": { "type": "string" },
+                    "cannot_eat": { "type": "string" }
+                  }
+                }
+              },
+              "water_rules": {
+                "type": "object",
+                "properties": {
+                  "invulnerable_in_water": { "type": "boolean" },
+                  "cannot_attack_from_water": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["type", "label", "moves"]
+      }
+    }
+  },
+  "required": ["pieces"]
+}

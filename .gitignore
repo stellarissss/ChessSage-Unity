@@ -1,0 +1,59 @@
+# ── Unity 工程忽略规则 ──
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Unity 自动生成的工程/解决方案文件
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Rider / VS / VSCode
+.idea/
+.vs/
+.vscode/
+*.apex
+*.tmp
+
+# 构建产物
+*.apk
+*.aab
+*.unitypackage
+*.app
+ExportedObj/
+crashlytics-build.properties
+sysinfo.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ── 本仓库特有的忽略 ──
+# 真实密钥/本地配置（原网页版约定，勿提交）
+config.json
+legacy-web/config.json
+legacy-web/**/config.json
+**/api密钥.txt
+
+# Python（仅为 legacy-web 保留参考，不参与 Unity 构建）
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/

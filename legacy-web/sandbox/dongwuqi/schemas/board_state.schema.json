@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "动物棋棋盘状态",
+  "description": "动物棋（斗兽棋）棋盘状态配置",
+  "type": "object",
+  "required": ["pieces", "current_turn", "game_status"],
+  "properties": {
+    "_metadata": {
+      "type": "object",
+      "description": "元数据，保留扩展空间"
+    },
+    "board": {
+      "type": "object",
+      "description": "棋盘配置"
+    },
+    "pieces": {
+      "type": "array",
+      "description": "棋子数组（16个动物）",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "side", "position", "is_alive"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "棋子唯一标识"
+          },
+          "type": {
+            "type": "string",
+            "description": "动物类型",
+            "not": {
+              "enum": ["pawn", "rook", "knight", "bishop", "queen", "king"]
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "棋子显示名称（emoji）"
+          },
+          "side": {
+            "type": "string",
+            "enum": ["red", "black"],
+            "description": "棋子所属方"
+          },
+          "position": {
+            "type": "array",
+            "description": "棋子位置 [x, y]",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "description": "x坐标（0-6）"
+              },
+              {
+                "type": "integer",
+                "minimum": 0,
+                "description": "y坐标（0-8）"
+              }
+            ]
+          },
+          "is_alive": {
+            "type": "boolean",
+            "description": "棋子是否存活"
+          },
+          "custom_properties": {
+            "type": "object",
+            "description": "自定义属性，保留AI扩展空间"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "current_turn": {
+      "type": "string",
+      "enum": ["red", "black"],
+      "description": "当前回合方"
+    },
+    "move_history": {
+      "type": "array",
+      "description": "移动历史记录"
+    },
+    "game_status": {
+      "type": "object",
+      "description": "游戏状态",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "游戏状态"
+        },
+        "winner": {
+          "type": ["string", "null"],
+          "description": "获胜方"
+        },
+        "win_condition": {
+          "type": ["string", "null"],
+          "description": "获胜条件"
+        },
+        "custom_rules_active": {
+          "type": "array",
+          "description": "已激活的自定义规则"
+        }
+      },
+      "additionalProperties": true
+    },
+    "mechanisms": {
+      "type": "object",
+      "description": "游戏机制状态（A类机制修改的运行时数据）",
+      "properties": {
+        "skip_turns": {
+          "type": "array",
+          "description": "跳过回合列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "side": { "type": "string", "enum": ["red", "black"] },
+              "remaining": { "type": "integer", "minimum": 1 },
+              "reason": { "type": "string" }
+            },
+            "required": ["side", "remaining"]
+          }
+        },
+        "ai_control": {
+          "type": "array",
+          "description": "AI接管回合列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "side": { "type": "string", "enum": ["red", "black"] },
+              "remaining": { "type": "integer", "minimum": 1 },
+              "reason": { "type": "string" }
+            },
+            "required": ["side", "remaining"]
+          }
+        },
+        "player_control": {
+          "type": "array",
+          "description": "玩家控制阵营列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "side": { "type": "string", "enum": ["red", "black", "both"] },
+              "reason": { "type": "string" }
+            },
+            "required": ["side"]
+          }
+        },
+        "random_moves": {
+          "type": "array",
+          "description": "随机走棋列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "side": { "type": "string", "enum": ["red", "black"] },
+              "remaining": { "type": "integer", "minimum": 1 },
+              "reason": { "type": "string" }
+            },
+            "required": ["side", "remaining"]
+          }
+        },
+        "extra_turns": {
+          "type": "array",
+          "description": "额外回合列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "side": { "type": "string", "enum": ["red", "black"] },
+              "remaining": { "type": "integer", "minimum": 1 },
+              "reason": { "type": "string" }
+            },
+            "required": ["side", "remaining"]
+          }
+        },
+        "move_limits": {
+          "type": "array",
+          "description": "每回合走棋步数限制列表",
+          "items": {
+            "type": "object",
+            "properties": {
+              "side": { "type": "string", "enum": ["red", "black"] },
+              "limit": { "type": "integer", "minimum": 1 },
+              "remaining_moves": { "type": "integer", "minimum": 0 }
+            },
+            "required": ["side", "limit"]
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

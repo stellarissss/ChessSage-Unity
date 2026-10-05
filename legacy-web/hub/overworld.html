@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>六道大陆 · 剧情模式大地图</title>
+<link rel="preconnect" href="https://fonts.googleapis.cn">
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+<link href="https://fonts.googleapis.cn/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+<style>
+:root {
+    --bg-deep: #070708;
+    --bg-panel: rgba(18,18,22,0.78);
+    --paper: #f3e9d2;
+    --gold: #d4af37;
+    --gold-dim: #8f7a3d;
+    --jade: #0d7377;
+    --crimson: #9b2335;
+    --amber: #e67e22;
+    --violet: #7b68ee;
+    --text-main: #eceae4;
+    --text-muted: #99948a;
+    --border: rgba(212,175,55,0.20);
+    --font-display: "Ma Shan Zheng", cursive;
+    --font-body: "Noto Serif SC", "Songti SC", serif;
+    --font-tech: "Orbitron", "Courier New", monospace;
+}
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--bg-deep); color: var(--text-main); font-family: var(--font-body); }
+#game-container { position: fixed; inset: 0; z-index: 1; }
+#game-container canvas { display: block; }
+
+/* ── iso-engine 等距舞台 ── */
+#iso-viewport {
+    position: absolute; inset: 0; overflow: hidden;
+    transform: translateZ(0);
+}
+#iso-viewport.iso-drag { cursor: grabbing; }
+#iso-stage {
+    position: absolute; top: 0; left: 0;
+    transform-origin: 0 0; will-change: transform;
+}
+#iso-overlay { position: absolute; top: 0; left: 0; pointer-events: none; }
+
+/* ── 屏幕空间光影 ── */
+#iso-lighting { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+#iso-lighting .ambient {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 62% 48% at 46% 30%, rgba(255,244,214,0.20), rgba(0,0,0,0) 75%);
+    mix-blend-mode: screen;
+}
+#iso-lighting .vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 105% 100% at 50% 46%, rgba(0,0,0,0) 52%, rgba(4,4,6,0.46) 100%);
+}
+
+/* ── DOM Overlay ── */
+.ow-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+.ow-radio { pointer-events: auto; }
+
+/* ── 等距叠加标点（相对 #iso-overlay 定位）── */
+.poi-emoji {
+    position: absolute;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; pointer-events: none;
+    filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6));
+    z-index: 20;
+}
+.poi-emoji.realm { animation: realmPulse 2.2s ease-in-out infinite; }
+.poi-emoji.active { animation: none; filter: drop-shadow(0 0 12px #ffffff) drop-shadow(0 0 6px rgba(255,255,255,0.9)); }
+.poi-emoji.realm-focus { animation: none !important; transform: scale(1.5); filter: drop-shadow(0 0 18px #ffffff) drop-shadow(0 0 10px gold); }
+@keyframes realmPulse {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-4px) scale(1.06); }
+}
+.realm-badge {
+    position: absolute;
+    text-align: center; font-size: 15px;
+    color: var(--gold); letter-spacing: 0.02em;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.85);
+    z-index: 21; pointer-events: none;
+    flex-direction: column;
+}
+.realm-badge.realm-done { color: var(--jade); }
+
+/* ── 玩家标记 ── */
+.player-marker {
+    position: absolute; width: 0; height: 0;
+    pointer-events: none; z-index: 40;
+}
+.player-shade {
+    position: absolute; left: -20px; top: -10px;
+    width: 40px; height: 12px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.48), rgba(0,0,0,0) 70%);
+    will-change: transform, opacity;
+}
+.player-avatar {
+    position: absolute; left: -23px; top: -44px;
+    width: 46px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; line-height: 1;
+    color: #ffe08a;
+    background: radial-gradient(circle, rgba(212,175,55,0.32), rgba(15,15,22,0.62) 72%);
+    border: 2px solid rgba(255,224,138,0.9);
+    border-radius: 50%;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.6), 0 0 20px rgba(212,175,55,0.45);
+    transform-origin: 50% 100%;
+    /* 浮动/倾斜由 JS 每帧驱动（overworld-melonjs.js _updateOverlay）：
+       CSS animation 会覆盖 inline transform，两者并存必然打架，故只用 JS 一条链路 */
+    will-change: transform;
+}
+
+/* HUD 顶部 */
+#hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 12px 18px;
+    background: linear-gradient(180deg, rgba(7,7,8,0.85), rgba(7,7,8,0.25));
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+.hud-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.hud-item .hud-icon { font-size: 17px; filter: drop-shadow(0 0 8px rgba(212,175,55,0.35)); }
+.hud-label { color: var(--text-muted); font-size: 12px; letter-spacing: 0.05em; }
+.hud-value { color: var(--gold); font-family: var(--font-tech); font-weight: 600; min-width: 22px; }
+.hud-skill .hud-value { color: #a78bfa; }
+.detection-wrap { display: flex; align-items: center; gap: 8px; }
+.detection-bar { width: 120px; height: 7px; border-radius: 4px; background: rgba(255,255,255,0.09); overflow: hidden; }
+.detection-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#fbbf24,#f97316,#ef4444); border-radius: 4px; transition: width 0.6s ease; }
+.hud-spacer { flex: 1; }
+.hud-btn {
+    pointer-events: auto; cursor: pointer;
+    border: 1px solid var(--border); background: var(--bg-panel); color: var(--text-main);
+    border-radius: 10px; padding: 7px 14px; font-size: 13px; font-family: var(--font-body);
+    transition: border-color .25s, color .25s, transform .2s;
+}
+.hud-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+.hud-btn.exits { border-color: rgba(155,35,53,.45); color: var(--text-muted); }
+.hud-btn.exits:hover { border-color: var(--crimson); color: var(--crimson); }
+
+/* ── 制作进度告知条（大地图尚未完工）── */
+#wip-notice {
+    position: absolute; top: 74px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 62;
+    display: flex; align-items: center; gap: 10px;
+    max-width: min(760px, calc(100vw - 32px));
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.42);
+    background: linear-gradient(120deg, rgba(38, 30, 10, 0.92), rgba(24, 20, 12, 0.92));
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0,0,0,0.35) inset;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    pointer-events: auto;
+    animation: wipIn .5s cubic-bezier(.22,1,.36,1);
+}
+@keyframes wipIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#wip-notice.wip-hidden { display: none; }
+.wip-notice-icon { font-size: 18px; flex: 0 0 auto; filter: drop-shadow(0 0 8px rgba(212,175,55,0.4)); }
+.wip-notice-text {
+    font-size: 13.5px; line-height: 1.65; letter-spacing: 0.02em;
+    color: var(--gold);
+    font-family: var(--font-display);
+}
+.wip-notice-close {
+    flex: 0 0 auto; cursor: pointer;
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: none; color: var(--text-muted); font-size: 13px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: color .2s, border-color .2s, background .2s;
+    -webkit-tap-highlight-color: transparent;
+}
+.wip-notice-close:hover { color: var(--paper); border-color: var(--gold); background: rgba(212,175,55,0.12); }
+@media (max-width: 640px) {
+    #wip-notice { top: 68px; padding: 9px 12px; gap: 8px; }
+    .wip-notice-text { font-size: 12.5px; }
+}
+@media print { #wip-notice { display: none; } }
+
+/* 底部互动提示条 */
+#interact-hint {
+    position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
+    display: none; align-items: center; gap: 10px;
+    padding: 9px 20px; border-radius: 999px;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    font-size: 14px; color: var(--text-main);
+}
+#interact-hint.visible { display: inline-flex; animation: hintPop .3s cubic-bezier(.22,1,.36,1); }
+#interact-key {
+    display: inline-grid; place-items: center; min-width: 28px; height: 28px;
+    padding: 0 8px; border-radius: 8px;
+    background: var(--gold); color: var(--bg-deep);
+    font-family: var(--font-tech); font-weight: 700; font-size: 15px;
+    box-shadow: 0 0 14px rgba(212,175,55,0.35);
+    animation: ePulse 1.4s ease-in-out infinite;
+}
+#interact-label { color: var(--paper); letter-spacing: 0.03em; }
+@keyframes hintPop { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+@keyframes ePulse { 0%,100% { box-shadow: 0 0 14px rgba(212,175,55,.35);} 50% { box-shadow: 0 0 22px rgba(212,175,55,.7);} }
+
+/* ── 最近入口引导（罗盘浮标） ── */
+#realm-guide {
+    position: absolute; right: 22px; top: 78px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 16px 8px 12px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(30,28,18,.82), rgba(16,16,20,.82));
+    border: 1px solid rgba(212,175,55,.28);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.5);
+    color: var(--paper); font-size: 13px; letter-spacing: 0.04em;
+    opacity: 0; transform: translateY(-6px) scale(.97);
+    pointer-events: none; transition: opacity .35s, transform .35s;
+    z-index: 45;
+}
+#realm-guide.visible { opacity: 1; transform: translateY(0) scale(1); }
+#realm-guide-arrow {
+    font-size: 22px; line-height: 1; color: var(--gold);
+    filter: drop-shadow(0 0 8px rgba(212,175,55,.5));
+    width: 26px; text-align: center;
+    transition: transform .25s ease;
+}
+.realm-guide-body { display: flex; flex-direction: column; line-height: 1.35; }
+#realm-guide-name { color: var(--paper); font-weight: 600; }
+#realm-guide-dist { color: var(--text-muted); font-size: 11px; letter-spacing: 0.06em; }
+#realm-guide-ring {
+    position: absolute; inset: -4px; border-radius: 16px;
+    border: 1px solid rgba(212,175,55,.22);
+    animation: guidePing 2.6s ease-out infinite;
+}
+@keyframes guidePing {
+    0%   { opacity: .9; transform: scale(.96); }
+    70%  { opacity: 0;  transform: scale(1.06); }
+    100% { opacity: 0;  transform: scale(1.06); }
+}
+
+/* ── 通用弹窗外壳 ── */
+.modal {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center; padding: 24px;
+    background: rgba(0,0,0,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    pointer-events: auto; z-index: 60;
+}
+.modal.active { display: flex; }
+.modal-box {
+    position: relative; width: 100%; max-width: 620px; max-height: 86vh; overflow: auto;
+    background: var(--bg-panel); border: 1px solid var(--border); border-radius: 22px;
+    box-shadow: var(--shadow); padding: 26px 28px;
+    animation: modalIn .32s cubic-bezier(.22,1,.36,1);
+}
+@keyframes modalIn { from { opacity: 0; transform: translateY(14px) scale(.98);} to { opacity: 1; transform: none; } }
+.modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.modal-head h2 { margin: 0; font-family: var(--font-display); font-size: 26px; color: var(--gold); letter-spacing: .05em; }
+.modal-close {
+    background: none; border: 1px solid rgba(255,255,255,0.16); color: var(--text-muted);
+    width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer;
+    transition: all .2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.08); color: var(--paper); }
+.chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border); color: var(--text-muted); margin-left: 8px; vertical-align: middle; }
+.chip.cleared { color: var(--jade); border-color: var(--jade); }
+.chip.sandbox { color: var(--violet); border-color: var(--violet); }
+.chip.locked { color: var(--text-muted); }
+.chip.recommended { color: #ffd700; border-color: rgba(255,215,0,.6); background: rgba(255,215,0,.12); }
+.chip.notrec { color: #d08a8a; border-color: rgba(208,138,138,.5); background: rgba(208,138,138,.10); }
+
+/* 选关列表：主推 / 不推荐的测试 提示横幅 */
+.realm-select-tag {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; margin-bottom: 12px; letter-spacing: .04em;
+}
+.realm-select-tag.recommended { color: #ffd700; border: 1px solid rgba(255,215,0,.6); background: rgba(255,215,0,.12); }
+.realm-select-tag.notrec { color: #d08a8a; border: 1px solid rgba(208,138,138,.5); background: rgba(208,138,138,.10); }
+
+/* 大陆入口浮标：进度下方叠加的棋类定位标签 */
+.realm-badge .rec-tag {
+    display: block; margin-top: 3px; padding: 0 6px; border-radius: 4px;
+    font-size: 11px; line-height: 1.5; letter-spacing: .02em;
+}
+.realm-badge .rec-tag.recommended { color: #ffd700; border: 1px solid rgba(255,215,0,.6); background: rgba(255,215,0,.14); }
+.realm-badge .rec-tag.notrec { color: #d08a8a; border: 1px solid rgba(208,138,138,.5); background: rgba(208,138,138,.12); }
+
+/* ── 选关列表 ── */
+.level-item {
+    display: block; width: 100%; text-align: left;
+    margin-bottom: 10px; padding: 13px 16px;
+    border: 1px solid var(--border); border-radius: 12px;
+    background: rgba(255,255,255,0.03); color: var(--text-main);
+    font-family: var(--font-body); font-size: 14px; cursor: pointer;
+    transition: all .25s ease; line-height: 1.4;
+}
+.level-item:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.level-item:hover:not(:disabled) { border-color: var(--gold); background: rgba(255,255,255,0.06); transform: translateX(4px); }
+.level-item.completed { border-color: rgba(74,222,128,0.35); }
+.level-item.current { border-color: var(--gold); background: rgba(212,175,55,0.06); }
+.level-item:disabled, .level-item.locked { opacity: 0.45; cursor: not-allowed; }
+.level-item.locked:hover { transform: none; border-color: var(--border); }
+.level-item.sandbox { border-color: rgba(250,204,21,0.45); background: rgba(250,204,21,0.05); }
+.lv-top { display: flex; align-items: center; gap: 10px; }
+.lv-name { font-size: 16px; font-weight: 600; }
+.lv-badge { font-size: 11px; padding: 1px 8px; border-radius: 5px; background: rgba(255,255,255,0.1); color: var(--text-muted); }
+.lv-badge.boss { color: #ff6b6b; border: 1px solid rgba(255,107,107,.5); }
+.lv-stars { font-size: 12px; color: var(--gold); letter-spacing: 0.1em; margin-left: auto; }
+.lv-desc { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+.lv-status { font-size: 12px; margin-top: 6px; }
+.lv-status.done { color: #4ade80; }
+.lv-status.now { color: var(--gold); }
+.lv-status.lock { color: var(--text-muted); }
+
+/* ── 技能树 ── */
+#skill-balance { font-family: var(--font-tech); font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+#skill-balance b { color: #a78bfa; font-size: 16px; }
+.skill-branches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+@media (max-width: 720px) { .skill-branches { grid-template-columns: 1fr; } }
+.skill-branch { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; }
+.skill-branch-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.skill-branch-icon { font-size: 20px; }
+.skill-branch-name { font-family: var(--font-tech); font-size: 12px; letter-spacing: .12em; color: var(--gold); }
+.skill-branch-desc { font-size: 11px; color: var(--text-muted); margin: 4px 0 12px; line-height: 1.5; }
+.skill-item, .skill-placeholder {
+    display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+    margin-bottom: 8px; padding: 9px 10px; border-radius: 9px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-main); font-family: var(--font-body); font-size: 13px;
+}
+.skill-placeholder { opacity: .5; cursor: not-allowed; }
+.skill-item.unlocked { border-color: rgba(74,222,128,.3); background: rgba(74,222,128,.07); }
+.skill-item.available { cursor: pointer; border-color: rgba(139,92,246,.4); background: rgba(139,92,246,.1); }
+.skill-item.available:hover { background: rgba(139,92,246,.2); }
+.skill-item.available:focus-visible { outline: 2px solid #a78bfa; outline-offset: 1px; }
+.skill-item:disabled, .skill-item.blocked { opacity: .5; cursor: not-allowed; }
+.skill-tier-tag { font-family: var(--font-tech); font-size: 10px; color: var(--text-muted); flex: 0 0 40px; text-align: center; }
+.skill-body { flex: 1; min-width: 0; }
+.skill-name { font-size: 13px; font-weight: 600; }
+.skill-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+.skill-cost { font-family: var(--font-tech); font-size: 11px; color: #a78bfa; white-space: nowrap; }
+.skill-item.unlocked .skill-cost { color: #4ade80; }
+.skill-mark { width: 16px; text-align: center; }
+
+/* ── 总览 ── */
+.ov-row {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    margin-bottom: 10px; padding: 12px 16px;
+    border: 1px solid var(--border); border-radius: 12px;
+    background: rgba(255,255,255,0.03); color: var(--text-main);
+    font-family: var(--font-body); font-size: 14px; cursor: pointer;
+    transition: all .25s;
+}
+.ov-row:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.ov-row:hover { border-color: var(--gold); background: rgba(255,255,255,0.06); transform: translateX(3px); }
+.ov-icon { font-size: 22px; }
+.ov-name { font-weight: 600; min-width: 80px; }
+.ov-progress { color: var(--gold); font-family: var(--font-tech); font-size: 13px; margin-left: auto; }
+.ov-name-realm { margin-left: 8px; }
+
+/* ── Toast ── */
+#toast-container { position: absolute; top: 84px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; pointer-events: none; z-index: 80; }
+.toast {
+    position: relative; padding: 12px 18px; border-radius: 12px; max-width: 320px;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    box-shadow: var(--shadow); color: var(--text-main); font-size: 14px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    animation: toastIn .3s cubic-bezier(.22,1,.36,1);
+}
+.toast.leaving { opacity: 0; transform: translateX(20px); transition: all .3s; }
+@keyframes toastIn { from { opacity: 0; transform: translateX(24px);} to { opacity: 1; transform: none; } }
+
+/* ── 加载遮罩 ── */
+.full-mask {
+    position: absolute; inset: 0; z-index: 100; display: flex;
+    align-items: center; justify-content: center; flex-direction: column; gap: 18px;
+    background: var(--bg-deep); pointer-events: auto;
+}
+.full-mask.hidden { display: none; }
+.spinner {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 3px solid rgba(212,175,55,0.18); border-top-color: var(--gold);
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.full-mask p { margin: 0; color: var(--text-muted); font-size: 14px; letter-spacing: .04em; }
+.full-mask .mask-title { font-family: var(--font-display); font-size: 24px; color: var(--gold); }
+
+/* ── 安慰式加载进度条 ── */
+.loading-progress {
+    position: relative; width: min(420px, 66vw); height: 8px;
+    border-radius: 999px; overflow: hidden;
+    background: rgba(212,175,55,0.12);
+    border: 1px solid rgba(212,175,55,0.28);
+    box-shadow: 0 0 18px rgba(212,175,55,0.16) inset;
+}
+.loading-progress-fill {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #7a5a18, var(--gold), #ffe08a, var(--gold));
+    background-size: 220% 100%;
+    animation: progressSheen 1.1s linear infinite;
+    box-shadow: 0 0 14px rgba(212,175,55,0.7);
+    transition: width .18s ease-out;
+    will-change: width;
+}
+@keyframes progressSheen {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -220% 0; }
+}
+.loading-meta {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 18px;
+    width: min(420px, 66vw);
+}
+.loading-hint {
+    color: var(--text-muted); font-size: 13px; letter-spacing: .04em;
+    min-height: 20px; opacity: .9;
+    transition: opacity .3s;
+}
+.loading-pct {
+    font-family: var(--font-tech); font-size: 13px; color: var(--gold);
+    letter-spacing: .08em; white-space: nowrap;
+}
+
+/* ── 错误遮罩 ── */
+#error-overlay .mask-title { color: var(--crimson); }
+.error-msg { color: var(--text-muted); font-size: 14px; text-align: center; max-width: 560px; line-height: 1.8; padding: 0 20px; }
+.retry-btn {
+    cursor: pointer; border: 1px solid var(--crimson); background: rgba(155,35,53,.25); color: var(--paper);
+    border-radius: 999px; padding: 10px 30px; font-size: 14px; font-family: var(--font-body);
+    transition: all .25s;
+}
+.retry-btn:hover { background: var(--crimson); color: #fff; transform: translateY(-2px); }
+
+/* ── 右下角小地图 ── */
+#minimap-container {
+    position: absolute; right: 22px; bottom: 22px;
+    width: 236px; height: 177px; /* 放大后的小地图（与大陆 4:3 比例） */
+    border: 1px solid rgba(212,175,55,0.32);
+    border-radius: 10px;
+    background: rgba(10,10,14,0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 10px 34px rgba(0,0,0,0.55);
+    overflow: hidden;
+    z-index: 46;
+    pointer-events: none;
+}
+#minimap-base {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    opacity: 0.85;
+    image-rendering: pixelated;
+}
+#minimap-pois { position: absolute; inset: 0; pointer-events: none; }
+#minimap-player {
+    position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px;
+    background: radial-gradient(circle, #ffe08a, #d4af37 70%);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(212,175,55,0.9);
+    z-index: 2; left: 0; top: 0;
+    transition: left 0.15s linear, top 0.15s linear;
+}
+.minimap-poi {
+    position: absolute;
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; margin: -9px 0 0 -9px;
+    font-size: 12px; line-height: 1; text-align: center;
+    z-index: 1;
+}
+.minimap-poi.unexplored { color: rgba(255,255,255,0.6); text-shadow: 0 0 4px rgba(0,0,0,0.9); }
+.minimap-poi.explored { color: var(--gold); text-shadow: 0 0 5px rgba(212,175,55,0.7); }
+.minimap-poi.sandbox { color: var(--violet); text-shadow: 0 0 6px rgba(139,92,246,0.8); }
+.minimap-label {
+    position: absolute; left: 7px; bottom: 5px;
+    font-family: var(--font-tech); font-size: 9px; letter-spacing: 0.18em;
+    color: rgba(212,175,55,0.75); text-transform: uppercase;
+    pointer-events: none; z-index: 3;
+}
+
+/* ── 无障碍：键盘焦点 ── */
+.ow-overlay :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.modal-box.modal-lg { max-width: 760px; }
+
+/* ── 成就殿堂 ── */
+.ach-summary { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 14px; }
+.ach-summary b { color: var(--gold); font-family: var(--font-tech); font-size: 18px; }
+.ach-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.ach-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    color: var(--text-muted); font-size: 13px; line-height: 1.35; opacity: 0.55;
+}
+.ach-item.unlocked { opacity: 1; border-color: rgba(212,175,55,0.4); background: rgba(212,175,55,0.07); color: var(--text-main); }
+.ach-item-icon { font-size: 22px; flex: 0 0 auto; }
+.ach-item-icon.locked { filter: grayscale(1); opacity: 0.5; }
+.ach-item-name { font-weight: 600; }
+.ach-item-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.ach-item-rare { position: relative; }
+
+/* ── 轮回修行 ── */
+.rpg-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.rpg-stat {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px; border-radius: 12px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+}
+.rpg-stat-icon { font-size: 24px; }
+.rpg-stat-label { color: var(--text-muted); font-size: 12px; letter-spacing: .05em; }
+.rpg-stat-value { font-family: var(--font-tech); font-size: 20px; color: var(--gold); margin-left: auto; }
+.rpg-ending-preview {
+    margin-top: 14px; padding: 13px 16px; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(30,28,18,0.6), rgba(16,16,20,0.6));
+    border: 1px solid rgba(212,175,55,.3);
+    text-align: center; color: var(--text-muted); font-size: 13px;
+}
+.rpg-ending-preview b { color: var(--gold); font-family: var(--font-display); font-size: 18px; }
+.rpg-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; justify-content: center; }
+.rpg-action {
+    pointer-events: auto; cursor: pointer; text-decoration: none;
+    border: 1px solid var(--border); background: var(--bg-panel); color: var(--text-main);
+    border-radius: 10px; padding: 9px 18px; font-size: 13px; font-family: var(--font-body);
+    transition: all .25s;
+}
+.rpg-action:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+.rpg-action.boss { border-color: rgba(155,35,53,.6); }
+.rpg-action.boss:hover { border-color: var(--crimson); color: var(--crimson); }
+
+/* ── 大陆周围点缀云朵（外部黑色区域的柔和点缀） ── */
+.ow-cloud {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 55%, rgba(240,246,255,0.80), rgba(235,242,255,0.38) 55%, rgba(226,234,248,0.08) 80%);
+    filter: blur(6px);
+    opacity: 0.55;
+    pointer-events: none;
+    animation: cloudDrift 22s ease-in-out infinite alternate;
+    will-change: transform;
+    z-index: 1;
+}
+@keyframes cloudDrift {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(46px); }
+}
+
+/* ── 巨型告示牌（世界内的等距立牌） ── */
+.ow-billboard {
+    position: absolute;
+    pointer-events: none;
+    transform-style: preserve-3d;
+    display: flex; flex-direction: column; align-items: center;
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.55));
+    z-index: 22;
+}
+.ow-billboard {
+    transform: scale(0.5);
+    transform-origin: bottom center;
+}
+.ow-billboard .bb-post {
+    position: relative;
+    background:
+        linear-gradient(180deg, rgba(120,74,28,.96), rgba(90,55,20,.96) 70%, rgba(60,36,14,.96));
+    border: 2px solid #c9a35c;
+    border-radius: 6px;
+    box-shadow: inset 0 0 24px rgba(0,0,0,0.5), 0 0 26px rgba(255,214,120,0.18);
+    width: 188px; min-height: 260px;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    padding: 14px 12px; text-align: center; color: #f7ecd0;
+    box-sizing: border-box;
+}
+.ow-billboard .bb-post::before {
+    content: ''; position: absolute; inset: 5px;
+    border: 1px solid rgba(212,175,55,0.35);
+    border-radius: 4px;
+    pointer-events: none;
+}
+.ow-billboard .bb-title {
+    font-family: var(--font-display); font-size: 24px; color: var(--gold);
+    letter-spacing: .12em; margin: 4px 0 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,.7);
+}
+.ow-billboard .bb-sub { font-size: 11px; letter-spacing: .28em; color: #d8c9a4; margin-bottom: 8px; }
+.ow-billboard .bb-line { width: 80%; height: 1px; background: rgba(212,175,55,.4); margin: 8px 0; }
+.ow-billboard .bb-rows { width: 100%; font-size: 12px; line-height: 1.6; }
+.ow-billboard .bb-row { display: flex; justify-content: space-between; gap: 8px; color: #eaddc3; padding: 2px 2px; }
+.ow-billboard .bb-row b { color: var(--gold); font-family: var(--font-tech); }
+.ow-billboard .bb-legend { font-size: 10px; color: #bfa97e; margin-top: 8px; letter-spacing: .06em; }
+.ow-billboard .bb-pole { width: 12px; height: 40px; background: linear-gradient(90deg,#4c3318,#6e4a24,#4c3318); }
+.ow-billboard .bb-base { width: 66px; height: 10px; border-radius: 3px; background: linear-gradient(90deg,#4c3318,#6e4a24,#4c3318); }
+.ow-billboard.glow { animation: bbGlow 2.2s ease-in-out infinite; }
+@keyframes bbGlow { 0%,100% { filter: drop-shadow(0 8px 10px rgba(0,0,0,.55)); } 50% { filter: drop-shadow(0 8px 16px rgba(255,214,120,.45)); } }
+.ow-billboard.active > .bb-post { border-color: #fff2c0; box-shadow: inset 0 0 24px rgba(0,0,0,0.5), 0 0 34px rgba(255,240,180,0.6); }
+
+/* ── 降低动画 ── */
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after { animation: none !important; transition: none !important; }
+
+@media (max-width: 640px) {
+    #hud { gap: 10px; padding: 10px 12px; }
+    .hud-label { display: none; }
+    .detection-bar { width: 80px; }
+    .modal { padding: 12px; }
+    .modal-box { padding: 20px 16px; }
+}
+
+</style>
+</head>
+<body>
+<div id="game-container" role="application" aria-label="六道大陆大地图">
+    <!-- melonJS 画布宿主：渲染器启动后清空内部占位并挂载 <canvas>。
+         #iso-lighting（环境光 + 暗角 DOM 叠加）保留作为画面的额外层次。 -->
+    <div id="iso-viewport">
+        <div id="iso-stage"></div>
+    </div>
+    <!-- 屏幕空间光影：环境光 + 暗角 -->
+    <div id="iso-lighting" aria-hidden="true">
+        <div class="ambient"></div>
+        <div class="vignette"></div>
+    </div>
+</div>
+
+<div class="ow-overlay" id="ow-root">
+    <!-- 顶部 HUD -->
+    <div id="hud">
+        <div class="hud-item hud-skill"><span class="hud-icon">⭐</span><span class="hud-label">技能点</span><span class="hud-value" id="hud-skill-points">0</span></div>
+        <div class="hud-item"><span class="hud-icon">👁️</span><span class="hud-label">识破</span>
+            <div class="detection-wrap">
+                <div class="detection-bar"><div class="detection-fill" id="hud-detection-fill"></div></div>
+                <span class="hud-value" id="hud-detection-value">0%</span>
+            </div>
+        </div>
+        <div class="hud-item"><span class="hud-icon">🏆</span><span class="hud-label">通关道境</span><span class="hud-value" id="hud-realm-cleared">0 / 6</span></div>
+        <div class="hud-spacer"></div>
+        <button class="hud-btn" id="btn-overview" type="button">🧭 大陆总览</button>
+        <button class="hud-btn" id="btn-tutorial" type="button">📖 玩法教程</button>
+        <button class="hud-btn" id="btn-skill" type="button">🌳 技能树</button>
+        <button class="hud-btn" id="btn-ach" type="button">🏆 成就</button>
+        <button class="hud-btn" id="btn-rpg" type="button">☯ 轮回修行</button>
+        <a class="hud-btn exits" id="btn-exit" href="/">← 回标题</a>
+    </div>
+
+    <!-- 制作进度告知：大地图尚未完工，明确标注当前完成度说明 -->
+    <div id="wip-notice" role="note" aria-label="制作进度说明">
+        <span class="wip-notice-icon" aria-hidden="true">🚧</span>
+        <span class="wip-notice-text">大地图尚未制作完成，请诸君见谅。完成度的差距在于时间和预算，而非能力与创意。</span>
+        <button class="wip-notice-close" id="wip-notice-close" type="button" aria-label="收起制作进度说明">✕</button>
+    </div>
+
+    <!-- 底部互动提示条 -->
+    <div id="interact-hint"><span id="interact-key">E</span><span id="interact-label"></span></div>
+
+    <!-- 最近入口引导（罗盘浮标） -->
+    <div id="realm-guide" aria-live="polite">
+        <span id="realm-guide-arrow">↗</span>
+        <span class="realm-guide-body"><span id="realm-guide-name">人道</span><span id="realm-guide-dist">8 格</span></span>
+        <span id="realm-guide-ring" aria-hidden="true"></span>
+    </div>
+
+    <!-- 右下角小地图：大陆缩略图 + 玩家 + 各入口（❓/emoji 探索标记） -->
+    <div id="minimap-container" role="img" aria-label="大陆小地图">
+        <canvas id="minimap-base"></canvas>
+        <div id="minimap-pois"></div>
+        <div id="minimap-player"></div>
+        <span class="minimap-label">大陆图</span>
+    </div>
+
+    <!-- 总览弹窗 -->
+    <div class="modal" id="overview-modal" role="dialog" aria-modal="true" aria-labelledby="overview-title">
+        <div class="modal-box">
+            <div class="modal-head"><h2 id="overview-title">🌍 六道大陆总览</h2>
+                <button class="modal-close" id="close-overview" type="button" aria-label="关闭总览">✕</button>
+            </div>
+            <div id="overview-realms"></div>
+        </div>
+    </div>
+
+    <!-- 选关弹窗 -->
+    <div class="modal" id="realm-modal" role="dialog" aria-modal="true" aria-labelledby="realm-modal-title">
+        <div class="modal-box">
+            <div class="modal-head"><h2 id="realm-modal-title">选择关卡</h2>
+                <button class="modal-close" id="close-realm-modal" type="button" aria-label="关闭选关">✕</button>
+            </div>
+            <div id="realm-levels"></div>
+        </div>
+    </div>
+
+    <!-- 技能树弹窗 -->
+    <div class="modal" id="skill-modal" role="dialog" aria-modal="true" aria-labelledby="skill-modal-title">
+        <div class="modal-box">
+            <div class="modal-head"><h2 id="skill-modal-title">🌳 技能树</h2>
+                <button class="modal-close" id="close-skill-modal" type="button" aria-label="关闭技能树">✕</button>
+            </div>
+            <div id="skill-balance">技能点余额：<b id="skill-points-balance">0</b></div>
+            <div class="skill-branches" id="skill-branches"></div>
+        </div>
+    </div>
+
+    <!-- 成就殿堂浮窗 -->
+    <div class="modal" id="ach-modal" role="dialog" aria-modal="true" aria-labelledby="ach-modal-title">
+        <div class="modal-box modal-lg">
+            <div class="modal-head"><h2 id="ach-modal-title">🏆 成就殿堂</h2>
+                <button class="modal-close" id="close-ach-modal" type="button" aria-label="关闭成就">✕</button>
+            </div>
+            <div id="ach-summary" class="ach-summary"></div>
+            <div id="ach-list" class="ach-list"></div>
+        </div>
+    </div>
+
+    <!-- 轮回修行浮窗 -->
+    <div class="modal" id="rpg-modal" role="dialog" aria-modal="true" aria-labelledby="rpg-modal-title">
+        <div class="modal-box">
+            <div class="modal-head"><h2 id="rpg-modal-title">☯ 轮回修行</h2>
+                <button class="modal-close" id="close-rpg-modal" type="button" aria-label="关闭修行">✕</button>
+            </div>
+            <div id="rpg-stats" class="rpg-stats"></div>
+            <div id="rpg-ending-preview" class="rpg-ending-preview"></div>
+            <div class="rpg-actions" id="rpg-actions"></div>
+        </div>
+    </div>
+
+    <!-- 玩法教程已改为独立页面 /tutorial（点击顶栏「玩法教程」以新标签页打开），
+         此处不再保留浮窗 DOM：浮窗覆盖 canvas 会带来渲染负担与交互遮挡。 -->
+
+    <!-- Toast 容器 -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <!-- 加载遮罩 -->
+    <div class="full-mask" id="loading-overlay" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="mask-title">六道大陆 · 载入中</div>
+        <div class="loading-progress" aria-hidden="true"><div class="loading-progress-fill" id="loading-progress-fill"></div></div>
+        <div class="loading-meta">
+            <span class="loading-hint" id="loading-hint">正在铺展山河…</span>
+            <span class="loading-pct" id="loading-pct">0%</span>
+        </div>
+        <p id="loading-text" hidden></p>
+    </div>
+
+    <!-- 错误遮罩 -->
+    <div class="full-mask hidden" id="error-overlay" role="alertdialog" aria-modal="true" aria-labelledby="error-title">
+        <div class="spinner" aria-hidden="true" style="animation:none;border-color:#9b2335;border-top-color:transparent;"></div>
+        <div class="mask-title" id="error-title">山河破碎</div>
+        <p class="error-msg" id="error-text">大陆加载失败。</p>
+        <button class="retry-btn" id="error-retry" type="button">↻ 重新加载</button>
+    </div>
+</div>
+
+<script src="/static/overworld-ui.js"></script>
+<script type="module" src="/static/overworld-load.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{
+  "_metadata": {
+    "version": "3.0",
+    "description": "黑方棋子移动规则"
+  },
+  "side": "black",
+  "pieces": {
+    "general": {
+      "label": "將",
+      "is_king": true,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [
+            0,
+            1
+          ],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {
+              "in_region": {
+                "pos": "$dest",
+                "region": "$palace"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "advisor": {
+      "label": "士",
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [
+            1,
+            1
+          ],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {
+              "in_region": {
+                "pos": "$dest",
+                "region": "$palace"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "elephant": {
+      "label": "象",
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [
+            2,
+            2
+          ],
+          "block": [
+            [
+              1,
+              1
+            ]
+          ],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {
+              "not": {
+                "crossed_river": {
+                  "pos": "$dest"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "horse": {
+      "label": "馬",
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [
+            1,
+            2
+          ],
+          "block": [
+            [
+              0,
+              1
+            ]
+          ],
+          "land": "any",
+          "sym": "rotate4_mirror"
+        }
+      ]
+    },
+    "chariot": {
+      "label": "車",
+      "moves": [
+        {
+          "kind": "ray",
+          "dir": [
+            1,
+            0
+          ],
+          "max": -1,
+          "screens": 0,
+          "land": "any",
+          "sym": "rotate4"
+        }
+      ]
+    },
+    "cannon": {
+      "label": "砲",
+      "moves": [
+        {
+          "kind": "ray",
+          "dir": [
+            1,
+            0
+          ],
+          "max": -1,
+          "screens": 0,
+          "land": "empty",
+          "sym": "rotate4"
+        },
+        {
+          "kind": "ray",
+          "dir": [
+            1,
+            0
+          ],
+          "max": -1,
+          "screens": 1,
+          "land": "enemy",
+          "sym": "rotate4"
+        }
+      ]
+    },
+    "soldier": {
+      "label": "卒",
+      "moves": [
+        {
+          "kind": "jump",
+          "to": "$forward",
+          "block": [],
+          "land": "any",
+          "sym": "none"
+        },
+        {
+          "kind": "jump",
+          "to": [
+            1,
+            0
+          ],
+          "block": [],
+          "land": "any",
+          "sym": "mirror_x",
+          "where": [
+            {
+              "crossed_river": {
+                "pos": "$self"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "custom_pieces": []
+}

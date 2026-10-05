@@ -1,0 +1,57 @@
+{
+  "checkmate": {
+    "name": "将死对方",
+    "description": "使对方无路可走",
+    "turn_limit": 20
+  },
+  "capture_count": {
+    "name": "吃子数目标",
+    "description": "吃掉对方指定数量的棋子",
+    "turn_limit": 20
+  },
+  "turn_limit": {
+    "name": "竞速",
+    "description": "在限定回合内获胜",
+    "turn_limit": 20
+  },
+  "evacuation": {
+    "name": "撤离",
+    "description": "将指定棋子撤离到目标区域",
+    "turn_limit": 20
+  },
+  "board_coverage": {
+    "name": "棋盘覆盖率",
+    "description": "己方棋子覆盖指定百分比的棋盘",
+    "turn_limit": 20
+  },
+  "formation": {
+    "name": "特定阵型",
+    "description": "组成指定阵型",
+    "turn_limit": 20
+  },
+  "color_coverage": {
+    "name": "颜色覆盖率",
+    "description": "点亮指定百分比的暗色区域",
+    "turn_limit": 20
+  },
+  "survival": {
+    "name": "生存",
+    "description": "坚持指定回合数并保留一定棋子",
+    "turn_limit": 20
+  },
+  "assassination": {
+    "name": "刺杀",
+    "description": "在限定回合内吃掉对方指定棋子",
+    "turn_limit": 20
+  },
+  "escort": {
+    "name": "护送",
+    "description": "护送指定棋子沿路径前进",
+    "turn_limit": 20
+  },
+  "compound": {
+    "name": "复合条件",
+    "description": "满足多个条件",
+    "turn_limit": 20
+  }
+}

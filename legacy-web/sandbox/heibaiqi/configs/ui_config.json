@@ -1,0 +1,29 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "game": "heibaiqi"
+  },
+  "theme": {
+    "board": {
+      "background": "#1a5d3a",
+      "line": "#000000"
+    },
+    "pieces": {
+      "black": "#000000",
+      "white": "#ffffff",
+      "highlight": "#ffd700"
+    },
+    "highlight": {
+      "valid_move": "rgba(255, 215, 0, 0.4)",
+      "last_move": "#ffd700",
+      "flipped": "#ff6b6b"
+    }
+  },
+  "layout": {
+    "board_size": "auto",
+    "input_position": "bottom",
+    "response_area": "side"
+  },
+  "custom_css": "",
+  "custom_js": ""
+}

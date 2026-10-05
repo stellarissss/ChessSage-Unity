@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>html { zoom: 0.75; }</style>
+    <title>天道Boss战 · 最终审判</title>
+    <link href="https://fonts.googleapis.cn/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        :root {
+            --bg-dark: #050508;
+            --bg-card: rgba(15, 15, 25, 0.9);
+            --text-main: #e0e0e8;
+            --text-dim: #666680;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+            --tiandao-color: #8b0000;
+        }
+        body { background: var(--bg-dark); color: var(--text-main); font-family: 'Noto Serif SC', serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        .boss-scene { position: fixed; inset: 0; display: flex; flex-direction: column; background: radial-gradient(ellipse at center top, #1a0a0a 0%, #050508 70%); }
+        .boss-header { text-align: center; padding: 30px 20px 10px; }
+        .boss-title { font-family: 'Ma Shan Zheng', serif; font-size: 42px; color: var(--tiandao-color); text-shadow: 0 0 30px rgba(139,0,0,0.5); margin: 0; }
+        .boss-subtitle { color: var(--text-dim); font-size: 14px; margin-top: 8px; letter-spacing: 6px; }
+        .boss-info { display: flex; justify-content: center; gap: 30px; margin-top: 12px; }
+        .boss-info-item { font-size: 13px; color: var(--text-dim); }
+        .boss-info-item span { color: var(--accent-red); font-weight: 600; }
+        .dialogue-section { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 40px 20px; }
+        .boss-dialogue-box { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid rgba(139,0,0,0.3); border-radius: 12px; padding: 24px 32px; margin-bottom: 16px; min-height: 120px; display: none; }
+        .boss-speaker { font-family: 'Ma Shan Zheng', serif; font-size: 20px; color: var(--accent-red); margin-bottom: 10px; }
+        .boss-speaker.narrator { color: var(--text-dim); font-size: 14px; }
+        .boss-text { font-size: 17px; line-height: 1.8; }
+        .boss-controls { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
+        .boss-btn { padding: 8px 24px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 14px; border: 1px solid; transition: all 0.2s; background: transparent; }
+        .boss-btn.next { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .boss-btn.next:hover { background: var(--accent-gold); color: var(--bg-dark); }
+        .boss-btn.enter { border-color: var(--accent-red); color: var(--accent-red); font-size: 16px; padding: 12px 36px; }
+        .boss-btn.enter:hover { background: var(--accent-red); color: white; }
+        .boss-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .chess-notice { background: rgba(139,0,0,0.1); border: 1px solid rgba(139,0,0,0.3); border-radius: 8px; padding: 20px; margin: 20px 40px; text-align: center; }
+        .chess-notice h3 { color: var(--accent-red); font-family: 'Ma Shan Zheng', serif; font-size: 22px; margin: 0 0 10px; }
+        .chess-notice p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 4px 0; }
+        .chess-notice .rule { color: var(--accent-gold); }
+        .chess-notice .red-cross { color: var(--accent-red); font-weight: bold; }
+        .enter-section { text-align: center; padding: 30px; }
+        .attempts { font-size: 13px; color: var(--text-dim); margin-top: 16px; }
+        .blocked-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; display: none; align-items: center; justify-content: center; }
+        .blocked-overlay.active { display: flex; }
+        .blocked-msg { text-align: center; max-width: 500px; }
+        .blocked-msg h2 { color: var(--accent-red); font-family: 'Ma Shan Zheng', serif; font-size: 32px; }
+        .blocked-msg p { color: var(--text-dim); font-size: 15px; line-height: 1.8; }
+        .back-link { position: fixed; top: 20px; left: 20px; color: var(--text-dim); text-decoration: none; font-size: 14px; z-index: 10; }
+        .back-link:hover { color: var(--accent-gold); }
+    </style>
+</head>
+<body>
+    <a href="/hub" class="back-link">← 返回总坛</a>
+    <div class="boss-scene">
+        <div class="boss-header">
+            <h1 class="boss-title">天道 · 最终审判</h1>
+            <div class="boss-subtitle">FINAL JUDGMENT</div>
+            <div class="boss-info">
+                <div class="boss-info-item">难度：<span>nightmare</span></div>
+                <div class="boss-info-item">棋类：<span>传统象棋</span></div>
+                <div class="boss-info-item">作弊：<span>禁止</span></div>
+            </div>
+        </div>
+
+        <div class="dialogue-section" id="dialogue-section">
+            <div class="boss-dialogue-box" id="dialogue-box">
+                <div class="boss-speaker" id="speaker-name"></div>
+                <div class="boss-text" id="dialogue-text"></div>
+                <div class="boss-controls">
+                    <button class="boss-btn next" id="next-btn">继续 ▶</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chess-notice" id="chess-notice" style="display:none;">
+            <h3>对局规则</h3>
+            <p>棋类：<span class="rule">传统象棋，正常规则</span></p>
+            <p>作弊：<span class="red-cross">输入框画红叉 ✗，无法输入</span></p>
+            <p>天道特殊：<span class="rule">无士，士位全部替换为车（共4车）</span></p>
+            <p>胜利条件：将死黑将</p>
+            <p>失败：无限重试，无法退出</p>
+        </div>
+
+        <div class="enter-section" id="enter-section" style="display:none;">
+            <button class="boss-btn enter" id="enter-btn">进入最终审判</button>
+            <div class="attempts" id="attempts"></div>
+        </div>
+
+        <div class="blocked-overlay" id="blocked-overlay">
+            <div class="blocked-msg">
+                <h2 id="blocked-title">无法进入</h2>
+                <p id="blocked-message"></p>
+                <a href="/hub" style="display:inline-block; margin-top:20px; color:var(--accent-gold); border:1px solid var(--accent-gold); padding:8px 24px; border-radius:4px; text-decoration:none;">返回总坛</a>
+            </div>
+        </div>
+    </div>
+    <script src="/static/heaven_boss.js"></script>
+</body>
+</html>

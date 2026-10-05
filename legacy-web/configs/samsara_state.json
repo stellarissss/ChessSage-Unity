@@ -1,0 +1,109 @@
+{
+  "version": 4,
+  "current_realm": "hell",
+  "current_level": 0,
+  "skill_points": 0,
+  "karma_max": 120,
+  "karma_single_max": 120,
+  "initial_karma": 50,
+  "realm_overshoot_carryover": 0,
+  "realm_detections": {
+    "hell": 0.0,
+    "hungry": 0.0,
+    "animal": 0.0,
+    "human": 0.0,
+    "asura": 0.0,
+    "heaven": 0.0
+  },
+  "skills": {
+    "stealth_t1": {
+      "unlocked_at": "2026-08-18T12:41:44.347622",
+      "tier": 1
+    }
+  },
+  "current_turn": 0,
+  "turn_limit": 20,
+  "cheat_count": 0,
+  "overdraft_count": 0,
+  "no_cheat_this_level": true,
+  "total_levels_completed": 0,
+  "bosses_defeated": [],
+  "sandbox_unlocked": [],
+  "sandbox_mode": false,
+  "realm_progress": {
+    "hell": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    },
+    "hungry": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    },
+    "animal": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    },
+    "human": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    },
+    "asura": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    },
+    "heaven": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    }
+  },
+  "level_karma": 50,
+  "alignment": {
+    "enlightenment": 0,
+    "corruption": 0,
+    "rationality": 0,
+    "emotion": 0
+  },
+  "detection_state": {
+    "is_detected": false,
+    "detection_locked": false,
+    "trigger_boss_on_complete": false,
+    "exposure_path_triggered": false
+  },
+  "memory_fragments_unlocked": {
+    "hell": false,
+    "hungry": false,
+    "animal": false,
+    "human": false,
+    "asura": false,
+    "heaven": false
+  },
+  "choices_made": [],
+  "prayer_count": 0,
+  "endings_unlocked": {
+    "enlightenment": false,
+    "corruption": false,
+    "samsara": false,
+    "true_me": false,
+    "exposed": false
+  },
+  "tiandao_boss_state": {
+    "defeated": false,
+    "attempt_count": 0,
+    "current_battle_active": false
+  },
+  "story_progress": {
+    "prologue_seen": true,
+    "current_dialogue_realm": null,
+    "current_dialogue_level": null,
+    "last_choice_made": null
+  },
+  "playthrough_count": 2,
+  "last_modified": "2026-09-13T14:15:26.551129",
+  "one_time_skill_usage": {}
+}

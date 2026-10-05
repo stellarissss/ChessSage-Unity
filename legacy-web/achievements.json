@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "unlocked": {},
+  "stats": {
+    "total_commands": 0,
+    "total_moves": 0,
+    "total_captures": 0,
+    "games_played": {}
+  }
+}

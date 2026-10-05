@@ -1,0 +1,44 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "format": "chinese_checkers_2p"
+  },
+  "pieces": [
+    {"id": "r_piece_1", "type": "piece", "name": "红", "side": "red", "position": [0, 12], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_2", "type": "piece", "name": "红", "side": "red", "position": [1, 11], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_3", "type": "piece", "name": "红", "side": "red", "position": [1, 13], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_4", "type": "piece", "name": "红", "side": "red", "position": [2, 10], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_5", "type": "piece", "name": "红", "side": "red", "position": [2, 12], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_6", "type": "piece", "name": "红", "side": "red", "position": [2, 14], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_7", "type": "piece", "name": "红", "side": "red", "position": [3, 9], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_8", "type": "piece", "name": "红", "side": "red", "position": [3, 11], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_9", "type": "piece", "name": "红", "side": "red", "position": [3, 13], "is_alive": true, "custom_properties": {}},
+    {"id": "r_piece_10", "type": "piece", "name": "红", "side": "red", "position": [3, 15], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_1", "type": "piece", "name": "黑", "side": "black", "position": [13, 9], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_2", "type": "piece", "name": "黑", "side": "black", "position": [13, 11], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_3", "type": "piece", "name": "黑", "side": "black", "position": [13, 13], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_4", "type": "piece", "name": "黑", "side": "black", "position": [13, 15], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_5", "type": "piece", "name": "黑", "side": "black", "position": [14, 10], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_6", "type": "piece", "name": "黑", "side": "black", "position": [14, 12], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_7", "type": "piece", "name": "黑", "side": "black", "position": [14, 14], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_8", "type": "piece", "name": "黑", "side": "black", "position": [15, 11], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_9", "type": "piece", "name": "黑", "side": "black", "position": [15, 13], "is_alive": true, "custom_properties": {}},
+    {"id": "b_piece_10", "type": "piece", "name": "黑", "side": "black", "position": [16, 12], "is_alive": true, "custom_properties": {}}
+  ],
+  "current_turn": "black",
+  "move_history": [],
+  "game_status": {
+    "state": "playing",
+    "winner": null,
+    "win_condition": null,
+    "custom_rules_active": []
+  },
+  "mechanisms": {
+    "skip_turns": [],
+    "ai_control": [],
+    "player_control": [],
+    "random_moves": [],
+    "extra_turns": [],
+    "move_limits": []
+  }
+}

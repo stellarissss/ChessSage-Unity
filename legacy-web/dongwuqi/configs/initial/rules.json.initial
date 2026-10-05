@@ -1,0 +1,85 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "动物棋（斗兽棋）游戏规则定义"
+  },
+  "win_conditions": {
+    "enter_den": {
+      "enabled": true,
+      "display_name": "攻入兽穴",
+      "icon": "🏠",
+      "description": "己方动物进入对方兽穴即获胜",
+      "priority": 1,
+      "category": "victory"
+    },
+    "annihilation": {
+      "enabled": true,
+      "display_name": "全歼对手",
+      "icon": "💀",
+      "description": "吃光对方所有动物即获胜",
+      "priority": 2,
+      "category": "victory"
+    },
+    "stalemate": {
+      "enabled": true,
+      "display_name": "困毙对手",
+      "icon": "😶",
+      "description": "对方所有存活动物都无法移动即获胜",
+      "result": "win",
+      "priority": 3,
+      "category": "victory"
+    }
+  },
+  "special_rules": {
+    "rat_beats_elephant": {
+      "enabled": true,
+      "description": "鼠可吃象，象不能吃鼠（循环克制）"
+    },
+    "trap_neutralizes_rank": {
+      "enabled": true,
+      "description": "敌方动物踩中己方陷阱立即被吞噬（死亡）"
+    },
+    "lion_tiger_jump_water": {
+      "enabled": true,
+      "description": "狮虎可跳过整片水域，落到对岸陆地；水中有鼠阻挡则不能跳"
+    },
+    "rat_swims": {
+      "enabled": true,
+      "description": "鼠是唯一可进入水域的动物"
+    },
+    "rat_cannot_attack_from_water": {
+      "enabled": true,
+      "description": "鼠在水中时不能吃岸上的象"
+    }
+  },
+  "turn_rules": {
+    "turn_order": "alternating",
+    "first_player": "red"
+  },
+  "ai_difficulty": {
+    "current": "medium",
+    "levels": {
+      "easy": {
+        "depth": 2,
+        "randomness": 0.3
+      },
+      "medium": {
+        "depth": 3,
+        "randomness": 0.1
+      },
+      "hard": {
+        "depth": 4,
+        "randomness": 0.0
+      }
+    },
+    "personality": {
+      "type": "normal",
+      "aggressiveness": 0.5,
+      "conservatism": 0.5,
+      "randomness_override": null,
+      "depth_override": null,
+      "value_biases": {},
+      "custom_prompt": null
+    }
+  }
+}

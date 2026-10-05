@@ -1,0 +1,38 @@
+# 棋圣 · 打包专用依赖（build_windows.bat 使用）
+#
+# 只列运行游戏真正需要的包，用于创建 .venv-build 打包环境。
+#
+# 为什么不用 requirements.txt？
+#   requirements.txt 是「开发全量依赖」，额外包含 rembg + Pillow（+ 连带
+#   onnxruntime，约 200MB+）等——它们只被 shared/assets/ 下的离线美术脚本
+#   （抠图 / 生成动画帧）使用，游戏运行与打包都不需要。
+#   在打包环境里装这些会让 3/7 步骤白白多花十几分钟。
+#   且 nuitka_build.py 已用 --nofollow-import-to 显式排除它们。
+
+# === 核心 Web 框架 ===
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+
+# === AI / HTTP 客户端 ===
+httpx>=0.27.0
+
+# === JSON Schema / Patch ===
+jsonschema>=4.21.0
+jsonpatch>=1.33.0
+
+# === 独立桌面窗口（可选：仅 --window 模式需要）===
+pywebview>=5.0
+
+# 关于 Zig（Zig 模式下的 C 编译器）——重要，勿在此处添加 ziglang：
+#   Nuitka 用 utils/PrivatePipSpace.getZigBinaryPath() 查找 Zig，它【只】查
+#   自己的私有 pip space（~/.cache/Nuitka/downloads/pip/private-<hash>），
+#   找不到就自动执行 `python -m pip install ziglang` 装进去。
+#   结论：往本文件（项目 venv）加 ziglang 是【无效】的，Nuitka 看不见，
+#   只会白白多下 120MB。正确做法是让 Nuitka 自己的 pip 走镜像 —— 已由
+#   build_windows.bat 导出的 PIP_INDEX_URL 环境变量解决。
+#   想彻底免下载，请改用 MSVC：build_windows.bat --msvc
+
+# 说明：starlette / anyio 是 fastapi 与 httpx 的传递依赖，会随上面几项自动安装，
+# 因此不在此显式 pin（显式 pin 反而容易造成版本冲突）。
+# nuitka_build.py 的 INCLUDE_PACKAGES 会校验它们可导入，缺失即报错中止。

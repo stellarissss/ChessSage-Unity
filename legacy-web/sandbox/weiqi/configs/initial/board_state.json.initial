@@ -1,0 +1,29 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "last_modified": "2026-07-13T00:00:00Z",
+    "format": "go_standard"
+  },
+  "pieces": [],
+  "current_turn": "black",
+  "move_history": [],
+  "game_status": {
+    "state": "playing",
+    "winner": null,
+    "win_condition": null,
+    "custom_rules_active": []
+  },
+  "mechanisms": {
+    "skip_turns": [],
+    "ai_control": [],
+    "player_control": [],
+    "random_moves": [],
+    "extra_turns": [],
+    "move_limits": []
+  },
+  "ko_state": null,
+  "captures": {
+    "black": 0,
+    "white": 0
+  }
+}

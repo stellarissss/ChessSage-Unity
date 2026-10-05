@@ -1,0 +1,57 @@
+{
+  "_metadata": {"version": "2.0", "description": "游戏规则定义（可执行条件树）"},
+  "win_conditions": {
+    "checkmate": {
+      "enabled": true,
+      "display_name": "将死对方",
+      "icon": "♚",
+      "description": "使对方将帅无路可走且处于被将军状态",
+      "priority": 1,
+      "category": "victory"
+    },
+    "general_captured": {
+      "enabled": true,
+      "display_name": "吃掉对方将帅",
+      "icon": "⚔️",
+      "description": "直接吃掉对方的将或帅",
+      "priority": 2,
+      "category": "victory"
+    },
+    "stalemate": {
+      "enabled": true,
+      "display_name": "困毙对方",
+      "icon": "😶",
+      "description": "对方无子可动且未被将军",
+      "result": "win",
+      "priority": 3,
+      "category": "victory"
+    }
+  },
+  "special_rules": {
+    "flying_general": {
+      "enabled": true,
+      "description": "双方将帅不能在同一竖线上无遮挡相对"
+    }
+  },
+  "turn_rules": {
+    "turn_order": "alternating",
+    "first_player": "red"
+  },
+  "ai_difficulty": {
+    "current": "medium",
+    "levels": {
+      "easy": {"depth": 2, "randomness": 0.3},
+      "medium": {"depth": 3, "randomness": 0.1},
+      "hard": {"depth": 4, "randomness": 0.0}
+    },
+    "personality": {
+      "type": "normal",
+      "aggressiveness": 0.5,
+      "conservatism": 0.5,
+      "randomness_override": null,
+      "depth_override": null,
+      "value_biases": {},
+      "custom_prompt": null
+    }
+  }
+}

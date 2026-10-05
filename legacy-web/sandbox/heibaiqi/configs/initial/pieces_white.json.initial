@@ -1,0 +1,24 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "side": "white",
+    "description": "白方棋子定义"
+  },
+  "side": "white",
+  "pieces": {
+    "disc": {
+      "label": "○",
+      "is_king": false,
+      "moves": [
+        {
+          "kind": "flip",
+          "dir": [1, 0],
+          "max": 6,
+          "land": "enemy",
+          "sym": "rotate4_mirror"
+        }
+      ]
+    }
+  },
+  "custom_pieces": []
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "动物棋游戏规则配置",
+  "description": "动物棋（斗兽棋）胜负条件与特殊规则",
+  "type": "object",
+  "properties": {
+    "_metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "win_conditions": {
+      "type": "object",
+      "description": "胜利条件（enter_den/annihilation/stalemate等）",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "display_name": { "type": "string" },
+          "icon": { "type": "string" },
+          "description": { "type": "string" },
+          "result": { "type": "string" },
+          "priority": { "type": "integer" },
+          "category": { "type": "string", "enum": ["victory", "draw", "special"] }
+        },
+        "required": ["enabled"]
+      }
+    },
+    "special_rules": {
+      "type": "object",
+      "description": "特殊规则（rat_beats_elephant/trap_neutralizes_rank/lion_tiger_jump_water等）",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "description": { "type": "string" }
+        },
+        "required": ["enabled"]
+      }
+    },
+    "turn_rules": {
+      "type": "object",
+      "properties": {
+        "turn_order": { "type": "string" },
+        "first_player": { "enum": ["red", "black"] }
+      }
+    },
+    "ai_difficulty": {
+      "type": "object",
+      "properties": {
+        "current": { "enum": ["easy", "medium", "hard"] },
+        "levels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "depth": { "type": "integer", "minimum": 1 },
+              "randomness": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "required": ["depth"]
+          }
+        },
+        "personality": {
+          "type": "object",
+          "description": "AI性格配置",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["normal", "aggressive", "defensive", "random", "custom"],
+              "description": "预设性格类型"
+            },
+            "aggressiveness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "进攻倾向（0.0-1.0）"
+            },
+            "conservatism": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "保守程度（0.0-1.0）"
+            },
+            "randomness_override": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "maximum": 1,
+              "description": "覆盖默认随机度"
+            },
+            "depth_override": {
+              "type": ["integer", "null"],
+              "minimum": 1,
+              "description": "覆盖默认搜索深度"
+            },
+            "value_biases": {
+              "type": "object",
+              "description": "棋子价值偏差 {piece_type: bias}",
+              "additionalProperties": { "type": "number" }
+            },
+            "custom_prompt": {
+              "type": ["string", "null"],
+              "description": "自定义提示词（用于LLM驱动的AI）"
+            }
+          },
+          "required": ["type"]
+        }
+      },
+      "required": ["current"]
+    }
+  },
+  "required": ["win_conditions", "special_rules"]
+}

@@ -1,0 +1,31 @@
+{
+  "_metadata": {
+    "version": "1.0"
+  },
+  "theme": {
+    "board": {
+      "background_color": "#f0d9b5",
+      "line_color": "#5c3a1e",
+      "water_text": ""
+    },
+    "pieces": {
+      "red_color": "#cc0000",
+      "black_color": "#1a1a1a",
+      "red_bg": "#fff5e6",
+      "black_bg": "#e6e6e6",
+      "font_family": "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif"
+    },
+    "highlight": {
+      "selected": "#ffd700",
+      "valid_move": "#4caf50",
+      "last_move": "#ff9800"
+    }
+  },
+  "layout": {
+    "board_size": "90vmin",
+    "input_position": "bottom",
+    "response_area": "right_side"
+  },
+  "custom_css": "",
+  "custom_js": ""
+}

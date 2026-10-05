@@ -1,0 +1,207 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "黑方动物棋棋子规则（8动物 + 等级吃子 + 水域/陷阱/兽穴）"
+  },
+  "side": "black",
+  "pieces": {
+    "elephant": {
+      "label": {"red": "🐘", "black": "🐘"},
+      "rank": 8,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": [{"cannot_eat": "rat"}]
+      }
+    },
+    "lion": {
+      "label": {"red": "🦁", "black": "🦁"},
+      "rank": 7,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        },
+        {
+          "kind": "ray",
+          "dir": [1, 0],
+          "max": 4,
+          "screens": 0,
+          "land": "any",
+          "sym": "rotate4",
+          "path_constraint": {"must_be": "water", "no_blocker": true},
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": []
+      }
+    },
+    "tiger": {
+      "label": {"red": "🐯", "black": "🐯"},
+      "rank": 6,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        },
+        {
+          "kind": "ray",
+          "dir": [1, 0],
+          "max": 4,
+          "screens": 0,
+          "land": "any",
+          "sym": "rotate4",
+          "path_constraint": {"must_be": "water", "no_blocker": true},
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": []
+      }
+    },
+    "leopard": {
+      "label": {"red": "🐆", "black": "🐆"},
+      "rank": 5,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": []
+      }
+    },
+    "wolf": {
+      "label": {"red": "🐺", "black": "🐺"},
+      "rank": 4,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": []
+      }
+    },
+    "dog": {
+      "label": {"red": "🐶", "black": "🐶"},
+      "rank": 3,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": []
+      }
+    },
+    "cat": {
+      "label": {"red": "🐱", "black": "🐱"},
+      "rank": 2,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_water": {"pos": "$dest"}}},
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": []
+      }
+    },
+    "rat": {
+      "label": {"red": "🐭", "black": "🐭"},
+      "rank": 1,
+      "moves": [
+        {
+          "kind": "jump",
+          "to": [1, 0],
+          "block": [],
+          "land": "any",
+          "sym": "rotate4",
+          "where": [
+            {"not": {"in_own_den": {"pos": "$dest"}}}
+          ]
+        }
+      ],
+      "capture": {
+        "mode": "rank_ge",
+        "exceptions": [{"can_eat": "elephant"}],
+        "water_rules": {
+          "invulnerable_in_water": true,
+          "cannot_attack_from_water": ["elephant"]
+        }
+      }
+    }
+  },
+  "custom_pieces": []
+}

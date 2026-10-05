@@ -1,0 +1,79 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "动物棋（斗兽棋）棋盘几何定义与渲染配置 - 7列x9行格子制"
+  },
+  "geometry": {
+    "width": 7,
+    "height": 9,
+    "regions": {
+      "water": {
+        "cells": [[1,3],[2,3],[4,3],[5,3],[1,4],[2,4],[4,4],[5,4],[1,5],[2,5],[4,5],[5,5]]
+      },
+      "trap_red": {
+        "cells": [[2,8],[4,8],[3,7]]
+      },
+      "trap_black": {
+        "cells": [[2,0],[4,0],[3,1]]
+      },
+      "den_red": {
+        "cells": [[3,8]]
+      },
+      "den_black": {
+        "cells": [[3,0]]
+      },
+      "red_side": {
+        "y_range": [6, 8]
+      },
+      "black_side": {
+        "y_range": [0, 2]
+      }
+    }
+  },
+  "appearance": {
+    "background_color": "#f0d9b5",
+    "line_color": "#5c3a1e",
+    "grid": {
+      "line_thickness": 0.03,
+      "show_horizontal": true,
+      "show_vertical": true,
+      "river_gap": false
+    },
+    "water": {
+      "enabled": true,
+      "fill_color": "#7fb3d5",
+      "fill_opacity": 0.45,
+      "wave_color": "#5499c7",
+      "text": "",
+      "text_size": 0.4
+    },
+    "traps": {
+      "enabled": true,
+      "mark": "cross",
+      "color": "#8b4513",
+      "opacity": 0.5
+    },
+    "dens": {
+      "enabled": true,
+      "mark": "star",
+      "red_color": "#cc0000",
+      "black_color": "#1a1a1a"
+    },
+    "layout": {
+      "viewbox_padding_left": 0.5,
+      "viewbox_padding_right": 0.5,
+      "viewbox_padding_top": 0.5,
+      "viewbox_padding_bottom": 0.5,
+      "board_size": "90vmin"
+    },
+    "decorations": {
+      "border": {
+        "enabled": false,
+        "thickness": 0.1,
+        "color": null
+      },
+      "custom_lines": [],
+      "background_pattern": null
+    }
+  }
+}

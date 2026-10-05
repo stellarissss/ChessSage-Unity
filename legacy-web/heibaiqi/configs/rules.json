@@ -1,0 +1,75 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "game": "heibaiqi"
+  },
+  "win_conditions": {
+    "most_discs": {
+      "enabled": true,
+      "display_name": "多子者胜",
+      "icon": "●",
+      "description": "游戏结束时棋子数多的一方获胜",
+      "result": "winner_by_count",
+      "priority": 1,
+      "category": "standard"
+    },
+    "no_valid_moves_both": {
+      "enabled": true,
+      "display_name": "双方无路可走",
+      "icon": "⊘",
+      "description": "双方均无合法落子时游戏结束，按棋子数判定",
+      "result": "end_game",
+      "priority": 2,
+      "category": "standard"
+    },
+    "board_full": {
+      "enabled": true,
+      "display_name": "棋盘已满",
+      "icon": "▦",
+      "description": "棋盘 64 格全部落满时游戏结束",
+      "result": "end_game",
+      "priority": 3,
+      "category": "standard"
+    }
+  },
+  "special_rules": {
+    "pass_when_no_move": {
+      "enabled": true,
+      "description": "若一方无合法落子，跳过该方回合"
+    }
+  },
+  "turn_rules": {
+    "turn_order": [
+      "black",
+      "white"
+    ],
+    "first_player": "black"
+  },
+  "ai_difficulty": {
+    "current": "normal",
+    "levels": {
+      "easy": {
+        "depth": 1,
+        "description": "新手"
+      },
+      "normal": {
+        "depth": 3,
+        "description": "标准"
+      },
+      "hard": {
+        "depth": 5,
+        "description": "挑战"
+      },
+      "master": {
+        "depth": 7,
+        "description": "大师"
+      }
+    },
+    "personality": {
+      "type": "normal",
+      "aggressiveness": 0.5,
+      "conservatism": 0.5,
+      "value_biases": {}
+    }
+  }
+}

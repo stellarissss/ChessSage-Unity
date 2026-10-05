@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>html { zoom: 0.75; }</style>
+    <title>棋圣 · 六道轮回</title>
+    <link rel="preconnect" href="https://fonts.googleapis.cn">
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+    <link href="https://fonts.googleapis.cn/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .title-mode-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            max-width: 620px;
+            margin: 0 auto 48px;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+        }
+        .mode-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 48px 28px 40px;
+            border-radius: 20px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-main);
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.3s, box-shadow 0.3s;
+        }
+        .mode-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, var(--mode-glow, rgba(212,175,55,0.16)), transparent 70%);
+            opacity: 0.7;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+        .mode-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--mode-accent, var(--gold));
+            box-shadow: 0 32px 90px rgba(0,0,0,0.7), 0 0 50px var(--mode-glow, rgba(212,175,55,0.25));
+        }
+        .mode-card:hover::before { opacity: 1; }
+        .mode-icon {
+            font-size: 64px;
+            margin-bottom: 18px;
+            line-height: 1;
+            filter: drop-shadow(0 4px 20px var(--mode-glow, rgba(212,175,55,0.4)));
+        }
+        .mode-name {
+            font-family: var(--font-display);
+            font-size: 34px;
+            color: var(--mode-accent, var(--gold));
+            margin: 0 0 8px;
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 24px var(--mode-glow, rgba(212,175,55,0.3));
+        }
+        .mode-sub {
+            font-family: var(--font-tech);
+            font-size: 11px;
+            color: var(--gold-dim);
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        .mode-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.9;
+            max-width: 280px;
+            font-weight: 300;
+        }
+        .mode-enter {
+            margin-top: 24px;
+            padding: 9px 28px;
+            border: 1px solid var(--mode-accent, var(--gold));
+            border-radius: 4px;
+            color: var(--mode-accent, var(--gold));
+            font-family: var(--font-body);
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            transition: background 0.25s, color 0.25s;
+        }
+        .mode-card:hover .mode-enter {
+            background: var(--mode-accent, var(--gold));
+            color: var(--bg-deep);
+        }
+        /* 进入世界 · 金 */
+        .mode-card.world { --mode-accent: var(--gold); --mode-glow: rgba(212,175,55,0.22); }
+        /* 核心玩法速览 · 玉 */
+        .mode-card.quick {
+            --mode-accent: var(--jade);
+            --mode-glow: rgba(13,115,119,0.24);
+            padding: 38px 28px 32px;
+        }
+        .mode-card.quick .mode-icon { font-size: 54px; margin-bottom: 14px; }
+        .mode-card.quick .mode-name { font-size: 28px; }
+        /* 玉色悬浮反馈 */
+        .mode-card.quick:hover { border-color: var(--jade); box-shadow: 0 32px 90px rgba(0,0,0,0.7), 0 0 50px rgba(13,115,119,0.35); }
+        /* 速览卡引导提示：明显标识 + 呼吸脉冲，引导首次玩家快速上手 */
+        .mode-guide {
+            margin-top: 22px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(13, 115, 119, 0.14);
+            border: 1.5px solid var(--jade);
+            color: var(--jade);
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            line-height: 1.4;
+            text-align: center;
+            box-shadow: 0 0 0 0 rgba(13, 115, 119, 0.45);
+            animation: guidePulse 1.8s ease-in-out infinite;
+        }
+        .mode-guide .guide-icon {
+            font-size: 18px;
+            animation: guidePoint 1.2s ease-in-out infinite;
+        }
+        .mode-card.quick:hover .mode-guide {
+            background: var(--jade);
+            color: var(--bg-deep);
+        }
+        @keyframes guidePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(13, 115, 119, 0.45); }
+            50% { box-shadow: 0 0 0 9px rgba(13, 115, 119, 0); }
+        }
+        @keyframes guidePoint {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .mode-guide, .mode-guide .guide-icon { animation: none; }
+        }
+        /* 双卡并排（宽屏），窄屏自动堆叠 */
+        @media (min-width: 760px) {
+            .title-mode-grid { grid-template-columns: 1fr 1fr; max-width: 900px; }
+        }
+
+        .title-footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 2;
+            opacity: 0;
+            animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;
+        }
+        .title-footer .sep { color: var(--gold-dim); margin: 0 10px; }
+    </style>
+</head>
+<body>
+    <div class="ambient">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <main class="container">
+        <header class="hero">
+            <h1 class="hero-title">
+                <span class="title-main">棋圣 · 六道轮回</span>
+                <span class="title-sub">ChessSage · Samsara</span>
+            </h1>
+            <p class="hero-desc">
+                六重棋境，一念改规。业力为媒，规则为网，<br>
+                在轮回中修行，在棋局中悟道。
+            </p>
+            <div class="hero-meta">踏入六道世界</div>
+        </header>
+
+        <section class="title-mode-grid">
+            <a href="/overworld" id="link-story" class="mode-card world">
+                <div class="mode-icon">🗺️</div>
+                <h2 class="mode-name">进入世界</h2>
+                <div class="mode-sub">Enter World</div>
+                <p class="mode-desc">
+                    踏入六道大陆，自由探索六块大陆棋境，<br>
+                    于轮回中修行、在沙盒中磨砺。<br>
+                    探索入口、解锁道境、成就棋圣之道。
+                </p>
+                <span class="mode-enter">开始探索 ▶</span>
+            </a>
+
+            <a href="#" id="link-quick" class="mode-card quick">
+                <div class="mode-icon">⚡</div>
+                <h2 class="mode-name">核心玩法速览</h2>
+                <div class="mode-sub">Core Gameplay</div>
+                <p class="mode-desc">
+                    直入纯净象棋，无剧情、无业力束缚。<br>
+                    纯棋艺对弈 + 一句话让 AI 改规。<br>
+                    最快体验本作的核心玩法。
+                </p>
+                <span class="mode-enter">立即体验 ▶</span>
+                <div class="mode-guide">
+                    <span class="guide-icon">👆</span>
+                    <span>您可以先点击这里，迅速领略本游戏的魅力</span>
+                </div>
+            </a>
+        </section>
+
+        <footer class="title-footer">
+            <p>剧情模式含业力 / 识破 / 技能树 / 五种结局<span class="sep">·</span>沙盒训练场位于大陆南部，纯净对弈</p>
+            <p class="hero-meta">棋圣 ChessSage · v1.5</p>
+        </footer>
+    </main>
+
+    <script>
+        // 首次进入剧情模式时自动播放序章；已看过则直达六道大陆。
+        (function () {
+            var link = document.getElementById('link-story');
+            if (!link) return;
+            fetch('/samsara/story/api/story/progress')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var seen = !!(data && data.progress && data.progress.prologue_seen);
+                    if (!seen) link.href = '/dialogue?mode=prologue';
+                    else link.href = '/overworld';
+                })
+                .catch(function () { link.href = '/overworld'; });
+        })();
+
+        // 核心玩法速览：拉起纯净象棋（沙盒 8010）后新标签打开，无任何剧情。
+        (function () {
+            var quick = document.getElementById('link-quick');
+            if (!quick) return;
+            var opening = false;
+            quick.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (opening) return;
+                opening = true;
+                var span = quick.querySelector('.mode-enter');
+                if (span) span.textContent = '正在进入…';
+                // 先确保纯净象棋进程已启动（幂等），再新标签打开对局页
+                fetch('/api/lazy/start?mode=sandbox&game=xiangqi', { cache: 'no-store' })
+                    .catch(function () { /* 即便拉起失败也尝试打开（可能已在运行） */ })
+                    .finally(function () {
+                        window.open('http://localhost:8010/', '_blank', 'noopener,noreferrer');
+                        opening = false;
+                        if (span) span.textContent = '立即体验 ▶';
+                    });
+            });
+        })();
+
+        // 玩法教程：不在标题页弹出（也不注入悬浮按钮）。
+        // 教程仅在玩家首次进入大地图时自动弹出一次（见 overworld-ui.js 的 autoOpenOnce('overworld')），
+        // 无论是否看过序章；之后可随时点击大地图顶栏的「玩法教程」按钮再次查看。
+    </script>
+</body>
+</html>

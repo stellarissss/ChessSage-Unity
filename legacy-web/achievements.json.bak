@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "unlocked": {
+    "clone_wars": {
+      "unlocked_at": "2026-09-04T12:30:33.004357",
+      "game": "dongwuqi",
+      "context": "检测到自定义棋子"
+    },
+    "zoo": {
+      "unlocked_at": "2026-09-04T12:30:33.020875",
+      "game": "dongwuqi",
+      "context": "动物棋中创建了新棋子"
+    }
+  },
+  "stats": {
+    "total_commands": 0,
+    "total_moves": 18,
+    "total_captures": 0,
+    "games_played": {}
+  }
+}

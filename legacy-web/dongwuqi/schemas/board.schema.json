@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "动物棋棋盘配置",
+  "description": "动物棋（斗兽棋）棋盘几何与渲染配置 - 7列x9行格子制",
+  "type": "object",
+  "properties": {
+    "_metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "integer", "minimum": 5, "maximum": 20 },
+        "height": { "type": "integer", "minimum": 5, "maximum": 20 },
+        "regions": {
+          "type": "object",
+          "description": "区域定义（water/trap_red/trap_black/den_red/den_black等）",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "cells": {
+                "type": "array",
+                "description": "显式单元格列表 [[x,y],...]",
+                "items": {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "x_range": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+              "y_range": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }
+            }
+          }
+        }
+      },
+      "required": ["width", "height"]
+    },
+    "appearance": {
+      "type": "object",
+      "properties": {
+        "background_color": { "type": ["string", "null"] },
+        "line_color": { "type": ["string", "null"] },
+        "grid": {
+          "type": "object",
+          "properties": {
+            "line_thickness": { "type": "number" },
+            "show_horizontal": { "type": "boolean" },
+            "show_vertical": { "type": "boolean" },
+            "river_gap": { "type": "boolean" }
+          }
+        },
+        "water": {
+          "type": "object",
+          "description": "水域渲染配置",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "fill_color": { "type": "string" },
+            "fill_opacity": { "type": "number" },
+            "wave_color": { "type": "string" },
+            "text": { "type": "string" },
+            "text_size": { "type": "number" }
+          }
+        },
+        "traps": {
+          "type": "object",
+          "description": "陷阱渲染配置",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "mark": { "type": "string" },
+            "color": { "type": "string" },
+            "opacity": { "type": "number" }
+          }
+        },
+        "dens": {
+          "type": "object",
+          "description": "兽穴渲染配置",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "mark": { "type": "string" },
+            "red_color": { "type": "string" },
+            "black_color": { "type": "string" }
+          }
+        },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "viewbox_padding_left": { "type": "number" },
+            "viewbox_padding_right": { "type": "number" },
+            "viewbox_padding_top": { "type": "number" },
+            "viewbox_padding_bottom": { "type": "number" },
+            "board_size": { "type": "string" }
+          }
+        },
+        "decorations": {
+          "type": "object",
+          "properties": {
+            "border": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "thickness": { "type": "number" },
+                "color": { "type": ["string", "null"] }
+              }
+            },
+            "custom_lines": {
+              "type": "array",
+              "items": { "type": "object" }
+            },
+            "background_pattern": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  },
+  "required": ["geometry"]
+}

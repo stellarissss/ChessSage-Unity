@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "白方棋子定义（围棋）"
+  },
+  "side": "white",
+  "pieces": {
+    "stone": {
+      "label": "○",
+      "is_king": false,
+      "moves": []
+    }
+  },
+  "custom_pieces": []
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>html { zoom: 0.75; }</style>
+    <title>记忆相册 · 六道轮回</title>
+    <link href="https://fonts.googleapis.cn/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 30, 0.85);
+            --text-main: #e0e0e8;
+            --text-dim: #8888a0;
+            --accent-gold: #d4af37;
+        }
+        body { background: var(--bg-dark); color: var(--text-main); font-family: 'Noto Serif SC', serif; margin: 0; min-height: 100vh; }
+        .album-header { text-align: center; padding: 40px 20px 20px; }
+        .album-title { font-family: 'Ma Shan Zheng', serif; font-size: 36px; color: var(--accent-gold); margin: 0; }
+        .album-sub { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+        .album-counter { font-size: 18px; color: var(--accent-gold); margin-top: 12px; }
+        .fragments-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .fragment-card { background: var(--bg-card); border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+        .fragment-card:hover { border-color: var(--accent-gold); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(212,175,55,0.15); }
+        .fragment-card.locked { opacity: 0.5; cursor: not-allowed; }
+        .fragment-card.locked:hover { transform: none; box-shadow: none; }
+        .fragment-icon { font-size: 40px; text-align: center; margin-bottom: 12px; }
+        .fragment-realm { font-family: 'Ma Shan Zheng', serif; font-size: 18px; color: var(--accent-gold); text-align: center; }
+        .fragment-title { font-size: 14px; color: var(--text-dim); text-align: center; margin-top: 6px; }
+        .fragment-status { font-size: 12px; text-align: center; margin-top: 8px; padding: 4px 8px; border-radius: 4px; }
+        .fragment-status.unlocked { background: rgba(212,175,55,0.2); color: var(--accent-gold); }
+        .fragment-status.locked { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+        .back-link { position: fixed; top: 20px; left: 20px; color: var(--text-dim); text-decoration: none; font-size: 14px; z-index: 10; }
+        .back-link:hover { color: var(--accent-gold); }
+        .fragment-detail-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; z-index: 100; align-items: center; justify-content: center; padding: 40px; }
+        .fragment-detail-overlay.active { display: flex; }
+        .fragment-detail { background: var(--bg-card); border: 1px solid var(--accent-gold); border-radius: 16px; max-width: 700px; width: 100%; padding: 40px; position: relative; }
+        .detail-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-dim); font-size: 24px; cursor: pointer; }
+        .detail-title { font-family: 'Ma Shan Zheng', serif; font-size: 28px; color: var(--accent-gold); text-align: center; margin-bottom: 8px; }
+        .detail-narration { font-size: 16px; line-height: 1.8; color: var(--text-main); margin: 20px 0; padding: 16px; background: rgba(0,0,0,0.3); border-radius: 8px; border-left: 3px solid var(--accent-gold); }
+        .detail-dialogues { margin-top: 20px; }
+        .detail-dialogue { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .detail-dialogue:last-child { border-bottom: none; }
+        .detail-speaker { font-weight: 600; color: var(--accent-gold); font-size: 14px; }
+        .detail-text { font-size: 15px; line-height: 1.7; margin-top: 4px; }
+        .detail-cg-video { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; margin-bottom: 16px; border: 1px solid rgba(212,175,55,0.3); display: block; }
+        .all-collected-banner { text-align: center; padding: 20px; background: rgba(212,175,55,0.1); border: 1px solid var(--accent-gold); border-radius: 8px; margin: 20px auto; max-width: 600px; }
+        .all-collected-banner h3 { color: var(--accent-gold); font-family: 'Ma Shan Zheng', serif; }
+    </style>
+</head>
+<body>
+    <a href="/hub" class="back-link">← 返回总坛</a>
+    <div class="album-header">
+        <h1 class="album-title">记忆相册</h1>
+        <p class="album-sub">六道记忆碎片 · 林夜的过去</p>
+        <div class="album-counter" id="album-counter">加载中...</div>
+    </div>
+    <div id="all-collected-banner" style="display:none;" class="all-collected-banner">
+        <h3>六道记忆集齐</h3>
+        <p style="color:var(--text-dim); font-size:14px;">你已收集全部记忆碎片，真我结局路径已开启</p>
+    </div>
+    <div class="fragments-grid" id="fragments-grid"></div>
+    <div class="fragment-detail-overlay" id="detail-overlay">
+        <div class="fragment-detail" id="fragment-detail">
+            <button class="detail-close" id="detail-close">✕</button>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+    <script src="/static/memory_album.js"></script>
+</body>
+</html>

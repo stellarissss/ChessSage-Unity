@@ -1,0 +1,77 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "description": "围棋游戏规则定义"
+  },
+  "win_conditions": {
+    "capture_10": {
+      "enabled": true,
+      "display_name": "吃十子获胜",
+      "icon": "🎯",
+      "description": "率先吃掉对方十个子的一方获胜",
+      "target": 10,
+      "priority": 1,
+      "category": "victory"
+    },
+    "capture_all": {
+      "enabled": true,
+      "display_name": "全歼对方",
+      "icon": "💀",
+      "description": "吃掉对方所有棋子",
+      "priority": 2,
+      "category": "victory"
+    },
+    "resign": {
+      "enabled": true,
+      "display_name": "认输",
+      "icon": "🏳️",
+      "description": "一方主动认输",
+      "priority": 3,
+      "category": "victory"
+    }
+  },
+  "special_rules": {
+    "ko_rule": {
+      "enabled": true,
+      "description": "打劫规则：禁止立即提回刚刚被提走的子"
+    },
+    "suicide_rule": {
+      "enabled": true,
+      "description": "自杀规则：禁止落子后自身无气"
+    },
+    "forbidden_black": {
+      "enabled": false,
+      "description": "黑棋禁手：禁止三三、四四、长连"
+    }
+  },
+  "turn_rules": {
+    "turn_order": "alternating",
+    "first_player": "black"
+  },
+  "ai_difficulty": {
+    "current": "medium",
+    "levels": {
+      "easy": {
+        "depth": 2,
+        "randomness": 0.3
+      },
+      "medium": {
+        "depth": 3,
+        "randomness": 0.1
+      },
+      "hard": {
+        "depth": 4,
+        "randomness": 0.0
+      }
+    },
+    "personality": {
+      "type": "normal",
+      "aggressiveness": 0.5,
+      "conservatism": 0.5,
+      "randomness_override": null,
+      "depth_override": null,
+      "value_biases": {},
+      "custom_prompt": null
+    }
+  }
+}

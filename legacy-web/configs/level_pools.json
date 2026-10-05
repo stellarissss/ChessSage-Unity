@@ -1,0 +1,292 @@
+{
+  "hell": {
+    "game_type": "heibaiqi",
+    "name": "地狱道",
+    "icon": "☯",
+    "sandbox": {
+      "name": "地狱道 · 沙盒",
+      "description": "无限制黑白棋自由对弈，AI修改/业力/识破概率与关卡模式互通",
+      "ai_personality": "normal",
+      "ai_depth": 3
+    },
+    "levels": [
+      {
+        "id": "hell_1", "type": "standard", "name": "暗之始", "difficulty": 1,
+        "ai_personality": "normal", "ai_depth": 2, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "标准开局，在20回合内翻转更多棋子获胜。教学关：体验基本玩法。"
+      },
+      {
+        "id": "hell_2", "type": "standard", "name": "深渊", "difficulty": 2,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI稍强，注意角部和边缘的控制。"
+      },
+      {
+        "id": "hell_3", "type": "standard", "name": "挣扎", "difficulty": 3,
+        "ai_personality": "aggressive", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI采取激进策略，抢占关键位置。"
+      },
+      {
+        "id": "hell_4", "type": "puzzle", "name": "逆转", "difficulty": 3,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "capture_count", "target": 15, "target_side": "opponent"},
+        "puzzle_id": "heibaiqi_1",
+        "description": "开局劣势局面，20回合内翻转15子逆转局势。"
+      },
+      {
+        "id": "hell_5", "type": "boss", "name": "翻覆者", "difficulty": 4,
+        "ai_personality": "aggressive", "ai_depth": 4, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "boss_id": "flipper",
+        "description": "地狱道守道者·翻覆者。修改规则有30%概率被翻转效果。"
+      }
+    ]
+  },
+  "hungry": {
+    "game_type": "tiaoqi",
+    "name": "饿鬼道",
+    "icon": "👹",
+    "sandbox": {
+      "name": "饿鬼道 · 沙盒",
+      "description": "无限制跳棋自由对弈，AI修改/业力/识破概率与关卡模式互通",
+      "ai_personality": "normal",
+      "ai_depth": 3
+    },
+    "levels": [
+      {
+        "id": "hungry_1", "type": "standard", "name": "饥饿", "difficulty": 1,
+        "ai_personality": "normal", "ai_depth": 2, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "标准开局，将所有棋子送入对方营地获胜。"
+      },
+      {
+        "id": "hungry_2", "type": "standard", "name": "吞噬", "difficulty": 2,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI稍强，注意连跳路线的规划。"
+      },
+      {
+        "id": "hungry_3", "type": "standard", "name": "追逐", "difficulty": 3,
+        "ai_personality": "aggressive", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI采取激进策略，快速推进棋子。"
+      },
+      {
+        "id": "hungry_4", "type": "puzzle", "name": "断桥", "difficulty": 3,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "evacuation", "pieces": ["piece1"], "target_region": {"type": "rectangle", "top_left": [6, 0], "bottom_right": [6, 6]}},
+        "puzzle_id": "tiaoqi_1",
+        "description": "开局少子，20回合内将4个棋子送入目标区域。"
+      },
+      {
+        "id": "hungry_5", "type": "boss", "name": "饕餮者", "difficulty": 4,
+        "ai_personality": "aggressive", "ai_depth": 4, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "boss_id": "glutton",
+        "description": "饿鬼道守道者·饕餮者。每作弊2次，额外偷改1次。"
+      }
+    ]
+  },
+  "animal": {
+    "game_type": "dongwuqi",
+    "name": "畜生道",
+    "icon": "🐅",
+    "sandbox": {
+      "name": "畜生道 · 沙盒",
+      "description": "无限制动物棋自由对弈，AI修改/业力/识破概率与关卡模式互通",
+      "ai_personality": "normal",
+      "ai_depth": 3
+    },
+    "levels": [
+      {
+        "id": "animal_1", "type": "standard", "name": "丛林法则", "difficulty": 1,
+        "ai_personality": "normal", "ai_depth": 2, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "标准开局，占领对方兽穴或吃光对方棋子获胜。"
+      },
+      {
+        "id": "animal_2", "type": "standard", "name": "弱肉强食", "difficulty": 2,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI稍强，注意等级压制和河流利用。"
+      },
+      {
+        "id": "animal_3", "type": "standard", "name": "等级", "difficulty": 3,
+        "ai_personality": "aggressive", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI采取激进策略，快速推进高等级棋子。"
+      },
+      {
+        "id": "animal_4", "type": "puzzle", "name": "逆袭", "difficulty": 3,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "assassination", "target_piece": "tiger"},
+        "puzzle_id": "dongwuqi_1",
+        "description": "开局鼠方劣势，20回合内利用鼠的河流能力逆袭。"
+      },
+      {
+        "id": "animal_5", "type": "boss", "name": "秩序者", "difficulty": 4,
+        "ai_personality": "defensive", "ai_depth": 4, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "boss_id": "orderer",
+        "description": "畜生道守道者·秩序者。高等级棋子修改业力消耗额外+20点。"
+      }
+    ]
+  },
+  "human": {
+    "game_type": "xiangqi",
+    "name": "人道",
+    "icon": "🧠",
+    "sandbox": {
+      "name": "人道 · 沙盒",
+      "description": "无限制象棋自由对弈，AI修改/业力/识破概率与关卡模式互通",
+      "ai_personality": "normal",
+      "ai_depth": 3
+    },
+    "levels": [
+      {
+        "id": "human_1", "type": "standard", "name": "楚河汉界", "difficulty": 1,
+        "ai_personality": "normal", "ai_depth": 2, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "教学关：标准开局，演示业力与作弊系统。20回合内将死对方。",
+        "is_tutorial": true
+      },
+      {
+        "id": "human_2", "type": "standard", "name": "初窥天机", "difficulty": 2,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "教学关：演示识破与透支机制。注意业力管理。",
+        "is_tutorial": true
+      },
+      {
+        "id": "human_3", "type": "standard", "name": "兵临城下", "difficulty": 3,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "标准对弈，AI正常难度。考验基本功。"
+      },
+      {
+        "id": "human_4", "type": "puzzle", "name": "绝杀", "difficulty": 4,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "turn_limit", "max_turns": 20, "sub_condition": {"type": "checkmate"}},
+        "puzzle_id": "xiangqi_1",
+        "description": "预制残局，20回合内将死对方。考验计算力。"
+      },
+      {
+        "id": "human_5", "type": "objective", "name": "破军", "difficulty": 3,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "capture_count", "target": 4, "target_side": "opponent", "reward_karma": 20},
+        "description": "20回合内吃掉对方4个棋子。考验攻势与计算。"
+      },
+      {
+        "id": "human_6", "type": "boss", "name": "算计者", "difficulty": 5,
+        "ai_personality": "hard", "ai_depth": 4, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "boss_id": "calculator",
+        "description": "人道守道者·算计者。无特殊技能，但AI为最高难度。最公平的对决。"
+      }
+    ]
+  },
+  "asura": {
+    "game_type": "weiqi",
+    "name": "阿修罗道",
+    "icon": "⚔️",
+    "sandbox": {
+      "name": "阿修罗道 · 沙盒",
+      "description": "无限制围棋自由对弈，AI修改/业力/识破概率与关卡模式互通",
+      "ai_personality": "normal",
+      "ai_depth": 3
+    },
+    "levels": [
+      {
+        "id": "asura_1", "type": "standard", "name": "气之初始", "difficulty": 1,
+        "ai_personality": "normal", "ai_depth": 2, "turn_limit": 40,
+        "objective": {"type": "checkmate"},
+        "description": "标准开局，领地多者胜。40回合限制。"
+      },
+      {
+        "id": "asura_2", "type": "standard", "name": "劫争", "difficulty": 2,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 40,
+        "objective": {"type": "checkmate"},
+        "description": "AI稍强，注意劫争和死活。"
+      },
+      {
+        "id": "asura_3", "type": "standard", "name": "天下布武", "difficulty": 3,
+        "ai_personality": "aggressive", "ai_depth": 3, "turn_limit": 40,
+        "objective": {"type": "checkmate"},
+        "description": "AI采取激进策略，大模样作战。"
+      },
+      {
+        "id": "asura_4", "type": "puzzle", "name": "活棋", "difficulty": 4,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 40,
+        "objective": {"type": "survival", "min_pieces": 2, "max_turns": 40},
+        "puzzle_id": "weiqi_1",
+        "description": "预制残局，40回合内做活2块棋。考验死活计算。"
+      },
+      {
+        "id": "asura_5", "type": "objective", "name": "屠龙", "difficulty": 4,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 40,
+        "objective": {"type": "assassination", "target_piece": "dragon", "turn_limit": 40},
+        "description": "40回合内吃掉对方大龙。考验攻击与计算。"
+      },
+      {
+        "id": "asura_6", "type": "boss", "name": "狂乱者", "difficulty": 5,
+        "ai_personality": "aggressive_random", "ai_depth": 4, "turn_limit": 40,
+        "objective": {"type": "checkmate"},
+        "boss_id": "chaos",
+        "description": "阿修罗道守道者·狂乱者。作弊后25%概率随机规则变化。"
+      }
+    ]
+  },
+  "heaven": {
+    "game_type": "wuziqi",
+    "name": "天道",
+    "icon": "☸️",
+    "sandbox": {
+      "name": "天道 · 沙盒",
+      "description": "无限制五子棋自由对弈，AI修改/业力/识破概率与关卡模式互通",
+      "ai_personality": "normal",
+      "ai_depth": 3
+    },
+    "levels": [
+      {
+        "id": "heaven_1", "type": "standard", "name": "五子登仙", "difficulty": 1,
+        "ai_personality": "normal", "ai_depth": 2, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "标准开局，五子连珠获胜。教学关。"
+      },
+      {
+        "id": "heaven_2", "type": "standard", "name": "连珠", "difficulty": 2,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI稍强，注意攻防转换。"
+      },
+      {
+        "id": "heaven_3", "type": "standard", "name": "悟道", "difficulty": 3,
+        "ai_personality": "aggressive", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "description": "AI采取激进策略，快速进攻。"
+      },
+      {
+        "id": "heaven_4", "type": "puzzle", "name": "一步登天", "difficulty": 4,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "turn_limit", "max_turns": 20, "sub_condition": {"type": "checkmate"}},
+        "puzzle_id": "wuziqi_1",
+        "description": "预制残局，20回合内五连珠获胜。考验计算力。"
+      },
+      {
+        "id": "heaven_5", "type": "objective", "name": "天光", "difficulty": 4,
+        "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
+        "objective": {"type": "color_coverage", "target_percentage": 80, "reward_karma": 30},
+        "description": "20回合内点亮80%的暗色格子。特殊棋盘布局。"
+      },
+      {
+        "id": "heaven_6", "type": "boss", "name": "禅定者", "difficulty": 5,
+        "ai_personality": "defensive_hard", "ai_depth": 4, "turn_limit": 20,
+        "objective": {"type": "checkmate"},
+        "boss_id": "zen",
+        "description": "天道守道者·禅定者。每局3次直接清除最近1条修改。"
+      }
+    ]
+  }
+}

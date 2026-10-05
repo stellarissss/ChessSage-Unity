@@ -1,0 +1,1073 @@
+/* ═══════════════════════════════════════════════════════════════
+   无限制象棋 — Minimalist Ink Line Style
+   Pure black and white aesthetic inspired by sumi-e brushwork
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.cn/css2?family=Noto+Serif+SC:wght@300;400;500;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+:root {
+    /* ── Pure Black & White Palette ── */
+    --ink: #000000;
+    --ink-soft: #1a1a1a;
+    --ink-medium: #333333;
+    --ink-light: #666666;
+    --ink-faint: #999999;
+    --paper: #ffffff;
+    --paper-warm: #fafafa;
+    --paper-dark: #f5f5f5;
+    --line: #e0e0e0;
+    --line-strong: #cccccc;
+
+    /* ── Board Colors (保持棋盘自然色) ── */
+    --board-bg: #f5e6c8;
+    --board-line: #000000;
+    --red-piece: #000000;
+    --black-piece: #000000;
+
+    /* ── Accent Colors (极简黑白的微调) ── */
+    --highlight: #000000;
+    --valid-move: rgba(0, 0, 0, 0.3);
+    --last-move: #333333;
+    --danger: #000000;
+    --success: #333333;
+    --warning: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+    color: var(--ink);
+    height: 100vh;
+    overflow: hidden;
+    background: var(--paper);
+    line-height: 1.6;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Header — Clean Typographic Banner
+   ═══════════════════════════════════════════════════════════════ */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--ink);
+    position: relative;
+}
+
+.header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+}
+
+.header h1::before {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: var(--ink);
+    margin-right: 20px;
+    vertical-align: middle;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+#turn-indicator {
+    padding: 10px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    border: 1px solid var(--ink);
+    transition: all 0.3s ease;
+}
+
+.btn-icon {
+    padding: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.btn-icon:hover {
+    border-color: var(--ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Main Layout — Generous Space for Desktop
+   ═══════════════════════════════════════════════════════════════ */
+
+.main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding: 40px 48px;
+    gap: 48px;
+}
+
+.board-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Board Container — Pure Minimalist Frame
+   ═══════════════════════════════════════════════════════════════ */
+
+#board-container {
+    position: relative;
+    width: min(85vmin, 650px);
+    height: calc(min(85vmin, 650px) * 10 / 9);
+    background: var(--board-bg);
+    border: 1px solid var(--ink);
+    box-shadow: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Side Panel — Clean Information Architecture
+   ═══════════════════════════════════════════════════════════════ */
+
+.side-panel {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.side-panel::-webkit-scrollbar {
+    width: 1px;
+}
+
+.side-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.side-panel::-webkit-scrollbar-thumb {
+    background: var(--ink-light);
+}
+
+.panel-section {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 24px;
+}
+
+.panel-section::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 8px;
+    height: 8px;
+    border-left: 1px solid var(--ink);
+    border-top: 1px solid var(--ink);
+}
+
+.panel-section::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-right: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+}
+
+.panel-section h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Messages — Ink Brush Style
+   ═══════════════════════════════════════════════════════════════ */
+
+.messages {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.messages::-webkit-scrollbar {
+    width: 1px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: var(--ink-light);
+}
+
+.message {
+    padding: 8px 0 8px 16px;
+    margin-bottom: 8px;
+    border-left: 2px solid var(--ink-light);
+    color: var(--ink-medium);
+}
+
+.message:hover {
+    border-left-color: var(--ink);
+}
+
+.message.success {
+    border-left-color: var(--ink);
+}
+
+.message.error {
+    border-left-color: var(--ink);
+    color: var(--ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Rules — Numbered Lists
+   ═══════════════════════════════════════════════════════════════ */
+
+.rules-list {
+    font-size: 0.85rem;
+    counter-reset: rule-counter;
+}
+
+.rules-list .empty {
+    color: var(--ink-light);
+    font-style: italic;
+    text-align: center;
+    padding: 16px 0;
+    border: 1px dashed var(--line);
+}
+
+.rule-item {
+    padding: 8px 0 8px 32px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-medium);
+    position: relative;
+    counter-increment: rule-counter;
+}
+
+.rule-item::before {
+    content: counter(rule-counter, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    font-weight: 400;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Token Stats — Clean Grid
+   ═══════════════════════════════════════════════════════════════ */
+
+.token-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+}
+
+.token-stat {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: var(--paper);
+}
+
+.token-stat .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+}
+
+.token-stat .stat-value {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.token-stat.cost {
+    grid-column: span 2;
+    background: var(--ink);
+}
+
+.token-stat.cost .stat-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.token-stat.cost .stat-value {
+    color: var(--paper);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Pieces — Traditional Minimalist
+   ═══════════════════════════════════════════════════════════════ */
+
+.board-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.river-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: var(--board-line);
+    font-family: 'Noto Serif SC', serif;
+    letter-spacing: 0.8em;
+    writing-mode: horizontal-tb;
+    opacity: 0.4;
+}
+
+.piece {
+    position: absolute;
+    width: 10%;
+    height: 9%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    font-family: 'Noto Serif SC', serif;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.piece:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+}
+
+.piece.red {
+    background: var(--paper);
+    color: var(--red-piece);
+    border: 2px solid var(--red-piece);
+}
+
+.piece.black {
+    background: var(--paper);
+    color: var(--black-piece);
+    border: 2px solid var(--black-piece);
+}
+
+.piece.selected {
+    background: var(--ink);
+    color: var(--paper);
+    border: 2px solid var(--ink);
+    z-index: 20;
+}
+
+.piece.last-moved {
+    background: var(--paper-dark);
+}
+
+.piece.moving {
+    animation: pieceMove 0.3s ease-out forwards;
+    z-index: 50;
+}
+
+@keyframes pieceMove {
+    0% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.piece.ai-moved {
+    border-width: 3px;
+    z-index: 100;
+}
+
+.valid-move-indicator {
+    position: absolute;
+    width: 4%;
+    height: 3.6%;
+    border-radius: 50%;
+    background: var(--valid-move);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Input Section — Clean Command Line
+   ═══════════════════════════════════════════════════════════════ */
+
+.input-section {
+    padding: 24px 48px;
+    background: var(--paper);
+    border-top: 1px solid var(--ink);
+}
+
+.input-wrapper {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+}
+
+#command-input {
+    flex: 1;
+    padding: 16px 20px;
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+#command-input::placeholder {
+    color: var(--ink-faint);
+    font-family: 'Noto Serif SC', serif;
+}
+
+#command-input:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 2px 0 var(--ink);
+}
+
+.hints {
+    margin-top: 12px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Buttons — Minimalist Style
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn {
+    padding: 12px 24px;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.btn-primary {
+    padding: 12px 28px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--ink-soft);
+    border-color: var(--ink-soft);
+}
+
+.btn.danger {
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+.btn.danger:hover {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Modal — Centered Box
+   ═══════════════════════════════════════════════════════════════ */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    position: relative;
+    background: var(--paper);
+    padding: 48px 40px;
+    width: 90%;
+    max-width: 480px;
+    border: 1px solid var(--ink);
+}
+
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    border: 1px solid var(--line);
+    pointer-events: none;
+}
+
+.modal-content h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin-bottom: 32px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    text-align: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ink);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-medium);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 2px 0 var(--ink);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 8px;
+    color: var(--ink-light);
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Game Over Overlay
+   ═══════════════════════════════════════════════════════════════ */
+
+.game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+.game-over-overlay::before {
+    content: '';
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    right: 32px;
+    bottom: 32px;
+    border: 1px solid var(--ink);
+    pointer-events: none;
+}
+
+.game-over-overlay h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 3.5rem;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: 0.2em;
+}
+
+.game-over-overlay p {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--ink-medium);
+    margin-bottom: 40px;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+}
+
+.game-over-overlay button {
+    padding: 14px 36px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    transition: all 0.3s ease;
+}
+
+.game-over-overlay button:hover {
+    background: var(--ink-soft);
+    border-color: var(--ink-soft);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AI Thinking Overlay
+   ═══════════════════════════════════════════════════════════════ */
+
+.thinking-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+}
+
+.thinking-overlay.show {
+    display: flex;
+}
+
+.thinking-content {
+    text-align: center;
+    color: var(--ink);
+}
+
+.thinking-spinner {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 32px;
+    border: 2px solid var(--line);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.thinking-text {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.15em;
+}
+
+.thinking-stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Personality Card
+   ═══════════════════════════════════════════════════════════════ */
+
+.personality-card {
+    position: relative;
+    padding: 20px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+}
+
+.personality-card::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border: 1px solid var(--line);
+    pointer-events: none;
+}
+
+.personality-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+.personality-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+}
+
+.personality-type {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+}
+
+.personality-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-light);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.personality-desc {
+    font-size: 0.85rem;
+    color: var(--ink-medium);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.personality-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.personality-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink-light);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    width: 40px;
+}
+
+.bar-chars {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+}
+
+.bar-percent {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-medium);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Mechanisms
+   ═══════════════════════════════════════════════════════════════ */
+
+.mechanisms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.mechanisms-list::-webkit-scrollbar {
+    width: 1px;
+}
+
+.mechanisms-list::-webkit-scrollbar-thumb {
+    background: var(--ink-light);
+}
+
+.mechanism-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-size: 0.85rem;
+    color: var(--ink-medium);
+}
+
+.mechanism-icon {
+    font-size: 1rem;
+}
+
+.mechanism-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.mechanism-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.mechanism-stop {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 4px 12px;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mechanism-stop:hover {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Toast
+   ═══════════════════════════════════════════════════════════════ */
+
+.toast-container {
+    position: fixed;
+    top: 100px;
+    right: 48px;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toast {
+    padding: 16px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--paper);
+    max-width: 320px;
+    animation: slideInRight 0.4s ease;
+}
+
+.toast.success {
+    border-left-color: var(--paper);
+}
+
+.toast.error {
+    border-left-color: var(--paper);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Responsive Design
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1200px) {
+    .main {
+        padding: 32px;
+        gap: 32px;
+    }
+
+    .side-panel {
+        width: 280px;
+    }
+}
+
+@media (max-width: 900px) {
+    .main {
+        flex-direction: column;
+        padding: 24px;
+        gap: 24px;
+    }
+
+    .side-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-height: 240px;
+    }
+
+    .panel-section {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .header {
+        padding: 20px 24px;
+    }
+
+    .input-section {
+        padding: 20px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .header h1 {
+        font-size: 1.4rem;
+    }
+
+    .header-actions {
+        gap: 12px;
+    }
+
+    #turn-indicator {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+    }
+
+    .side-panel {
+        flex-direction: column;
+        max-height: none;
+    }
+
+    .panel-section {
+        min-width: auto;
+    }
+
+    .modal-content {
+        padding: 32px 24px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Coordinate Selection
+   ═══════════════════════════════════════════════════════════════ */
+
+.coord-dot {
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.15s ease;
+}
+
+.coord-dot:hover {
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
+}
+
+.region-rect {
+    pointer-events: none;
+    fill: rgba(0, 0, 0, 0.1);
+    stroke: #000000;
+    stroke-width: 0.08;
+}
+
+.board-locked {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.input-locked {
+    pointer-events: none;
+    opacity: 0.3;
+}

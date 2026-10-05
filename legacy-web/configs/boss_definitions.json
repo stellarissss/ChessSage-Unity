@@ -1,0 +1,57 @@
+{
+  "hell": {
+    "id": "flipper",
+    "name": "翻覆者",
+    "title": "地狱道守道者",
+    "skill": "flip",
+    "skill_description": "修改规则有30%概率被翻转效果",
+    "ai_personality": "aggressive",
+    "icon": "☯"
+  },
+  "hungry": {
+    "id": "glutton",
+    "name": "饕餮者",
+    "title": "饿鬼道守道者",
+    "skill": "take_more",
+    "skill_description": "每作弊2次，额外偷改1次",
+    "ai_personality": "aggressive",
+    "icon": "👹"
+  },
+  "animal": {
+    "id": "orderer",
+    "name": "秩序者",
+    "title": "畜生道守道者",
+    "skill": "rank_lock",
+    "skill_description": "高等级棋子修改业力消耗额外+20点",
+    "ai_personality": "defensive",
+    "icon": "🐅"
+  },
+  "human": {
+    "id": "calculator",
+    "name": "算计者",
+    "title": "人道守道者",
+    "skill": null,
+    "skill_description": "无特殊技能，最公平的对决",
+    "ai_personality": "normal",
+    "icon": "🧠"
+  },
+  "asura": {
+    "id": "chaos",
+    "name": "狂乱者",
+    "title": "阿修罗道守道者",
+    "skill": "chaos",
+    "skill_description": "作弊后25%概率随机规则变化",
+    "ai_personality": "aggressive_random",
+    "icon": "⚔️"
+  },
+  "heaven": {
+    "id": "zen",
+    "name": "禅定者",
+    "title": "天道守道者",
+    "skill": "purify",
+    "skill_description": "每局3次，直接清除最近1条修改",
+    "ai_personality": "defensive_hard",
+    "icon": "☸️",
+    "skill_uses": 3
+  }
+}

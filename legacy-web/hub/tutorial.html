@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>核心玩法速览 · 棋圣六道轮回</title>
+    <link href="https://fonts.googleapis.cn/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* 独立教程页：整页即教程，不再有浮窗与底层场景，
+           因此不存在「模态覆盖 canvas 导致卡死」的问题。 */
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            background: #07080d;
+            color: var(--paper, #e8e4d8);
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tp-bar {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.22);
+            background: rgba(10, 12, 18, 0.96);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .tp-title {
+            font-family: 'Ma Shan Zheng', serif;
+            font-size: 22px;
+            color: var(--gold, #d4af37);
+            margin: 0;
+            white-space: nowrap;
+        }
+        .tp-actions { display: flex; gap: 10px; align-items: center; }
+        .tp-btn {
+            appearance: none;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            background: rgba(212, 175, 55, 0.08);
+            color: var(--gold, #d4af37);
+            font-family: inherit;
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .tp-btn:hover { background: rgba(212, 175, 55, 0.18); border-color: var(--gold, #d4af37); }
+        .tp-btn:focus-visible { outline: 2px solid var(--gold, #d4af37); outline-offset: 2px; }
+
+        /* 章节导航：横向可滚动，避免小屏挤压 */
+        .tp-nav {
+            flex: 0 0 auto;
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            overflow-x: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(8, 10, 15, 0.9);
+            position: sticky;
+            top: 63px;
+            z-index: 9;
+            scrollbar-width: thin;
+        }
+        .tp-nav a {
+            flex: 0 0 auto;
+            color: var(--paper, #e8e4d8);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tp-nav a:hover { border-color: var(--gold, #d4af37); color: var(--gold, #d4af37); }
+
+        /* 正文：整页滚动，各章节自然排布 */
+        .tp-body {
+            flex: 1 1 auto;
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 28px 22px 80px;
+            box-sizing: border-box;
+            line-height: 1.85;
+        }
+        .tp-body section {
+            padding-top: 26px;
+            margin-bottom: 34px;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            /* 锚点跳转时留出 sticky 头部的高度，避免标题被遮住 */
+            scroll-margin-top: 130px;
+        }
+        .tp-body section:first-child { border-top: none; padding-top: 0; }
+        .tp-body h3 {
+            font-family: 'Ma Shan Zheng', serif;
+            font-size: 24px;
+            color: var(--gold, #d4af37);
+            margin: 0 0 14px;
+        }
+        .tp-body h4 {
+            font-size: 16px;
+            color: var(--paper, #e8e4d8);
+            margin: 22px 0 10px;
+            padding-left: 10px;
+            border-left: 3px solid rgba(212, 175, 55, 0.6);
+        }
+        .tp-body p { margin: 12px 0; }
+        .tp-body ul { margin: 12px 0; padding-left: 22px; }
+        .tp-body li { margin: 7px 0; }
+        .tp-body strong { color: #fff; }
+        .tp-body em { color: var(--gold, #d4af37); font-style: normal; }
+        .tp-body code {
+            background: rgba(255, 255, 255, 0.09);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.92em;
+        }
+        .tp-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .tp-body th, .tp-body td {
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .tp-body th { background: rgba(212, 175, 55, 0.12); color: var(--gold, #d4af37); }
+
+        .tp-foot {
+            flex: 0 0 auto;
+            text-align: center;
+            padding: 22px;
+            color: rgba(232, 228, 216, 0.45);
+            font-size: 12.5px;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        @media (max-width: 640px) {
+            .tp-bar { padding: 12px 14px; flex-wrap: wrap; }
+            .tp-title { font-size: 18px; }
+            .tp-nav { top: 0; padding: 10px 14px; }
+            .tp-body { padding: 20px 15px 60px; }
+            .tp-body h3 { font-size: 20px; }
+            .tp-body table { font-size: 12.5px; }
+            .tp-body th, .tp-body td { padding: 6px 8px; }
+        }
+        @media print {
+            .tp-bar, .tp-nav { display: none; }
+            body { background: #fff; color: #000; }
+            .tp-body { max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="tp-bar">
+        <h1 class="tp-title">📖 核心玩法速览</h1>
+        <div class="tp-actions">
+            <button class="tp-btn" id="tp-back" type="button">← 返回大地图</button>
+            <button class="tp-btn" id="tp-top" type="button">↑ 回到顶部</button>
+        </div>
+    </header>
+
+    <nav class="tp-nav" id="tp-nav" aria-label="教程章节导航"></nav>
+
+    <main class="tp-body" id="tp-body"></main>
+
+    <footer class="tp-foot">棋圣 · 六道轮回 —— 玩法说明</footer>
+
+    <script src="/static/tutorial-content.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            var C = window.TutorialContent;
+            if (!C) { document.getElementById('tp-body').innerHTML = '<p>教程内容加载失败。</p>'; return; }
+
+            /* 渲染内容（单一真相源：tutorial-content.js） */
+            document.getElementById('tp-nav').innerHTML = C.NAV_HTML;
+            document.getElementById('tp-body').innerHTML = C.BODY_HTML;
+
+            /* 返回大地图：
+               本页由大地图以 'noopener' 打开，浏览器不会保留 opener 引用，
+               window.close() 通常无效，因此统一跳转回大地图。
+               若本页确实是脚本打开的（仍有 opener 引用），则优先关闭本标签页。 */
+            document.getElementById('tp-back').addEventListener('click', function () {
+                try {
+                    if (window.opener && !window.opener.closed) { window.close(); return; }
+                } catch (e) { /* 忽略，走跳转 */ }
+                location.href = '/overworld';
+            });
+
+            document.getElementById('tp-top').addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            /* 导航平滑滚动（style.css 已设 scroll-behavior:smooth，这里兜底并修正 sticky 偏移） */
+            document.getElementById('tp-nav').addEventListener('click', function (e) {
+                var a = e.target.closest('a');
+                if (!a) return;
+                var id = a.getAttribute('href').slice(1);
+                var el = document.getElementById(id);
+                if (!el) return;
+                e.preventDefault();
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                history.replaceState(null, '', '#' + id);
+            });
+        })();
+    </script>
+</body>
+</html>

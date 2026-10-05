@@ -1,0 +1,33 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+build/
+dist/
+
+# ── 密钥 / 本地配置（勿提交） ──
+api密钥.txt
+*.local.json
+config.json
+!config.example.json
+
+# ── 编辑器 / 系统 ──
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# ── 发布产物（git-lfs 已托管，本地不再重复保留） ──
+.trae-html-share-packages/
+*.7z
+*.zip
+
+# ── Agent 工作区临时产物（截图 / 草案 / 缓存 / 审查工件） ──
+.trae/screenshots/
+.trae/specs/
+.trae/documents/
+.trae/review_receipt_*.txt
+.trae/agent_pr_review_*.md
+.pytest_cache/

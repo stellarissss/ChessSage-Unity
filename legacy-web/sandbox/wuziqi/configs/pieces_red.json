@@ -1,0 +1,17 @@
+{
+  "_metadata": {
+    "version": "3.0",
+    "description": "白方棋子规则（白子）"
+  },
+  "side": "white",
+  "pieces": {
+    "stone": {
+      "label": "○",
+      "is_king": false,
+      "moves": [],
+      "capture_rules": []
+    }
+  },
+  "custom_pieces": [],
+  "side_overrides": {}
+}

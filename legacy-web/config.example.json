@@ -1,0 +1,12 @@
+{
+  "_说明": [
+    "这是配置模板。首次运行请复制为 config.json：cp config.example.json config.json",
+    "config.json 已被 .gitignore 忽略，不会提交，可安全存放你的真实密钥。",
+    "api_key 支持两种写法：(1) 直接填真实密钥 sk-xxxxxxxx；",
+    "                        (2) 填混淆形式（见 shared/ai_config.py 顶部说明），运行时自动还原。",
+    "两种写法都能正常工作 —— 程序会调用 unmask_secret() 统一还原，对真实密钥是幂等的。"
+  ],
+  "api_key": "",
+  "base_url": "https://api.deepseek.com/v1",
+  "model": "deepseek-flash"
+}
