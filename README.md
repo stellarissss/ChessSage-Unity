@@ -44,7 +44,7 @@ ChessSage-Unity/
 - [x] 完成原网页版架构盘点与迁移可行性评估（见 [ADR](docs/unity-port-feasibility.md)）
 - [x] 建立本仓库并将原实现整体归档至 `legacy-web/`
 - [x] 安装 **Unity 2022.3.62f3c1** + **Windows 交叉编译模块**（WindowsStandaloneSupport / Linux IL2CPP），见 [ADR §8.1](docs/unity-port-feasibility.md)
-- [ ] **激活 Unity 许可证**（阻塞项：无有效许可证时无法创建工程/构建，见 [ADR §8.3](docs/unity-port-feasibility.md)）
+- [x] 激活 **Unity Personal** 许可证，并实测 **Linux → Windows x64 交叉编译成功**（产物为 PE32+ 可执行文件），见 [ADR §8.4](docs/unity-port-feasibility.md)
 - [ ] 搭建 Unity 工程骨架（数据层 / 规则引擎 / AI 编排 / UI 框架）
 - [ ] 逐系统迁移（详见 ADR 的分阶段路线图）
 
@@ -78,7 +78,7 @@ ChessSage-Unity/
 
 ## 六、开发环境（Unity + Windows 交叉编译）
 
-已安装 **Unity 2022.3.62f3c1**（China 分支）于 `/opt/unity/editor/Editor/`，并配有 **Windows Build Support (Mono)** 与 **Linux Build Support (Mono/IL2CPP)** 模块，可在 Linux 上交叉编译 Windows x64。
+已安装 **Unity 2022.3.62f3c1**（China 分支）于 `/opt/unity/editor/Editor/`，配有 **Windows Build Support (Mono)** 与 **Linux Build Support (Mono/IL2CPP)** 模块，并已激活 **Unity Personal** 授权。
 
 交叉编译命令形态：
 
@@ -88,7 +88,7 @@ ChessSage-Unity/
   -executeMethod <BuildScript.Build> -logFile -
 ```
 
-> **当前阻塞**：许可证尚未激活（`No valid Unity Editor license found`）。需提供 Unity 账号 / 序列号 / `.ulf` 许可证文件后才能创建工程与构建。详见 [ADR §8](docs/unity-port-feasibility.md)。
+> **已验证**：在 Linux Headless 上构建空工程成功，产出 `ChessSage.exe + UnityPlayer.dll` 等 PE32+ x86-64 文件。细节见 [ADR §8](docs/unity-port-feasibility.md)。
 
 ## 七、安全说明
 

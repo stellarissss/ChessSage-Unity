@@ -117,7 +117,7 @@
 
 | 批次 | 内容 | 完成判定 |
 |:---|:---|:---|
-| B0 环境 | Unity + Windows 构建模块、工程骨架、数据加载层 | 能在 Linux 构建出空的 Windows 可执行文件 |
+| B0 环境 | Unity + Windows 构建模块、工程骨架、数据加载层 | 能在 Linux 构建出空的 Windows 可执行文件（环境与空可执行文件已达成，见 §8.4）；待工程骨架与数据加载层 |
 | B1 规则内核 | 6 棋类 `rule_engine` + 走法/胜负/吃子 → C# | 移植原 `tests/*.py` 为 C# 测试，全部通过 |
 | B2 AI 编排 | 意图解析 → JSON Patch → Schema 校验 → 生效；业力/识破 | 同一批指令在两端产生**等价 Patch 与业力值** |
 | B3 对局闭环 | 单棋类端到端（棋盘渲染 + 落子 + 作弊指令面板） | 象棋对局可完整通关一次 |
@@ -171,33 +171,49 @@
 
 Windows Mono 后端（当前已装模块）即可产出 `WindowsPlayer.exe` + `UnityPlayer.dll`；若需 IL2CPP Windows 后端，需再补装 `Windows Build Support (IL2CPP)` 模块。
 
-### 8.3 阻塞项：许可证（尚未解决）
+### 8.3 许可证（已激活）
 
-实测在 Headless 下运行 Editor 会加载 LicensingClient，但报：
+使用 **Unity Personal** 授权，通过 LicensingClient 以账号激活（机器绑定），许可文件：
+`/root/.config/unity3d/Unity/licenses/UnityEntitlementLicense.xml`（EntitlementGroup = `UnityPersonal`，含 `com.unity.editor.headless`）。
 
-```
-No valid Unity Editor license found. Please activate your license.
-```
-
-**结论：Editor 与交叉编译模块已安装就绪，但在激活许可证之前无法创建工程或执行构建。** 需要项目所有者提供以下任一项：
-
-- **Pro/Plus 序列号**（`-serial <key>` + 账号），或
-- **Unity 账号**（`-username <email> -password <pw>`，用于 Personal 授权），或
-- **离线许可证文件 `.ulf`**（`Unity -manualLicenseFile <file.ulf>`）。
-
-激活参考命令（首次，需联网）：
+激活 / 重新激活命令：
 
 ```bash
-/opt/unity/editor/Editor/Unity -batchmode -nographics -quit \
-  -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD" \
-  -logFile -            # Pro 场景追加：-serial "$UNITY_SERIAL"
+cd /opt/unity/editor/Editor/Data/Resources/Licensing/Client
+./Unity.Licensing.Client \
+  --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD" \
+  --activate-all --include-personal
 ```
 
-### 8.4 其他约束
+> 凭据不入库：账号/密码通过环境变量传入，不写入仓库或脚本。
+
+### 8.4 交叉编译已验证（实测）
+
+在 Linux Headless 上以 `-buildTarget StandaloneWindows64`（Mono 后端）构建空工程，结果：
+
+```
+BUILD_RESULT:Succeeded  size=70124118
+```
+
+产物（`file` 校验为 `PE32+ executable (GUI) x86-64, for MS Windows`）：
+
+```
+build/win/
+├── ChessSage.exe                # Windows 可执行文件
+├── UnityPlayer.dll
+├── UnityCrashHandler64.exe
+├── ChessSage_Data/
+└── MonoBleedingEdge/
+```
+
+**结论：Linux → Windows x64 交叉编译链路已打通。**
+
+### 8.5 其他约束
 
 - **无 GPU**：本沙箱用于**构建**（交叉编译不需要 GPU 渲染）；实际画面验收建议在带显卡的 Windows 机器进行。
 - **Headless 运行**：无图形化 Editor；以批处理/命令行驱动构建与测试。
 - **磁盘**：Editor + 模块约 7.6 GB。
+- **全球 CDN 不可达**：本沙箱访问 `download.unity3d.com` 返回 404，统一使用 Unity China CDN（`download.unitychina.cn`）。
 
 ---
 
@@ -205,7 +221,7 @@ No valid Unity Editor license found. Please activate your license.
 
 | 风险 | 可能性 | 影响 | 缓解 |
 |:---|:---|:---|:---|
-| Unity 许可证无法在沙箱激活 | 中 | 高（阻塞构建） | 由所有者提供账号/`.ulf`；或改用可用的 CI 构建机 |
+| Unity 许可证无法在沙箱激活 | 低（已消除） | 高（阻塞构建） | 已用 Unity Personal 授权以 LicensingClient 激活成功（§8.3） |
 | 自研 WebGPU 大地图管线重制成本高 | 高 | 中 | 用 URP 标准能力替代，分阶段降级（先 2D 等距图集，后增强） |
 | C# 缺少 RFC6902 JSON Patch / JSON Schema 等价库 | 中 | 中 | 自研最小实现或用开源库；以原 `shared/json_patch_utils.py` + `schema_validator.py` 为规范 |
 | 129 文件规则移植引入行为偏差 | 中 | 高 | 以原 `tests/` 为黄金用例；逐棋类验收 |
@@ -228,8 +244,9 @@ No valid Unity Editor license found. Please activate your license.
 
 ## 11. 后续待决问题（Follow-up）
 
-1. **Unity 许可证激活**：Editor 2022.3.62f3c1 与 Windows 交叉编译模块已安装（§8.1），但许可证未激活（§8.3），**未解决前不进入 B0 的工程创建与 B1**。需所有者提供账号/序列号/`.ulf`。
-2. **C# JSON Patch / Schema 方案**：自研 vs 开源库，需在 B2 前定稿并以原实现为规范做等价性验证。
+1. **C# JSON Patch / Schema 方案**：自研 vs 开源库，需在 B2 前定稿并以原实现为规范做等价性验证。
+
+> Unity 版本与许可证已定并打通（§8）：**2022.3.62f3c1（China 分支）+ Unity Personal 授权**，Windows x64 交叉编译已验证，可直接进入 B0/B1。
 
 ---
 
