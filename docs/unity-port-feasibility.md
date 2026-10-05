@@ -145,19 +145,59 @@
 
 ## 8. 环境准备（Unity 安装 + Windows 交叉编译）
 
-**目标环境**：Ubuntu 22.04 x86_64（3 vCPU / 5.8 GB RAM / 1.1 TB 空闲磁盘，Headless、无 GPU）。
+**目标环境**：Ubuntu x86_64（3 vCPU / 5.8 GB RAM / 1.1 TB 空闲磁盘，Headless、无 GPU）。
 
-**计划步骤**
-1. 安装 Unity Hub（Linux），用它获取 Unity **LTS** 版本 Editor。
-2. 为 Editor 附加模块：**Windows Build Support (Mono) 与 (IL2CPP)**（交叉编译 Windows 所需）+ Linux Build Support（本机自测）。
-3. 以命令行/Headless 方式验证：`Unity -batchmode -quit -projectPath <proj> -buildTarget StandaloneWindows64`。
-4. 后续在 CI 中复用同一命令产出 Windows 构建。
+### 8.1 已安装环境（实测）
 
-**已知约束与风险（重要）**
-- **许可证**：Unity 需激活（Personal/Pro 均可）。Headless 激活需提供 Unity 账号或许可证文件；无许可证时**只能安装 Editor，无法执行构建**。→ 需项目所有者提供 Unity 账号或许可证（.ulf）。
+| 项 | 值 |
+|:---|:---|
+| Editor 版本 | **Unity 2022.3.62f3c1**（China 分支 `2022.3/china_unity/release`，Revision `1623fc0bbb97`） |
+| 安装根目录 | `/opt/unity/editor/Editor/`（可执行文件 `/opt/unity/editor/Editor/Unity`） |
+| 模块 | `Editor/Data/PlaybackEngines/WindowsStandaloneSupport`（Windows Mono：win32/win64 × dev/nondev）；`Editor/Data/PlaybackEngines/LinuxStandaloneSupport`（Linux Mono + IL2CPP） |
+| 校验 | `Unity -version` → `2022.3.62f3c1`；`Unity -batchmode -nographics -quit -createProject <p>` 可启动并加载 LicensingClient |
+
+> 安装方式：从 Unity China CDN 获取 Editor 压缩包（`Unity-2022.3.62f3c1.tar.xz`）解压；Windows Build Support 的 `.pkg`（xar→gzip→cpio）与 Linux IL2CPP 模块包分别解出并放置到 `Editor/Data/PlaybackEngines/` 对应子目录。
+
+### 8.2 交叉编译 Windows 的命令形态
+
+```bash
+/opt/unity/editor/Editor/Unity \
+  -batchmode -nographics -quit -accept-apiupdate \
+  -projectPath <proj> \
+  -buildTarget StandaloneWindows64 \
+  -executeMethod <BuildScript.Build> \
+  -logFile -
+```
+
+Windows Mono 后端（当前已装模块）即可产出 `WindowsPlayer.exe` + `UnityPlayer.dll`；若需 IL2CPP Windows 后端，需再补装 `Windows Build Support (IL2CPP)` 模块。
+
+### 8.3 阻塞项：许可证（尚未解决）
+
+实测在 Headless 下运行 Editor 会加载 LicensingClient，但报：
+
+```
+No valid Unity Editor license found. Please activate your license.
+```
+
+**结论：Editor 与交叉编译模块已安装就绪，但在激活许可证之前无法创建工程或执行构建。** 需要项目所有者提供以下任一项：
+
+- **Pro/Plus 序列号**（`-serial <key>` + 账号），或
+- **Unity 账号**（`-username <email> -password <pw>`，用于 Personal 授权），或
+- **离线许可证文件 `.ulf`**（`Unity -manualLicenseFile <file.ulf>`）。
+
+激活参考命令（首次，需联网）：
+
+```bash
+/opt/unity/editor/Editor/Unity -batchmode -nographics -quit \
+  -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD" \
+  -logFile -            # Pro 场景追加：-serial "$UNITY_SERIAL"
+```
+
+### 8.4 其他约束
+
 - **无 GPU**：本沙箱用于**构建**（交叉编译不需要 GPU 渲染）；实际画面验收建议在带显卡的 Windows 机器进行。
-- **下载体积与时延**：Editor + 模块为多 GB 级下载，受沙箱代理/带宽影响。
-- **Headless 运行**：图形化 Editor 操作不可用；以批处理/命令行驱动构建与测试。
+- **Headless 运行**：无图形化 Editor；以批处理/命令行驱动构建与测试。
+- **磁盘**：Editor + 模块约 7.6 GB。
 
 ---
 
@@ -188,7 +228,7 @@
 
 ## 11. 后续待决问题（Follow-up）
 
-1. **Unity 版本与许可证**：确定具体 LTS 版本与激活方式（账号或 `.ulf`）；未定前不进入 B1。
+1. **Unity 许可证激活**：Editor 2022.3.62f3c1 与 Windows 交叉编译模块已安装（§8.1），但许可证未激活（§8.3），**未解决前不进入 B0 的工程创建与 B1**。需所有者提供账号/序列号/`.ulf`。
 2. **C# JSON Patch / Schema 方案**：自研 vs 开源库，需在 B2 前定稿并以原实现为规范做等价性验证。
 
 ---
