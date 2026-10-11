@@ -1,0 +1,16 @@
+{
+    "name": "ChessSage.Presentation",
+    "rootNamespace": "ChessSage.Presentation",
+    "references": [
+        "ChessSage.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

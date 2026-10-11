@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ============================================================================
+    ChessSage.Core 独立验证工程（引擎外回归测试）
+    ============================================================================
+    目的：ChessSage.Core 被刻意设计为「零 UnityEngine 依赖」的纯逻辑层
+          （见 Assets/ChessSage/Core/ChessSage.Core.asmdef 的 noEngineReferences: true）。
+          本工程把同一份源码以普通 .NET 类库方式编译，并用 NUnit 跑 Assets/ChessSage/Tests
+          下的全部测试，从而在**没有 Unity 编辑器**的环境（CI / 轻量沙箱）中
+          获得真实的编译期 + 回归验证能力。
+
+    对应 Unity 内验证：ChessSage.Tests.asmdef（Unity Test Runner，EditMode）。
+    两者共用同一批测试源码与同一批黄金夹具，保证「引擎内外等价」。
+
+    用法：
+        dotnet test tools/verify/dotnet/ChessSage.Core.Verify.csproj
+    ============================================================================
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Core 代码使用 C# 9 特性；显式锁定以免随 SDK 漂移 -->
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>ChessSage.Core.Verify</AssemblyName>
+    <RootNamespace>ChessSage.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <!-- 测试代码中的 Assert 失败需要可读堆栈 -->
+    <DebugType>portable</DebugType>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- 避免把测试产物写进 Unity 的 Assets 目录 -->
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被编译的全部源码：Core（纯逻辑） + Tests（黄金等价性测试） -->
+    <Compile Include="../../../Assets/ChessSage/Core/**/*.cs" />
+    <Compile Include="../../../Assets/ChessSage/Tests/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>

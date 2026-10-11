@@ -1,10 +1,30 @@
 {
+  "//": "ChessSage Unity 版包清单。版本号取自 Unity 2022.3.62f3c1 编辑器自带的权威映射(Editor/Data/Resources/PackageManager/Editor/manifest.json)，非人工猜测。",
+  "//渲染": "URP 14.0.12 —— 2D Renderer / Volume 后处理 / 2D Light，支撑六道大陆重制",
+  "//UI": "UI Toolkit 为内置模块(com.unity.modules.uielements)；uGUI + TMP 作兜底与富文本",
+  "//输入": "Input System 1.14.0；ProjectSettings.activeInputHandler 当前为 0(旧 Input Manager)，表现层以旧 Input 实现，可在启用新后端后平滑切换",
+  "//内容": "Addressables 用于按需加载大体积美术/CG/音频；Localization 为多语言预留",
+  "//构建": "toolchain.linux-x86_64 用于 Linux IL2CPP；toolchain.win-x86_64-linux-x86_64 用于 Linux→Windows IL2CPP 交叉编译",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.test-framework": "1.1.33",
-    "com.unity.textmeshpro": "3.0.6",
+
+    "com.unity.render-pipelines.core": "14.0.12",
+    "com.unity.render-pipelines.universal": "14.0.12",
+    "com.unity.shadergraph": "14.0.12",
+
     "com.unity.ugui": "1.0.0",
-    "com.unity.toolchain.linux-x86_64": "2.0.11",
+    "com.unity.textmeshpro": "3.0.7",
+    "com.unity.timeline": "1.7.7",
+    "com.unity.cinemachine": "2.10.3",
+
+    "com.unity.inputsystem": "1.14.0",
+    "com.unity.addressables": "1.22.3",
+    "com.unity.localization": "1.5.2",
+
+    "com.unity.toolchain.linux-x86_64": "2.0.4",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.4",
+
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",

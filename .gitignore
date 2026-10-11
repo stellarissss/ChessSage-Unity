@@ -2,6 +2,7 @@
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
+[Bb]in/
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
@@ -57,3 +58,6 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+
+# ── 引擎外验证工程（反向声明：这些 .csproj 是仓库资产，必须纳入版本控制）──
+!tools/verify/dotnet/*.csproj

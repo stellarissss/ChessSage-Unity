@@ -23,7 +23,24 @@ namespace ChessSage.Core.Config
 
         public string VariantDir(string variant) => Path.Combine(RootPath, variant);
         public string GlobalDir => Path.Combine(RootPath, "global");
-        public string SchemaDir => Path.Combine(RootPath, "Schemas");
+
+        /// <summary>
+        /// Schema 目录。Unity 工程中 StreamingAssets 的实际布局是
+        /// <c>StreamingAssets/Configs/{variant}|global</c> 与 <c>StreamingAssets/Schemas</c> 并列，
+        /// 与 legacy-web 的 <c>Configs/Schemas</c> 并不一致。此处做两处探测以兼容两种布局，
+        /// 避免在 Unity 运行时静默拿不到 schema（曾导致校验被跳过）。
+        /// </summary>
+        public string SchemaDir
+        {
+            get
+            {
+                var nested = Path.Combine(RootPath, "Schemas");
+                if (Directory.Exists(nested)) return nested;
+                var sibling = Path.Combine(
+                    Path.GetDirectoryName(Path.GetFullPath(RootPath)) ?? RootPath, "Schemas");
+                return Directory.Exists(sibling) ? sibling : nested;
+            }
+        }
 
         JObject LoadJson(string path)
         {

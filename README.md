@@ -25,7 +25,29 @@
 ChessSage-Unity/
 ├── README.md                       # 本文件
 ├── docs/
-│   └── unity-port-feasibility.md   # 可行性评估 + 架构决策记录（ADR）+ 迁移路线图
+│   ├── architecture.md             # 分层架构与模块化结构（程序集依赖、质量门禁）
+│   ├── progress.md                 # 迁移进度看板与验收记录
+│   ├── verification.md             # 三层验证体系与本地执行指南
+│   ├── overworld-redesign.md       # 大地图重制方案（URP 2D 等距 Tilemap）
+│   └── unity-port-feasibility.md   # 可行性评估 + 架构决策记录（ADR）
+├── Assets/
+│   ├── ChessSage/
+│   │   ├── Core/                   # 纯逻辑层（零 UnityEngine 依赖，可在 dotnet 下回归测试）
+│   │   │   ├── Model/ Rules/ Mechanism/ Ai/       规则引擎
+│   ││   ├── Orchestration/         # AI 编排流水线（自然语言 → JSON Patch → 校验）
+│   │   │   ├── Samsara/             # RPG 层（业力/技能/关卡/结局）
+│   │   │   ├── Overworld/           # 六道大陆地图数据 / 分块 / 迷雾 / 流场寻路
+│   │   │   └── Game/                # GameSession 对局会话
+│   │   ├── Presentation/           # 表现层（棋盘 / 大地图 / HUD / 程序化美术）
+│   │   ├── App/                    # 组合根
+│   │   ├── Editor/                 # Editor 工具（构建脚本 / 工程引导器）
+│   │   └── Tests/                  # 回归测试（含六棋类黄金等价性）
+│   └── StreamingAssets/Configs/    # 数据真源（复用 legacy-web 的 JSON）
+├── tools/
+│   ├── build.sh                    # L3：Unity 构建（需许可证）
+│   └── verify/
+│       ├── compile-check.sh        # L2：编译门禁（无需许可证）
+│       └── dotnet/                 # L1：引擎外逻辑回归（无需 Unity）
 ├── legacy-web/                     # 原网页版全量源码（参考实现，冻结不再演进）
 │   ├── main.py                     # 原统一启动器（hub + 12 棋类服务）
 │   ├── hub/                        # 原 Web 前端（标题页 / 大地图 / 对局 / 剧情 / 结局）
@@ -41,14 +63,32 @@ ChessSage-Unity/
 
 ## 三、当前状态
 
+> 详细看板与逐项验收记录见 **[docs/progress.md](docs/progress.md)**。
+
+### 已完成
+
 - [x] 完成原网页版架构盘点与迁移可行性评估（见 [ADR](docs/unity-port-feasibility.md)）
 - [x] 建立本仓库并将原实现整体归档至 `legacy-web/`
-- [x] 安装 **Unity 2022.3.62f3c1** + **Windows 交叉编译模块**（WindowsStandaloneSupport / Linux IL2CPP），见 [ADR §8.1](docs/unity-port-feasibility.md)
-- [x] 激活 **Unity Personal** 许可证，并实测 **Linux → Windows x64 交叉编译成功**（产物为 PE32+ 可执行文件），见 [ADR §8.4](docs/unity-port-feasibility.md)
-- [ ] 搭建 Unity 工程骨架（数据层 / 规则引擎 / AI 编排 / UI 框架）
-- [ ] 逐系统迁移（详见 ADR 的分阶段路线图）
+- [x] 安装 **Unity 2022.3.62f3c1** + **Windows 交叉编译模块**
+- [x] **B1 规则内核**：6 种棋类的走法生成 / 机制引擎 / 胜负判定移植为 C#，黄金用例全绿
+- [x] **B2 AI 编排**：自然语言 → 意图解析 → JSON Patch（RFC 6902）→ Schema 校验 → 生效
+- [x] **B5 RPG 层**：`samsara`（业力系统 / 技能树 / 关卡 / 结局 / Boss）移植为 C#
+- [x] **M1 工程脚手架**：4 个 asmdef 模块化分层、URP 包配置、`ProjectBootstrapper` 一键引导
+- [x] **M1-4 象棋垂直切片**：棋盘渲染 → 选中 → 落子 → AI 应手 → 悔棋，端到端可玩闭环
+- [x] **M2 大地图全面重制**：等距 Tilemap + 分块流式加载 + 探索迷雾 + 流场寻路 + 昼夜氛围
+- [x] **M1-3 Core 性能硬化**：AI 决策 **2231 ms → 93 ms（24×）**，并加入硬性时间/节点预算
+- [x] **三层质量门禁**：L1 逻辑回归 57 项 · L2 全工程编译校验（均已跑通）
 
-> **迁移尚未开始编码。** 在 Unity 工程骨架落地并跑通第一个棋类之前，`legacy-web/` 是唯一可运行版本。
+### 进行中 / 待办
+
+- [ ] **B4 对局 UI**：5 个棋类的表现层接入（棋盘视图已数据驱动，复制即可）
+- [ ] **RPG 表现层**：选关弹窗、技能树、业力/识破 HUD、剧情对话、记忆相册、结局、成就、8 章教程
+- [ ] **音频演出**：BGM、音效、CG 视频、立绘演出
+- [ ] **正式美术**：以占位美术为基线，导入 `legacy-web/shared/assets/` 的正式素材
+- [ ] **大地图内容扩展**：装饰物植被（Poisson-disk 团簇）、河流、桥梁、区域边界的视觉呈现
+
+> **验证边界（重要）**：L1（逻辑回归）与 L2（全工程编译）已在无许可证环境中跑通并全绿；
+> L3（Unity 运行 / EditMode 测试 / 出包）因本环境无 Unity 许可证而**尚未执行**，需在本地执行。
 
 ## 四、技术决策（概要）
 
@@ -59,7 +99,9 @@ ChessSage-Unity/
 | UI | UI Toolkit / uGUI | 取代原 HTML/CSS 页面（标题页、大地图 HUD、对局面板、剧情对话、结局） |
 | AI 接入 | C# HTTP 客户端调用大模型（沿用原 Prompt 体系） | 原 `prompts.py` / 编排流程可直接迁移；密钥仍走混淆配置 + 环境变量 |
 | 数据 | 复用 `legacy-web/configs/*.json` + `shared/assets/*` | 数据驱动设计已成型，是可复用性最高的部分 |
-| 架构 | **单一进程**（原 12 个微服务收敛为进程内系统） | 消除进程编排/端口/懒加载复杂度，桌面单机场景无需 HTTP 微服务 |
+| 架构 | **模块化单一进程**（原 12 个微服务收敛为 4 个程序集：Core→Presentation→App→Editor） | 消除进程编排/端口/懒加载复杂度；Core 层零引擎依赖可在 dotnet 下回归测试 |
+| 大地图 | **URP 2D 等距 Tilemap**（替代 web 版跑不通的 WebGPU 主通道） | 彻底移除 WebGPU 依赖；16×16 分块流式加载，视野内约 25 个 draw call |
+| 地形美术 | **程序化图集**（13 种地形，代码生成顶面/侧面） | 无正式美术时也能开箱即有画面，且不阻塞 GPU 资源导入 |
 | 主目标 | Windows x64 桌面版，Linux 交叉编译 | 用户明确要求 |
 
 技术细节、替代方案与风险见 [ADR](docs/unity-port-feasibility.md)。
@@ -76,19 +118,40 @@ ChessSage-Unity/
 
 各阶段的验收标准（fitness functions）见 ADR。
 
-## 六、开发环境（Unity + Windows 交叉编译）
+## 六、开发环境与构建
 
-已安装 **Unity 2022.3.62f3c1**（China 分支）于 `/opt/unity/editor/Editor/`，配有 **Windows Build Support (Mono)** 与 **Linux Build Support (Mono/IL2CPP)** 模块，并已激活 **Unity Personal** 授权。
+**Unity 2022.3.62f3c1**（China 分支），已配置 URP 14.0.12 / Input System / Addressables /
+Localization / Cinemachine / Timeline / Windows 交叉编译工具链。包版本取自编辑器自带的权威
+manifest，不是猜测值。
 
-交叉编译命令形态：
+### 三层质量门禁
+
+| 层 | 命令 | 是否需要 Unity 许可证 | 覆盖内容 |
+|:--|:--|:--|:--|
+| **L1** | `CHESSSAGE_ASSETS_ROOT=$PWD/Assets dotnet test tools/verify/dotnet/ChessSage.Core.Verify.csproj` | 否 | 57 项逻辑回归：6 棋类黄金等价性、机制、编排、大地图数据、AI 决策护栏 |
+| **L2** | `bash tools/verify/compile-check.sh` | 否 | 用 Unity 自带 Roslyn + 参考程序集编译全部 4 个程序集，捕获全部编译错误 |
+| **L3** | `bash tools/build.sh test` / `bash tools/build.sh windows` | **是** | Unity EditMode 测试、Linux → Windows x64 出包 |
+
+L1 与 L2 **已在当前环境跑通并全绿**；L3 需在本地执行。详见 [docs/verification.md](docs/verification.md)。
+
+### 首次打开工程
+
+由于 `.unity` 场景与 URP `.asset` 必须由 Unity 序列化器生成，无法手写 YAML，
+工程提供了幂等的引导器：菜单 **ChessSage → 工程引导 → 一键引导（幂等）**。
+它会自动创建 URP 渲染管线资产、启动场景 `Scenes/Main.unity` 与大地图场景 `Scenes/Overworld.unity`，
+并写入 Build Settings。也可在 batchmode 下调用：
 
 ```bash
-/opt/unity/editor/Editor/Unity -batchmode -nographics -quit -accept-apiupdate \
-  -projectPath <proj> -buildTarget StandaloneWindows64 \
-  -executeMethod <BuildScript.Build> -logFile -
+/opt/unity/Editor/Unity -batchmode -nographics -quit -projectPath <proj> \
+  -executeMethod ChessSage.EditorTools.ProjectBootstrapper.BootstrapAll -logFile -
 ```
 
-> **已验证**：在 Linux Headless 上构建空工程成功，产出 `ChessSage.exe + UnityPlayer.dll` 等 PE32+ x86-64 文件。细节见 [ADR §8](docs/unity-port-feasibility.md)。
+> **交叉编译命令形态**：
+> ```bash
+> /opt/unity/Editor/Unity -batchmode -nographics -quit -accept-apiupdate \
+>   -projectPath <proj> -buildTarget StandaloneWindows64 \
+>   -executeMethod ChessSage.Build.BuildScript.BuildWindows -logFile -
+> ```
 
 ## 七、安全说明
 
