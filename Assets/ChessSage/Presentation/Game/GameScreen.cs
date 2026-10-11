@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using ChessSage.Core.Board;
 using ChessSage.Core.Game;
 using ChessSage.Presentation.Board;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace ChessSage.Presentation.Game
 {
     /// <summary>
     /// 对局画面：把 <see cref="GameSession"/>（纯逻辑）与棋盘视图（表现）粘合起来，
-    /// 形成"点棋子 → 点目标 → 走子 → AI 应手"的最小可玩闭环。
+    /// 形成可玩闭环。按棋种类型分两条交互分支，共用一个回合/终局/悔棋骨架：
+    ///   · <b>走子类</b>（象棋/动物棋/跳棋）：点棋子 → 点目标 → AI 应手；
+    ///   · <b>落子类</b>（围棋/五子棋/黑白棋）：点击格 → 若为合法落点则落子 → AI 应手，
+    ///     玩家回合常驻显示全部合法落点高亮，落子后在 HUD 提示提子/翻转反馈。
     ///
     /// 严格单向数据流：<b>输入 → GameSession → 刷新视图</b>。
     /// 表现层从不修改 BoardState，所有变更都必须经过 GameSession 的方法，
@@ -29,20 +34,53 @@ namespace ChessSage.Presentation.Game
         GameSession _session;
         string _selectedPieceId;
         List<int[]> _selectedMoves = new List<int[]>();
+        List<int[]> _placementCache = new List<int[]>();
         Coroutine _aiRoutine;
 
         public GameSession Session => _session;
 
-        /// <summary>注入对局会话。由组合根（<c>Bootstrap</c>）在启动时调用。</summary>
+        /// <summary>注入对局会话。由组合根（<c>Bootstrap</c>）在启动 / 切换棋种时调用。</summary>
         public void Attach(GameSession session)
         {
             _session = session;
             _selectedPieceId = null;
             _selectedMoves.Clear();
+            _placementCache.Clear();
 
-            if (Board != null) Board.Bind(session.State, session.Rules.Width, session.Rules.Height);
+            if (Board != null)
+            {
+                Board.gameObject.SetActive(true);
+                if (session != null)
+                {
+                    // 按棋种配置选择布局：矩形 / 六角星由 BoardLayoutFactory 数据驱动判定，
+                    // 视图不再假设矩形——跳棋的六角星格位由此正确排布。
+                    var layout = BoardLayoutFactory.FromBoardConfig(session.Config.Board);
+                    Board.Bind(session.State, layout);
+                }
+                else
+                {
+                    Board.Bind(null, 9, 10);
+                }
+            }
             SubscribeInput();
             Refresh();
+        }
+
+        /// <summary>
+        /// 分离当前会话（返回棋种 hub 时调用）：停掉 AI 协程、清空选择态与高亮、隐藏棋盘。
+        /// 之所以必须真正置空会话而不是只隐藏视图：<see cref="BoardInputRouter"/> 用的是原始鼠标事件，
+        /// 不经过 EventSystem，若不置空会话，玩家在 hub 界面上的点击会穿透到棋盘误触发落子。
+        /// </summary>
+        public void Detach()
+        {
+            if (_aiRoutine != null) { StopCoroutine(_aiRoutine); _aiRoutine = null; }
+            _session = null;
+            _selectedPieceId = null;
+            _selectedMoves.Clear();
+            _placementCache.Clear();
+            if (Highlights != null) Highlights.Clear();
+            if (Board != null) Board.gameObject.SetActive(false);
+            if (Hud != null) Hud.Bind(null);
         }
 
         // ── 输入接线 ──────────────────────────────────────────────────────────
@@ -77,7 +115,7 @@ namespace ChessSage.Presentation.Game
             if (_aiRoutine != null) { StopCoroutine(_aiRoutine); _aiRoutine = null; }
         }
 
-        // ── 输入处理 ──────────────────────────────────────────────────────────
+        // ── 输入分发 ──────────────────────────────────────────────────────────
 
         void OnCellClicked(int x, int y)
         {
@@ -85,6 +123,18 @@ namespace ChessSage.Presentation.Game
             if (_session == null || _session.IsEnded) return;
             if (_session.IsAiTurn) { SetHint("AI 正在思考…"); return; }
 
+            if (_session.IsPlacementGame) PlacementBranch(x, y);
+            else MoveBranch(x, y);
+        }
+
+        void OnCancel() => ClearSelection();
+
+        // ══════════════════════════════════════════════════════════════
+        // 走子类分支（行为与 M5 之前保持一致）
+        // ══════════════════════════════════════════════════════════════
+
+        void MoveBranch(int x, int y)
+        {
             // 已选中棋子 → 先判定是否为合法落点
             if (!string.IsNullOrEmpty(_selectedPieceId))
             {
@@ -109,16 +159,6 @@ namespace ChessSage.Presentation.Game
             _selectedMoves = _session.GetValidMoves(piece.Id);
             ShowHighlights();
             SetHint($"已选中 {piece.Name}（{_selectedMoves.Count} 个可走点）");
-        }
-
-        void OnCancel() => ClearSelection();
-
-        void ClearSelection()
-        {
-            _selectedPieceId = null;
-            _selectedMoves.Clear();
-            if (Highlights != null) Highlights.Clear();
-            SetHint(null);
         }
 
         int[] FindMove(int x, int y)
@@ -171,7 +211,95 @@ namespace ChessSage.Presentation.Game
             ScheduleAiTurn();
         }
 
-        // ── AI 回合 ───────────────────────────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // 落子类分支（围棋/五子棋/黑白棋）
+        // ══════════════════════════════════════════════════════════════
+
+        void PlacementBranch(int x, int y)
+        {
+            if (!IsLegalPlacement(x, y))
+            {
+                SetHint($"({x},{y}) 不是合法落点");
+                return;
+            }
+            CommitPlacement(x, y);
+        }
+
+        /// <summary>点击格是否在缓存的合法落点集合中（缓存由 <see cref="Refresh"/> 维护，点击时无需重算）。</summary>
+        bool IsLegalPlacement(int x, int y)
+        {
+            for (int i = 0; i < _placementCache.Count; i++)
+                if (_placementCache[i][0] == x && _placementCache[i][1] == y) return true;
+            return false;
+        }
+
+        void CommitPlacement(int x, int y)
+        {
+            var result = _session.MakePlayerPlace(x, y);
+            Debug.Log($"[对局] 落子 ({x},{y}) 成功={result.Success} {result.Message} 提子={result.Captured.Count} 历史={_session.State.MoveHistory.Count}");
+            if (!result.Success)
+            {
+                SetHint(result.Message);
+                return;
+            }
+
+            SetHint(DescribePlacementFeedback(result));
+            Refresh();
+            if (result.Ended) { OnGameEnd(result.Winner); return; }
+            ScheduleAiTurn();
+        }
+
+        /// <summary>落子反馈文案：提子（围棋）与翻转（黑白棋）都要在 HUD 明确体现。</summary>
+        string DescribePlacementFeedback(MoveResult result)
+        {
+            var parts = new List<string> { $"{SideLabel(_session.PlayerSide)}落子成功" };
+            if (result.Captured.Count > 0) parts.Add($"提子 {result.Captured.Count} 枚");
+
+            int flipped = LastMoveFlippedCount();
+            if (flipped > 0) parts.Add($"翻转 {flipped} 枚");
+
+            return string.Join("，", parts);
+        }
+
+        /// <summary>最近一手被翻转的棋子数（黑白棋记在 move_history 末条的 flipped 数组里）。</summary>
+        int LastMoveFlippedCount()
+        {
+            var hist = _session.State.MoveHistory;
+            if (hist.Count == 0) return 0;
+            var last = hist[hist.Count - 1] as JObject;
+            return last?["flipped"] is JArray flipped ? flipped.Count : 0;
+        }
+
+        /// <summary>
+        /// 玩家回合常驻显示全部合法落点。落子类落点可能很多（围棋开局 361 个），
+        /// 因此这里只在状态变更（<see cref="Refresh"/>）时重算一次，不进入每帧路径；
+        /// 高亮层本身对象池 + 脏标记驱动，重建不产生逐帧分配。
+        /// </summary>
+        void UpdatePlacementHighlights()
+        {
+            if (Highlights == null || Board == null) return;
+
+            if (_session == null || _session.IsEnded || _session.IsAiTurn)
+            {
+                _placementCache.Clear();
+                Highlights.Clear();
+                return;
+            }
+
+            _placementCache = _session.GetValidPlacements();
+            if (_placementCache.Count == 0) { Highlights.Clear(); return; }
+
+            var points = new List<Vector3>(_placementCache.Count);
+            for (int i = 0; i < _placementCache.Count; i++)
+                points.Add(Board.transform.TransformPoint(Board.CellToLocal(_placementCache[i][0], _placementCache[i][1])));
+
+            // 落子类无"可吃子"语义，capture 传 null → 统一用可走点色（绿）。
+            Highlights.SetMoves(points, null);
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // 共用骨架：AI 回合 / 刷新 / 终局 / 悔棋（两条分支复用，不复制粘贴）
+        // ══════════════════════════════════════════════════════════════
 
         void ScheduleAiTurn()
         {
@@ -189,22 +317,33 @@ namespace ChessSage.Presentation.Game
             while (_session != null && !_session.IsEnded && _session.IsAiTurn && guard++ < 16)
             {
                 var r = _session.MakeAiMove();
+                Debug.Log(r.Placed != null
+                    ? $"[对局] AI 落子 ({r.Placed[0]},{r.Placed[1]}) 成功={r.Success} {r.Message}"
+                    : $"[对局] AI 走子 成功={r.Success} {r.Message}");
                 if (!r.Success) break;
                 Refresh();
                 if (MinAiThinkTime > 0f && guard < 16) yield return new WaitForSeconds(MinAiThinkTime);
             }
 
             _aiRoutine = null;
-            if (_session != null && !_session.IsEnded) SetHint("轮到你走棋");
+            if (_session != null && !_session.IsEnded)
+                SetHint(_session.IsPlacementGame ? "轮到你落子" : "轮到你走棋");
         }
-
-        // ── 刷新 ──────────────────────────────────────────────────────────────
 
         void Refresh()
         {
             if (_session == null) return;
             if (Board != null) Board.MarkDirty();
             if (Hud != null) Hud.Bind(_session);
+            if (_session.IsPlacementGame) UpdatePlacementHighlights();
+        }
+
+        void ClearSelection()
+        {
+            _selectedPieceId = null;
+            _selectedMoves.Clear();
+            if (Highlights != null) Highlights.Clear();
+            SetHint(null);
         }
 
         void OnGameEnd(string winner)
@@ -221,7 +360,7 @@ namespace ChessSage.Presentation.Game
             if (Hud != null) Hud.SetHint(text);
         }
 
-        /// <summary>悔棋（U 键或 HUD 按钮）。回到玩家回合后自动重排 AI 回合。</summary>
+        /// <summary>悔棋（U 键或 HUD 按钮）。两条分支共用：回到玩家回合后自动重排 AI 回合。</summary>
         public void Undo()
         {
             if (_session == null || _session.IsAiTurn) return;
