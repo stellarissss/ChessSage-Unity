@@ -9,7 +9,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-UNITY="${UNITY:-/opt/unity/editor/Editor/Unity}"
+UNITY="${UNITY:-/opt/unity/Editor/Unity}"
 OUT="${OUT:-$ROOT/Builds}"
 LOGS="${LOGS:-$ROOT/Logs}"
 

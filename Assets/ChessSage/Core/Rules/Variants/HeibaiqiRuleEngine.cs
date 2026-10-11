@@ -216,14 +216,20 @@ namespace ChessSage.Core.Rules.Variants
             return outcome;
         }
 
-        // 新 disc id：当前方 {side}_disc_N 的最大编号 + 1
+        // 新 disc id：{side}_disc_N 中已被占用的最大编号 + 1。
+        //
+        // 关键：编号扫描<b>不能按阵营过滤</b>。翻面机制（ApplyFlipCaptures）会把白子
+        // 改成黑子，于是同一个 "{side}_disc_N" 前缀下可能同时存在两个阵营的棋子。
+        // 若按 p.Side 过滤，max 会漏掉已被翻面占用的编号，导致重复发放 id，
+        // 盘面上出现两个 white_disc_3——这会让按 id 索引的逻辑（悔棋、翻转记录、
+        // 存档回放）指向错误棋子。故此处只按 id 字面前缀统计，与阵营无关。
         static string NextDiscId(BoardState boardState, string side)
         {
             int max = 0;
             var prefix = side + "_disc_";
             foreach (var p in boardState.Pieces)
             {
-                if (p.Side != side || p.Id == null || !p.Id.StartsWith(prefix)) continue;
+                if (p.Id == null || !p.Id.StartsWith(prefix)) continue;
                 if (int.TryParse(p.Id.Substring(prefix.Length), out var n) && n > max) max = n;
             }
             return prefix + (max + 1);

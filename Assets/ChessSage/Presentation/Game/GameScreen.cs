@@ -41,25 +41,39 @@ namespace ChessSage.Presentation.Game
             _selectedMoves.Clear();
 
             if (Board != null) Board.Bind(session.State, session.Rules.Width, session.Rules.Height);
+            SubscribeInput();
             Refresh();
         }
 
-        void OnEnable()
+        // ── 输入接线 ──────────────────────────────────────────────────────────
+
+        bool _inputSubscribed;
+
+        /// <summary>
+        /// 订阅输入事件。<b>不能放在 OnEnable</b>：组合根在同一帧先 AddComponent 再
+        /// 注入依赖，OnEnable 执行时 <see cref="Input"/> 还是 null，订阅会被静默跳过——
+        /// 表现为"整个游戏点不动"。L3 试玩实测抓到此缺陷，订阅移到注入完成后的
+        /// <see cref="Attach"/>，并做幂等保护。
+        /// </summary>
+        void SubscribeInput()
         {
-            if (Input != null)
-            {
-                Input.CellClicked += OnCellClicked;
-                Input.SelectionCancelled += OnCancel;
-            }
+            if (_inputSubscribed || Input == null) return;
+            Input.CellClicked += OnCellClicked;
+            Input.SelectionCancelled += OnCancel;
+            _inputSubscribed = true;
+        }
+
+        void UnsubscribeInput()
+        {
+            if (!_inputSubscribed || Input == null) return;
+            Input.CellClicked -= OnCellClicked;
+            Input.SelectionCancelled -= OnCancel;
+            _inputSubscribed = false;
         }
 
         void OnDisable()
         {
-            if (Input != null)
-            {
-                Input.CellClicked -= OnCellClicked;
-                Input.SelectionCancelled -= OnCancel;
-            }
+            UnsubscribeInput();
             if (_aiRoutine != null) { StopCoroutine(_aiRoutine); _aiRoutine = null; }
         }
 
@@ -67,6 +81,7 @@ namespace ChessSage.Presentation.Game
 
         void OnCellClicked(int x, int y)
         {
+            Debug.Log($"[对局] 点击 ({x},{y})：回合={_session?.CurrentTurn ?? "无会话"}");
             if (_session == null || _session.IsEnded) return;
             if (_session.IsAiTurn) { SetHint("AI 正在思考…"); return; }
 
@@ -144,6 +159,7 @@ namespace ChessSage.Presentation.Game
             ClearSelection();
 
             var result = _session.MakePlayerMove(id, toX, toY);
+            Debug.Log($"[对局] 走子 {id}→({toX},{toY}) 成功={result.Success} {result.Message} 历史={_session.State.MoveHistory.Count}");
             if (!result.Success)
             {
                 SetHint(result.Message);

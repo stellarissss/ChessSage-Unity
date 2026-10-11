@@ -95,6 +95,15 @@ namespace ChessSage.Presentation.Board
             if (TryScreenToCell(mp, out int hx, out int hy)) CellHovered?.Invoke(hx, hy);
         }
 
+        /// <summary>
+        /// 模拟一次玩家点击（测试与试玩录制专用）。
+        ///
+        /// 之所以是公开 API 而不是让调用方反射触发 <see cref="CellClicked"/> 事件：
+        /// C# 事件的 backing field 是 private，运行时反射在 AOT/IL2CPP 下不可靠。
+        /// 显式提供入口让录制脚本走与真实输入完全相同的下游路径。
+        /// </summary>
+        public void SimulateClick(int x, int y) => CellClicked?.Invoke(x, y);
+
         void EmitClick(Vector3 screenPos)
         {
             if (TryScreenToCell(screenPos, out int x, out int y)) CellClicked?.Invoke(x, y);
