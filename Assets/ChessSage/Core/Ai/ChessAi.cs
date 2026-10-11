@@ -84,11 +84,14 @@ namespace ChessSage.Core.Ai
         /// </summary>
         public int NodeBudget = 120000;
 
-        /// <summary>单步搜索的时间预算（毫秒）。超过即停止加深并返回当前最佳着。</summary>
-        public int MaxSearchMilliseconds = 400;
+        /// <summary>单步搜索的时间预算（毫秒）。超过即停止加深并返回当前最佳着。
+        /// 250ms 是回合制下"几乎无感"的上限：Unity Mono JIT 比桌面 .NET 慢约 4 倍，
+        /// 本预算按 Mono 实测校准（象棋 medium 全层搜索 Mono 下约 200-250ms）。</summary>
+        public int MaxSearchMilliseconds = 250;
 
         int _nodes;
         bool _nodeLimitReached;
+        System.Diagnostics.Stopwatch _searchSw;
 
         /// <summary>上一层的耗时（毫秒），供上层做自适应调优与调试。</summary>
         public double LastSearchMilliseconds { get; private set; }
@@ -110,7 +113,7 @@ namespace ChessSage.Core.Ai
                 if (move != null) return move;
             }
 
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            _searchSw = System.Diagnostics.Stopwatch.StartNew();
             _nodes = 0;
 
             var moves = GenerateAllMoves(boardState, side);
@@ -131,10 +134,10 @@ namespace ChessSage.Core.Ai
                 if (candidate != null) best = candidate;
 
                 // 最后一层，或搜索被硬截断 → 不再加深
-                if (_nodeLimitReached || sw.ElapsedMilliseconds > MaxSearchMilliseconds) break;
+                if (_nodeLimitReached || _searchSw.ElapsedMilliseconds > MaxSearchMilliseconds) break;
             }
 
-            LastSearchMilliseconds = sw.Elapsed.TotalMilliseconds;
+            LastSearchMilliseconds = _searchSw.Elapsed.TotalMilliseconds;
             return best;
         }
 
@@ -246,8 +249,15 @@ namespace ChessSage.Core.Ai
 
         double Minimax(BoardState boardState, int depth, double alpha, double beta, bool isMax, string aiSide)
         {
-            // 预算检查：每层根节点进入时计数一次，开销可忽略且能可靠截断。
-            if (++_nodes > NodeBudget) { _nodeLimitReached = true; return 0d; }
+            // 预算检查（每 256 节点抽样一次时间查询，避免逐节点取钟的开销）：
+            // 只在层间检查时无法中断"单层超预算"的情况 —— L3 实测 depth=3 单层
+            // 在 Mono 下即达 380ms+，故必须节点级截断。
+            if ((++_nodes & 255) == 0 &&
+                (_nodes > NodeBudget || _searchSw.ElapsedMilliseconds > MaxSearchMilliseconds))
+            {
+                _nodeLimitReached = true;
+                return 0d;
+            }
 
             var winner = Engine.IsGeneralCaptured(boardState);
             if (winner != null) return winner == aiSide ? 10000 : -10000;
