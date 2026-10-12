@@ -51,12 +51,18 @@ def api(method, path, payload=None):
                 return json.loads(body) if body else {}
         except urllib.error.HTTPError as e:
             detail = e.read().decode()[:400]
-            # 5xx 可重试；4xx 直接失败（重试无意义）
-            if e.code < 500:
+            # 401/403：令牌本身已用 curl 验证有效，此处多为 GitHub 的
+            # 瞬时凭据拒绝 / 二级速率限制（推送涉及数百次 blob POST，易触发）。
+            # 故与 5xx 同样走退避重试，而不是立即放弃。
+            retryable = e.code >= 500 or e.code in (401, 403)
+            if not retryable:
                 sys.exit(f"API {method} {url} 失败 {e.code}: {detail}")
             if attempt == 11:
                 sys.exit(f"API {method} {url} 重试耗尽: {detail}")
-            time.sleep(min(2 ** attempt, 20))
+            wait = min(2 ** attempt, 20)
+            print(f"  [重试 {attempt + 1}/11] {method} {url.split('?')[0].split('/')[-1]} "
+                  f"HTTP {e.code}，{wait}s 后重试", flush=True)
+            time.sleep(wait)
         except Exception as e:  # 网络抖动 / 大响应体传输中断
             if attempt == 11:
                 sys.exit(f"API {method} {url} 网络错误: {e}")
@@ -95,6 +101,49 @@ def upload_blobs(files):
     return shas
 
 
+def local_snapshot(sha):
+    """本地提交的内容快照：{路径: blob sha}。"""
+    out = subprocess.run(["git", "ls-tree", "-r", "-z", sha],
+                         capture_output=True, check=True).stdout.decode("utf-8", "surrogateescape")
+    snap = {}
+    for rec in out.split("\0"):
+        if not rec:
+            continue
+        meta, path = rec.split("\t", 1)
+        snap[path] = meta.split()[2]
+    return snap
+
+
+def remote_snapshot(commit_sha):
+    """远端提交的内容快照：{路径: blob sha}。
+
+    注意：不能用 tree sha 做等价判断——本脚本用 base_tree 增量拼树，
+    GitHub 生成的 tree sha 与本地同内容的 tree sha 并不相等
+    （条目顺序/嵌套结构由服务端决定）。只有逐文件的 blob sha 才可比。
+    """
+    data = api("GET", f"/repos/{REPO}/git/trees/{commit_sha}?recursive=1")
+    return {e["path"]: e["sha"] for e in data.get("tree", []) if e["type"] == "blob"}
+
+
+def resolve_remote_base(remote_sha):
+    """把 GitHub 侧的 sha 映射到本地可用的基准提交（远端已达状态）。
+
+    本脚本每次推送都用 CreateCommit 重建提交，产出的 sha 与本地 sha 不同
+    （内容、author、日期相同，但 tree 由服务端增量拼出、父链也不同）。
+    因此远端 HEAD 的 sha 在本地并不存在，`rev-list remote..HEAD` 会退化成
+    "把整条本地历史都算成待推送"——实测导致 M1/L3/M5 各被重复推送一遍，
+    main 链上出现两段内容相同的提交。
+
+    解决办法：比较**内容快照**，在本地历史里找出与远端内容完全一致的
+    最新提交；它就是"远端已达状态"在本地对应的提交。返回 (本地基准, 待推送提交列表)。
+    """
+    want = remote_snapshot(remote_sha)
+    for sha in git("rev-list", "HEAD").split():
+        if local_snapshot(sha) == want:
+            return sha
+    return None
+
+
 def main():
     # 1) 本地相对远端领先的提交
     local = git("rev-parse", "HEAD")
@@ -106,17 +155,33 @@ def main():
         print("远端已是最新，无需推送。")
         return
 
+    # 远端 HEAD 对应的本地等价提交（本地链路里 tree 相同的那个）
+    base = resolve_remote_base(remote)
+    if base is not None:
+        ahead = git("rev-list", "--reverse", f"{base}..{local}").split()
+        print(f"远端等价于本地 {base[:7]}，待推送 {len(ahead)} 个提交")
+        if not ahead:
+            print("远端内容与本地一致（sha 不同但树相同），无需推送。")
+            return
+    else:
+        # 远端存在本地没有的历史（如历史被重写）：退回全量对齐，并明确告警。
+        base = local
+        ahead = [local]
+        print("⚠️  本地历史中找不到与远端 tree 相同的提交，按全量对齐处理")
+
     base_tree = api("GET", f"/repos/{REPO}/git/commits/{remote}")["tree"]["sha"]
 
     # 2) 收集要推送的文件（复用 git 的 NUL 分隔输出，正确处理特殊字符名）
-    changed = git("diff", "--name-only", "-z", f"{remote}..{local}").split("\0")
+    #    diff 基准用 base（本地 sha）→ local，而不是 remote（GitHub 侧 sha）。
+    changed = git("diff", "--name-only", "-z", f"{base}..{local}").split("\0")
     changed = [p for p in changed if p]
 
     # 需要重建的 blob：本次推送涉及的全部文件
     files = {}
     all_paths = [p for p in git("ls-tree", "-r", "--name-only", "-z", local).split("\0") if p]
     text_files = set(git("diff", "--name-only", "-z", "--diff-filter=ACMRT",
-                         f"{remote}..{local}").split("\0")) - {""}
+                         f"{base}..{local}").split("\0")) - {""}
+    text_files.update(changed)      # 新增文件（A）含在 changed 里，确保不漏
 
     for p in all_paths:
         if p not in text_files:
@@ -130,7 +195,7 @@ def main():
     # 返回空集，远端旧路径永远删不掉（表现为 200 而非 404）。
     # 逐提交重建时同理，见下方 sub_deleted。
     deleted = [p for p in git("diff", "--no-renames", "--name-only", "-z", "--diff-filter=D",
-                              f"{remote}..{local}").split("\0") if p]
+                              f"{base}..{local}").split("\0") if p]
 
     print(f"待推送 {len(changed)} 个变更文件，其中 {len(files)} 个走 blob 上传"
           + (f"，删除 {len(deleted)} 个" if deleted else ""))
@@ -161,15 +226,37 @@ def main():
     # 4) 逐个重建本地领先的所有提交，保持提交历史与 message 完整。
     #    GitHub API 的 CreateCommit 以 parent 的 tree 为基底做增量，
     #    因此每个中间提交都必须有对应的 tree，只能按序重建。
-    ahead = git("rev-list", "--reverse", f"{remote}..{local}").split()
+    #    ahead 已在第 1 步按「本地等价基准」算好，此处不再重算——
+    #    否则会退回用 GitHub 侧 sha 做 rev-list，把整条历史重复推一遍。
     print(f"待重建提交 {len(ahead)} 个")
 
     # local_parent 用于本地 diff（必须是本地存在的 sha）
     # remote_parent 用于 API 的 parent 链（是 GitHub 上的 sha）
-    local_parent = remote
+    local_parent = base
     remote_parent = remote
+    reused = 0
     for sha in ahead:
         raw = git("show", "-s", "--pretty=format:%B", sha)
+
+        # 幂等短路：若远端父提交里已存在 tree 完全相同的提交（说明本提交
+        # 上次已推送成功，只是本地 sha 与 GitHub 侧重建出的 sha 不同），
+        # 直接复用那个远端提交，不再重建。
+        #
+        # 为什么必须这么做：本脚本每次推送都会用 CreateCommit 重建提交，
+        # 产出的 sha 与本地 sha 不一致（内容同、author 同，但树/父链不同）。
+        # 于是下次运行时 `remote..local` 会把远端已存在的这批提交
+        # 再次判定为"本地领先"，导致历史被整体重复一遍
+        # （实测：main 链上出现两段内容相同的 M1/L3/M5 提交）。
+        # 用 tree sha 做等价判断可彻底消除重复。
+        if raw.strip():
+            local_tree = git("rev-parse", f"{sha}^{{tree}}")
+            remote_tree = api("GET", f"/repos/{REPO}/git/commits/{remote_parent}")["tree"]["sha"]
+            if local_tree == remote_tree:
+                print(f"  commit {sha[:7]} == 复用远端 {remote_parent[:7]}（树相同，跳过重建）")
+                local_parent = sha
+                reused += 1
+                continue
+
         an = git("show", "-s", "--pretty=format:%an", sha)
         ae = git("show", "-s", "--pretty=format:%ae", sha)
         ad = git("show", "-s", "--pretty=format:%aI", sha)
@@ -234,7 +321,8 @@ def main():
     # 5) 更新 ref
     api("PATCH", f"/repos/{REPO}/git/refs/heads/{BRANCH}",
         {"sha": remote_parent, "force": False})
-    print(f"✅ 推送完成：{REPO}@{BRANCH} = {remote_parent[:7]}（{len(ahead)} 个提交）")
+    print(f"✅ 推送完成：{REPO}@{BRANCH} = {remote_parent[:7]}"
+          f"（重建 {len(ahead) - reused} 个提交，复用 {reused} 个）")
 
 
 if __name__ == "__main__":
