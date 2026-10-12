@@ -68,6 +68,23 @@ done
 UNITY_REFS=()
 while IFS= read -r f; do UNITY_REFS+=(-r:"$f"); done < <(find "$UNITY_DLLS" -name '*.dll' 2>/dev/null | sort)
 
+# uGUI（UnityEngine.UI）随 com.unity.ugui 包提供，**不在** Editor/Data/Managed/UnityEngine 下，
+# 上面的通配扫描找不到它。M5-A4 的棋种 hub 用 Canvas + uGUI 构建界面，Presentation 依赖该程序集，
+# 故需显式引用，否则 L2 会把「缺引用」误报成编译错误。
+# 解析顺序：Editor Managed（若某些安装放在此）→ 工程 Library/ScriptAssemblies（L3 生成）→ 编辑器内置模板缓存。
+UI_DLL="$EDATA/Managed/UnityEngine/UnityEngine.UI.dll"
+[ -f "$UI_DLL" ] || UI_DLL="$ROOT/Library/ScriptAssemblies/UnityEngine.UI.dll"
+if [ ! -f "$UI_DLL" ]; then
+  UI_DLL="$(find "$UNITY_ROOT/Editor/Data/Resources/PackageManager/ProjectTemplates/libcache" \
+    -iname 'UnityEngine.UI.dll' 2>/dev/null | sort | head -1)"
+fi
+if [ -f "$UI_DLL" ]; then
+  UNITY_REFS+=(-r:"$UI_DLL")
+  echo "    参考 uGUI：$UI_DLL"
+else
+  echo "⚠️  未找到 UnityEngine.UI.dll（棋种 hub 依赖），Presentation 可能编译失败" >&2
+fi
+
 COMMON=(-nologo -nostdlib+ -noconfig -langversion:9 -target:library -warn:0 -deterministic)
 
 run_csc() {

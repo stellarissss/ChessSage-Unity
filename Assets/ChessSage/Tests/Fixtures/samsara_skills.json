@@ -1,0 +1,712 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/skills.py + state.get_skill_modifiers"
+  },
+  "branches": [
+    "karma_capacity",
+    "stealth",
+    "cheat_mastery",
+    "realm_insight"
+  ],
+  "tree_shape": {
+    "karma_capacity": {
+      "1": [
+        "karma_capacity_t1"
+      ],
+      "2": [
+        "karma_capacity_t2a",
+        "karma_capacity_t2b"
+      ],
+      "3": [
+        "karma_capacity_t3a",
+        "karma_capacity_t3b"
+      ]
+    },
+    "stealth": {
+      "1": [
+        "stealth_t1"
+      ],
+      "2": [
+        "stealth_t2a",
+        "stealth_t2b"
+      ],
+      "3": [
+        "stealth_t3a",
+        "stealth_t3b"
+      ]
+    },
+    "cheat_mastery": {
+      "1": [
+        "cheat_mastery_t1a",
+        "cheat_mastery_t1b"
+      ],
+      "2": [
+        "cheat_mastery_t2a",
+        "cheat_mastery_t2b"
+      ],
+      "3": [
+        "cheat_mastery_t3a",
+        "cheat_mastery_t3b"
+      ]
+    },
+    "realm_insight": {
+      "1": [
+        "realm_insight_t1a",
+        "realm_insight_t1b"
+      ],
+      "2": [
+        "realm_insight_t2a",
+        "realm_insight_t2b"
+      ],
+      "3": [
+        "realm_insight_t3a",
+        "realm_insight_t3b"
+      ]
+    }
+  },
+  "costs": {
+    "karma_capacity_t1": 1,
+    "karma_capacity_t2a": 1,
+    "karma_capacity_t2b": 1,
+    "karma_capacity_t3a": 1,
+    "karma_capacity_t3b": 1,
+    "stealth_t1": 1,
+    "stealth_t2a": 1,
+    "stealth_t2b": 1,
+    "stealth_t3a": 1,
+    "stealth_t3b": 1,
+    "cheat_mastery_t1a": 1,
+    "cheat_mastery_t1b": 1,
+    "cheat_mastery_t2a": 1,
+    "cheat_mastery_t2b": 1,
+    "cheat_mastery_t3a": 1,
+    "cheat_mastery_t3b": 1,
+    "realm_insight_t1a": 1,
+    "realm_insight_t1b": 1,
+    "realm_insight_t2a": 1,
+    "realm_insight_t2b": 1,
+    "realm_insight_t3a": 1,
+    "realm_insight_t3b": 1
+  },
+  "unlock_cases": [
+    {
+      "name": "tier1_fresh",
+      "skill_id": "karma_capacity_t1",
+      "tier": 1,
+      "pre_skills": [
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": true,
+      "expected_points_after": 4,
+      "expected_unlocked": true
+    },
+    {
+      "name": "tier2_without_tier1",
+      "skill_id": "karma_capacity_t2b",
+      "tier": 2,
+      "pre_skills": [
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": false,
+      "expected_points_after": 5,
+      "expected_unlocked": false
+    },
+    {
+      "name": "tier2_after_tier1",
+      "skill_id": "karma_capacity_t2b",
+      "tier": 2,
+      "pre_skills": [
+        "karma_capacity_t1",
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": true,
+      "expected_points_after": 4,
+      "expected_unlocked": true
+    },
+    {
+      "name": "already_unlocked_idempotent",
+      "skill_id": "stealth_t1",
+      "tier": 1,
+      "pre_skills": [
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": false,
+      "expected_points_after": 5,
+      "expected_unlocked": true
+    },
+    {
+      "name": "unknown_skill",
+      "skill_id": "does_not_exist_t1",
+      "tier": 1,
+      "pre_skills": [
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": false,
+      "expected_points_after": 5,
+      "expected_unlocked": false
+    },
+    {
+      "name": "tier3_without_tier2",
+      "skill_id": "karma_capacity_t3a",
+      "tier": 3,
+      "pre_skills": [
+        "karma_capacity_t1",
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": false,
+      "expected_points_after": 5,
+      "expected_unlocked": false
+    },
+    {
+      "name": "insufficient_points",
+      "skill_id": "karma_capacity_t1",
+      "tier": 1,
+      "pre_skills": [
+        "stealth_t1"
+      ],
+      "skill_points": 0,
+      "expected_success": false,
+      "expected_points_after": 0,
+      "expected_unlocked": false
+    },
+    {
+      "name": "cheat_mastery_t1a",
+      "skill_id": "cheat_mastery_t1a",
+      "tier": 1,
+      "pre_skills": [
+        "stealth_t1"
+      ],
+      "skill_points": 5,
+      "expected_success": true,
+      "expected_points_after": 4,
+      "expected_unlocked": true
+    }
+  ],
+  "available_from_fresh": [
+    "cheat_mastery_t1a",
+    "cheat_mastery_t1b",
+    "cheat_mastery_t2a",
+    "cheat_mastery_t2b",
+    "cheat_mastery_t3a",
+    "cheat_mastery_t3b",
+    "karma_capacity_t1",
+    "karma_capacity_t2a",
+    "karma_capacity_t2b",
+    "karma_capacity_t3a",
+    "karma_capacity_t3b",
+    "realm_insight_t1a",
+    "realm_insight_t1b",
+    "realm_insight_t2a",
+    "realm_insight_t2b",
+    "realm_insight_t3a",
+    "realm_insight_t3b",
+    "stealth_t2a",
+    "stealth_t2b",
+    "stealth_t3a",
+    "stealth_t3b"
+  ],
+  "modifier_cases": [
+    {
+      "name": "empty",
+      "skills": [],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.1,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "stealth_t1",
+      "skills": [
+        "stealth_t1"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "capacity_t1",
+      "skills": [
+        "stealth_t1",
+        "karma_capacity_t1"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 20,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "capacity_t1_t2a",
+      "skills": [
+        "stealth_t1",
+        "karma_capacity_t1",
+        "karma_capacity_t2a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 20,
+        "karma_single_max_bonus": 30,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "capacity_t1_t2b",
+      "skills": [
+        "stealth_t1",
+        "karma_capacity_t1",
+        "karma_capacity_t2b"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 20,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.3,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "capacity_t1_t3a",
+      "skills": [
+        "stealth_t1",
+        "karma_capacity_t1",
+        "karma_capacity_t3a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 20,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.3,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "capacity_t3b",
+      "skills": [
+        "stealth_t1",
+        "karma_capacity_t3b"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 25,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "stealth_t3a_active",
+      "skills": [
+        "stealth_t1",
+        "stealth_t3a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": true,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "stealth_t3a_used",
+      "skills": [
+        "stealth_t1",
+        "stealth_t3a"
+      ],
+      "used_one_time": [
+        "stealth_t3a"
+      ],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "stealth_t2a_active",
+      "skills": [
+        "stealth_t1",
+        "stealth_t2a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": true,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "cheat_t3b",
+      "skills": [
+        "stealth_t1",
+        "cheat_mastery_t3b"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 40,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "cheat_t3a",
+      "skills": [
+        "stealth_t1",
+        "cheat_mastery_t3a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 1,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "realm_t2a",
+      "skills": [
+        "stealth_t1",
+        "realm_insight_t2a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": true,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "realm_t3a",
+      "skills": [
+        "stealth_t1",
+        "realm_insight_t3a"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": -0.05,
+        "free_cheat_on_realm_change": false
+      }
+    },
+    {
+      "name": "realm_t3b",
+      "skills": [
+        "stealth_t1",
+        "realm_insight_t3b"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 0,
+        "karma_single_max_bonus": 0,
+        "karma_recover_multiplier": 1.0,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.5,
+        "first_overdraft_skip": false,
+        "consecutive_avoid": false,
+        "golden_escape": false,
+        "mist_fog": false,
+        "efficiency_fraud": false,
+        "free_cheat_count": 0,
+        "initial_karma_reduction": 0,
+        "hell_hungry_discount": false,
+        "heaven_asura_discount": false,
+        "boss_skill_reduction": false,
+        "reincarnation_buff": false,
+        "transcendence_bonus": 0,
+        "free_cheat_on_realm_change": true
+      }
+    },
+    {
+      "name": "all_skills",
+      "skills": [
+        "cheat_mastery_t1a",
+        "cheat_mastery_t1b",
+        "cheat_mastery_t2a",
+        "cheat_mastery_t2b",
+        "cheat_mastery_t3a",
+        "cheat_mastery_t3b",
+        "karma_capacity_t1",
+        "karma_capacity_t2a",
+        "karma_capacity_t2b",
+        "karma_capacity_t3a",
+        "karma_capacity_t3b",
+        "realm_insight_t1a",
+        "realm_insight_t1b",
+        "realm_insight_t2a",
+        "realm_insight_t2b",
+        "realm_insight_t3a",
+        "realm_insight_t3b",
+        "stealth_t1",
+        "stealth_t2a",
+        "stealth_t2b",
+        "stealth_t3a",
+        "stealth_t3b"
+      ],
+      "used_one_time": [],
+      "expected": {
+        "karma_max_bonus": 20,
+        "karma_single_max_bonus": 70,
+        "karma_recover_multiplier": 1.3,
+        "detection_coefficient": 0.07,
+        "detection_alpha": 1.3,
+        "first_overdraft_skip": true,
+        "consecutive_avoid": true,
+        "golden_escape": true,
+        "mist_fog": true,
+        "efficiency_fraud": true,
+        "free_cheat_count": 1,
+        "initial_karma_reduction": 25,
+        "hell_hungry_discount": true,
+        "heaven_asura_discount": true,
+        "boss_skill_reduction": true,
+        "reincarnation_buff": true,
+        "transcendence_bonus": -0.05,
+        "free_cheat_on_realm_change": true
+      }
+    }
+  ],
+  "allowed_classifications": {
+    "fresh": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "F"
+    ],
+    "with_t1a": [
+      "A",
+      "B",
+      "C",
+      "C+",
+      "E",
+      "F"
+    ],
+    "with_t1a_t1b": [
+      "A",
+      "B",
+      "C",
+      "C+",
+      "D",
+      "E",
+      "F"
+    ]
+  }
+}

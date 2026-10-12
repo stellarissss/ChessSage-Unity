@@ -1,0 +1,270 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/bosses.py + heaven_boss.py"
+  },
+  "definitions": {
+    "hell": {
+      "id": "flipper",
+      "name": "翻覆者",
+      "title": "地狱道守道者",
+      "skill": "flip",
+      "ai_personality": "aggressive",
+      "icon": "☯",
+      "skill_uses": null
+    },
+    "hungry": {
+      "id": "glutton",
+      "name": "饕餮者",
+      "title": "饿鬼道守道者",
+      "skill": "take_more",
+      "ai_personality": "aggressive",
+      "icon": "👹",
+      "skill_uses": null
+    },
+    "animal": {
+      "id": "orderer",
+      "name": "秩序者",
+      "title": "畜生道守道者",
+      "skill": "rank_lock",
+      "ai_personality": "defensive",
+      "icon": "🐅",
+      "skill_uses": null
+    },
+    "human": {
+      "id": "calculator",
+      "name": "算计者",
+      "title": "人道守道者",
+      "skill": null,
+      "ai_personality": "normal",
+      "icon": "🧠",
+      "skill_uses": null
+    },
+    "asura": {
+      "id": "chaos",
+      "name": "狂乱者",
+      "title": "阿修罗道守道者",
+      "skill": "chaos",
+      "ai_personality": "aggressive_random",
+      "icon": "⚔️",
+      "skill_uses": null
+    },
+    "heaven": {
+      "id": "zen",
+      "name": "禅定者",
+      "title": "天道守道者",
+      "skill": "purify",
+      "ai_personality": "defensive_hard",
+      "icon": "☸️",
+      "skill_uses": 3
+    }
+  },
+  "trigger_cases": [
+    {
+      "name": "human_no_skill",
+      "realm": "human",
+      "cheat_count": 5,
+      "skills": [],
+      "expected_triggered": false,
+      "expected_skill": null,
+      "expected_effect": null,
+      "deterministic": true
+    },
+    {
+      "name": "animal_rank_lock",
+      "realm": "animal",
+      "cheat_count": 1,
+      "skills": [],
+      "expected_triggered": true,
+      "expected_skill": "rank_lock",
+      "expected_effect": "高等级棋子修改费用+20",
+      "deterministic": true
+    },
+    {
+      "name": "hungry_take_more_2",
+      "realm": "hungry",
+      "cheat_count": 2,
+      "skills": [],
+      "expected_triggered": true,
+      "expected_skill": "take_more",
+      "expected_effect": "Boss额外偷改了一次",
+      "deterministic": true
+    },
+    {
+      "name": "hungry_take_more_1",
+      "realm": "hungry",
+      "cheat_count": 1,
+      "skills": [],
+      "expected_triggered": false,
+      "expected_skill": "take_more",
+      "expected_effect": null,
+      "deterministic": true
+    },
+    {
+      "name": "hell_flip_reduced",
+      "realm": "hell",
+      "cheat_count": 1,
+      "skills": [
+        "realm_insight_t2a"
+      ],
+      "expected_triggered": false,
+      "expected_skill": "flip",
+      "expected_effect": null,
+      "deterministic": true
+    },
+    {
+      "name": "asura_chaos_reduced",
+      "realm": "asura",
+      "cheat_count": 1,
+      "skills": [
+        "realm_insight_t2a"
+      ],
+      "expected_triggered": false,
+      "expected_skill": "chaos",
+      "expected_effect": null,
+      "deterministic": true
+    }
+  ],
+  "nondeterministic_skills": [
+    {
+      "realm": "hell",
+      "expected_skill": "flip",
+      "triggered_is_bool": true
+    },
+    {
+      "realm": "asura",
+      "expected_skill": "chaos",
+      "triggered_is_bool": true
+    }
+  ],
+  "purify_sequence": {
+    "realm": "heaven",
+    "expected": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "after_reset": true
+  },
+  "heaven_boss": {
+    "info": {
+      "boss_id": "tiandao",
+      "boss_name": "天道",
+      "chess_type": "xiangqi",
+      "description": "六道轮回的规则制定者与最终审判者。巨大无面人形剪影，周身环绕棋盘法轮。",
+      "difficulty": "nightmare",
+      "bgm": "bgm_tiandao_boss.mp3",
+      "background": "bg_tiandao_court.jpg",
+      "background_vortex": "bg_tiandao_vortex.jpg",
+      "victory_condition": {
+        "type": "checkmate",
+        "target": "black_general"
+      },
+      "defeat_condition": {
+        "type": "checkmate",
+        "target": "red_general"
+      },
+      "note": "天道无士，士位被车占据；玩家方为标准布局。天道总棋子数比标准多2车。"
+    },
+    "rules": {
+      "standard_xiangqi": true,
+      "custom_rules": [],
+      "cheat_enabled": false,
+      "input_box_state": "locked",
+      "input_box_visual": "red_cross",
+      "exposure_probability": 0,
+      "turn_limit": 0
+    },
+    "pieces": {
+      "black": {
+        "general": 1,
+        "advisor": 0,
+        "elephant": 2,
+        "horse": 2,
+        "chariot": 4,
+        "cannon": 2,
+        "soldier": 5
+      },
+      "red": {
+        "general": 1,
+        "advisor": 2,
+        "elephant": 2,
+        "horse": 2,
+        "chariot": 2,
+        "cannon": 2,
+        "soldier": 5
+      }
+    },
+    "initial_board": {
+      "black_back_row": [
+        "chariot",
+        "horse",
+        "elephant",
+        "chariot",
+        "general",
+        "chariot",
+        "elephant",
+        "horse",
+        "chariot"
+      ],
+      "red_back_row": [
+        "chariot",
+        "horse",
+        "elephant",
+        "advisor",
+        "general",
+        "advisor",
+        "elephant",
+        "horse",
+        "chariot"
+      ],
+      "note": "天道无士，士位被车占据；玩家方为标准布局。天道总棋子数比标准多2车。"
+    },
+    "can_enter_cases": [
+      {
+        "name": "not_all_realms",
+        "realms_all": false,
+        "prayer": 0,
+        "defeated": false,
+        "expected_can_enter": false,
+        "expected_reason": "六道尚未全部通关",
+        "expected_already_defeated": false
+      },
+      {
+        "name": "no_prayer",
+        "realms_all": true,
+        "prayer": 0,
+        "defeated": false,
+        "expected_can_enter": false,
+        "expected_reason": "未使用过真心祈求（无需审判）",
+        "expected_already_defeated": false
+      },
+      {
+        "name": "can_enter",
+        "realms_all": true,
+        "prayer": 1,
+        "defeated": false,
+        "expected_can_enter": true,
+        "expected_reason": "六道通关 + 使用过祈求 → 天道Boss战",
+        "expected_already_defeated": false
+      },
+      {
+        "name": "already_defeated",
+        "realms_all": true,
+        "prayer": 1,
+        "defeated": true,
+        "expected_can_enter": false,
+        "expected_reason": "天道已被击败（识破结局已触发）",
+        "expected_already_defeated": true
+      }
+    ],
+    "enter_case": {
+      "first_attempt_count": 1,
+      "second_attempt_count": 2,
+      "success": true,
+      "on_win_defeated": true,
+      "on_win_next": "exposed"
+    }
+  }
+}

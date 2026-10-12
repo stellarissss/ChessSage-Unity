@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using ChessSage.Core.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ChessSage.Core.Samsara
@@ -726,7 +727,8 @@ namespace ChessSage.Core.Samsara
                 defeated = new JArray();
                 _data["bosses_defeated"] = defeated;
             }
-            if (!defeated.Contains(bossId))
+            // 用 ContainsValue（值比较）而非 JArray.Contains（JToken 引用比较，恒 false）——见缺陷 D-01。
+            if (!defeated.ContainsValue(bossId))
             {
                 defeated.Add(bossId);
                 Save();
@@ -736,7 +738,7 @@ namespace ChessSage.Core.Samsara
         public bool IsBossDefeated(string bossId)
         {
             var defeated = _data["bosses_defeated"] as JArray;
-            return defeated != null && defeated.Contains(bossId);
+            return defeated != null && defeated.ContainsValue(bossId);
         }
 
         // ══════════════════════════════════════════════════════════
@@ -833,7 +835,7 @@ namespace ChessSage.Core.Samsara
         public bool IsSandboxUnlocked(string realm)
         {
             var unlocked = _data["sandbox_unlocked"] as JArray;
-            return unlocked != null && unlocked.Contains(realm);
+            return unlocked != null && unlocked.ContainsValue(realm);
         }
 
         public void UnlockSandbox(string realm)
@@ -844,7 +846,8 @@ namespace ChessSage.Core.Samsara
                 unlocked = new JArray();
                 _data["sandbox_unlocked"] = unlocked;
             }
-            if (!unlocked.Contains(realm))
+            // 幂等判定必须用值比较（D-01）：JArray.Contains 走引用比较会写入重复项。
+            if (!unlocked.ContainsValue(realm))
             {
                 unlocked.Add(realm);
                 Save();

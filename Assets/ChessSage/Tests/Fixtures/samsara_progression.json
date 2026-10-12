@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/progression.py"
+  },
+  "realm_level_counts": {
+    "hell": 5,
+    "hungry": 5,
+    "animal": 5,
+    "human": 6,
+    "asura": 6,
+    "heaven": 6
+  },
+  "resolve_cases": [
+    {
+      "name": "perfect_win",
+      "realm": "hell",
+      "won": true,
+      "no_cheat": true,
+      "boss_defeated": false,
+      "overdraft_count": 0,
+      "level_karma": 50,
+      "levels_passed_before": 0,
+      "sandbox_mode": false,
+      "expected": {
+        "skill_points": 4,
+        "bonus_reasons": [
+          "基础通关奖励",
+          "无AI通关奖励",
+          "未透支奖励"
+        ],
+        "overshoot_carryover": 0,
+        "sandbox_unlocked": false
+      },
+      "expected_skill_points_total": 4,
+      "expected_levels_passed": 1
+    },
+    {
+      "name": "win_overdrafted",
+      "realm": "hell",
+      "won": true,
+      "no_cheat": true,
+      "boss_defeated": false,
+      "overdraft_count": 1,
+      "level_karma": 50,
+      "levels_passed_before": 0,
+      "sandbox_mode": false,
+      "expected": {
+        "skill_points": 3,
+        "bonus_reasons": [
+          "基础通关奖励",
+          "无AI通关奖励"
+        ],
+        "overshoot_carryover": 0,
+        "sandbox_unlocked": false
+      },
+      "expected_skill_points_total": 3,
+      "expected_levels_passed": 1
+    },
+    {
+      "name": "win_with_boss",
+      "realm": "hell",
+      "won": true,
+      "no_cheat": true,
+      "boss_defeated": true,
+      "overdraft_count": 0,
+      "level_karma": 50,
+      "levels_passed_before": 0,
+      "sandbox_mode": false,
+      "expected": {
+        "skill_points": 5,
+        "bonus_reasons": [
+          "基础通关奖励",
+          "无AI通关奖励",
+          "未透支奖励",
+          "首次击败Boss"
+        ],
+        "overshoot_carryover": 0,
+        "sandbox_unlocked": false
+      },
+      "expected_skill_points_total": 5,
+      "expected_levels_passed": 1
+    },
+    {
+      "name": "lose",
+      "realm": "hell",
+      "won": false,
+      "no_cheat": true,
+      "boss_defeated": false,
+      "overdraft_count": 0,
+      "level_karma": 50,
+      "levels_passed_before": 0,
+      "sandbox_mode": false,
+      "expected": {
+        "skill_points": 0,
+        "bonus_reasons": [],
+        "overshoot_carryover": 0,
+        "sandbox_unlocked": false
+      },
+      "expected_skill_points_total": 0,
+      "expected_levels_passed": 0
+    },
+    {
+      "name": "sandbox_win",
+      "realm": "hell",
+      "won": true,
+      "no_cheat": true,
+      "boss_defeated": false,
+      "overdraft_count": 0,
+      "level_karma": 50,
+      "levels_passed_before": 0,
+      "sandbox_mode": true,
+      "expected": {
+        "skill_points": 1,
+        "bonus_reasons": [
+          "沙盒模式胜利"
+        ],
+        "overshoot_carryover": 0,
+        "sandbox_unlocked": false
+      },
+      "expected_skill_points_total": 1,
+      "expected_levels_passed": 0
+    },
+    {
+      "name": "overshoot_carryover",
+      "realm": "hell",
+      "won": true,
+      "no_cheat": true,
+      "boss_defeated": false,
+      "overdraft_count": 0,
+      "level_karma": 140,
+      "levels_passed_before": 0,
+      "sandbox_mode": false,
+      "expected": {
+        "skill_points": 4,
+        "bonus_reasons": [
+          "基础通关奖励",
+          "无AI通关奖励",
+          "未透支奖励"
+        ],
+        "overshoot_carryover": 20,
+        "sandbox_unlocked": false
+      },
+      "expected_skill_points_total": 4,
+      "expected_levels_passed": 1
+    },
+    {
+      "name": "realm_completed",
+      "realm": "hell",
+      "won": true,
+      "no_cheat": true,
+      "boss_defeated": false,
+      "overdraft_count": 0,
+      "level_karma": 50,
+      "levels_passed_before": 4,
+      "sandbox_mode": false,
+      "expected": {
+        "skill_points": 4,
+        "bonus_reasons": [
+          "基础通关奖励",
+          "无AI通关奖励",
+          "未透支奖励"
+        ],
+        "overshoot_carryover": 0,
+        "sandbox_unlocked": true
+      },
+      "expected_skill_points_total": 4,
+      "expected_levels_passed": 5
+    }
+  ],
+  "advance_cases": [
+    {
+      "name": "hell_incomplete",
+      "realm": "hell",
+      "levels_passed": 4,
+      "overdraft": 0,
+      "expected": {
+        "advanced": false,
+        "new_realm": null,
+        "direction": null
+      },
+      "expected_realm_after": "hell"
+    },
+    {
+      "name": "hell_complete_clean",
+      "realm": "hell",
+      "levels_passed": 5,
+      "overdraft": 0,
+      "expected": {
+        "advanced": true,
+        "new_realm": "animal",
+        "direction": "up_2"
+      },
+      "expected_realm_after": "animal"
+    },
+    {
+      "name": "hell_complete_overdraft",
+      "realm": "hell",
+      "levels_passed": 5,
+      "overdraft": 1,
+      "expected": {
+        "advanced": true,
+        "new_realm": "hungry",
+        "direction": "up_1"
+      },
+      "expected_realm_after": "hungry"
+    },
+    {
+      "name": "asura_complete_clean",
+      "realm": "asura",
+      "levels_passed": 6,
+      "overdraft": 0,
+      "expected": {
+        "advanced": true,
+        "new_realm": "heaven",
+        "direction": "up_2"
+      },
+      "expected_realm_after": "heaven"
+    },
+    {
+      "name": "heaven_complete",
+      "realm": "heaven",
+      "levels_passed": 6,
+      "overdraft": 0,
+      "expected": {
+        "advanced": true,
+        "new_realm": "heaven",
+        "direction": "transcend"
+      },
+      "expected_realm_after": "heaven"
+    }
+  ],
+  "retreat_cases": [
+    {
+      "name": "from_human",
+      "realm": "human",
+      "expected": {
+        "retreated": true,
+        "new_realm": "animal"
+      },
+      "expected_realm_after": "animal"
+    },
+    {
+      "name": "from_hell",
+      "realm": "hell",
+      "expected": {
+        "retreated": false,
+        "new_realm": null
+      },
+      "expected_realm_after": "hell"
+    }
+  ]
+}

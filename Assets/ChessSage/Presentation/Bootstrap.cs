@@ -4,6 +4,7 @@ using ChessSage.Core.Game;
 using ChessSage.Core.Mechanism;
 using ChessSage.Presentation.Board;
 using ChessSage.Presentation.Game;
+using ChessSage.Presentation.Hub;
 using UnityEngine;
 
 namespace ChessSage.Presentation
@@ -15,7 +16,9 @@ namespace ChessSage.Presentation
     ///   1. 定位 StreamingAssets/Configs 并加载棋类配置；
     ///   2. 构造 <see cref="GameSession"/>（纯逻辑，无引擎依赖）；
     ///   3. 在场景中搭出棋盘视图 + 输入层 + HUD，并接线；
-    ///   4. 负责棋种切换。
+    ///   4. 负责棋种切换：首次启动走 <see cref="StartVariant"/>，运行期由
+    ///      <see cref="VariantHub"/> 触发 <see cref="LaunchVariant"/>，
+    ///      并可经 <see cref="EnterHub"/> 返回选择界面。
     ///
     /// 这样 <c>ChessSage.Core</c> 保持零引擎依赖（可在 dotnet 下回归测试），
     /// <c>ChessSage.Presentation</c> 不直接 new 任何 Core 会话（可替换视图），
@@ -25,11 +28,19 @@ namespace ChessSage.Presentation
     public sealed class Bootstrap : MonoBehaviour
     {
         [Header("启动参数")]
-        [Tooltip("启动棋种 id，见 ChessSage.Core.Config.VariantCatalog。")]
+        [Tooltip("启动棋种 id，见 ChessSage.Core.Config.VariantCatalog。" +
+                 "PlaythroughCapture 依赖此字段指定试玩棋种，请勿移除。")]
         public string StartVariant = "xiangqi";
+
+        [Tooltip("为 true 时启动即进入棋种选择 hub（不直接开局）。默认 false 以保持垂直切片与试玩录制的既有行为。")]
+        public bool StartAtHub = false;
 
         [Tooltip("格边长（世界单位）。")]
         public float CellSize = 1f;
+
+        [Tooltip("启动 / 切换棋种时按相机视口自适应格宽：仅在棋盘超出视野时缩小，绝不放大，" +
+                 "以保证既有棋种（象棋/动物棋）视觉不变，又不让大棋盘（围棋/五子棋/跳棋）被裁掉。")]
+        public bool AutoFitBoardToCamera = true;
 
         [Header("场景引用（留空则运行时自动搭建）")]
         public GameScreen Screen;
@@ -38,6 +49,11 @@ namespace ChessSage.Presentation
         BoardView _board;
         HighlightLayer _highlights;
         BoardInputRouter _router;
+        VariantHub _hub;
+        string _activeVariant;
+
+        /// <summary>当前对局棋种 id；在 hub 界面（无对局）时为 null。</summary>
+        public string ActiveVariant => _activeVariant;
 
         void Awake()
         {
@@ -60,10 +76,20 @@ namespace ChessSage.Presentation
             Screen.Hud = FindObjectOfType<GameFlowHud>();
             if (Screen.Hud == null) Screen.Hud = gameObject.AddComponent<GameFlowHud>();
 
-            LaunchVariant(StartVariant);
+            _hub = GetComponent<VariantHub>();
+            if (_hub == null) _hub = gameObject.AddComponent<VariantHub>();
+            _hub.Bootstrap = this;
+            _hub.Build();
+
+            if (StartAtHub) EnterHub();
+            else LaunchVariant(StartVariant);
         }
 
-        /// <summary>启动（或切换）到指定棋种。配置缺失时给出明确错误而不是静默黑屏。</summary>
+        /// <summary>
+        /// 启动（或切换到）指定棋种。切换时会重建 <see cref="GameSession"/>，
+        /// 并由 <see cref="GameScreen.Attach"/> 负责重绑 <see cref="BoardView"/> 的棋盘布局、
+        /// 清空选择态与高亮。配置缺失时给出明确错误而不是静默黑屏。
+        /// </summary>
         public void LaunchVariant(string variantId)
         {
             try
@@ -71,7 +97,10 @@ namespace ChessSage.Presentation
                 var loader = new ConfigLoader(ConfigsRoot());
                 var config = loader.LoadVariant(variantId);
                 _session = new GameSession(config, new MechanismEngine(config.Rules));
-                Screen.Attach(_session);
+                _activeVariant = variantId;
+                if (Screen != null) Screen.Attach(_session);
+                FitBoardToCamera();
+                if (_hub != null) _hub.Hide();
                 Debug.Log($"[ChessSage] 已启动棋种：{variantId}（{config.SideScheme}）");
             }
             catch (System.Exception e)
@@ -80,6 +109,53 @@ namespace ChessSage.Presentation
                 Debug.LogError("[ChessSage] 请确认 Assets/StreamingAssets/Configs 已完整同步（tools/sync-configs.sh）。");
             }
         }
+
+        /// <summary>进入棋种选择 hub：分离当前对局、清空高亮、显示选择界面。</summary>
+        public void EnterHub()
+        {
+            _activeVariant = null;
+            if (Screen != null) Screen.Detach();
+            if (_highlights != null) _highlights.Clear();
+            if (_hub != null) _hub.Show();
+            Debug.Log("[ChessSage] 已进入棋种选择 hub");
+        }
+
+        /// <summary>
+        /// 让棋盘适应相机视口：<b>只在棋盘超出视野时缩小格宽，绝不放大</b>。
+        ///
+        /// 【为什么需要】Main 场景的相机是固定正交尺寸（orthographicSize=5.4，视高约 10.8 单位），
+        /// 象棋（9×10）与动物棋（7×9）刚好放得下；而五子棋（15×15）、围棋（19×19）、
+        /// 跳棋六角星（纵跨 17）都会溢出屏幕——玩家看不到边角，点击也够不着，实际"不可玩"。
+        /// 这里按布局包络算出恰好容纳的格宽并取与原格宽的较小值，于是：
+        ///   · 原格宽已能放下 → 维持不变（象棋/动物棋视觉零回归）；
+        ///   · 放不下 → 等比缩小到带 2% 边距放下（大棋盘可玩）。
+        /// 之所以不动相机而缩放格宽：视图与输入都经 <see cref="BoardView.CellToLocal"/> /
+        /// <c>LocalToCell</c>，缩放格宽两端自动一致；改相机则需同时考虑大地图相机的复用。
+        /// </summary>
+        void FitBoardToCamera()
+        {
+            if (!AutoFitBoardToCamera || _board == null || _board.Layout == null) return;
+
+            var cam = Camera.main;
+            if (cam == null || !cam.orthographic) return;
+
+            float viewH = cam.orthographicSize * 2f;
+            float viewW = viewH * cam.aspect;
+            if (viewH <= 0f || viewW <= 0f) return;
+
+            _board.Layout.GetBounds(out double minX, out double minY, out double maxX, out double maxY);
+            float cols = (float)(maxX - minX) + 1f;   // 含末格外沿
+            float rows = (float)(maxY - minY) + 1f;
+            if (cols <= 0f || rows <= 0f) return;
+
+            const float margin = 0.98f;
+            float cellFit = Mathf.Min(viewH * margin / rows, viewW * margin / cols);
+            _board.SetCellSize(Mathf.Min(CellSize, cellFit));
+            Debug.Log($"[ChessSage] 棋盘自适应：格宽 {_board.CellSize:F3}（视高 {viewH:F1}，格位 {cols:F0}×{rows:F0}）");
+        }
+
+        /// <summary>配置根目录（实例便捷访问，供 hub 等使用）。</summary>
+        public string ConfigsRootPath => ConfigsRoot();
 
         /// <summary>定位配置根目录。优先 StreamingAssets（运行时），回退 Assets（编辑器模式）。</summary>
         public static string ConfigsRoot()

@@ -1,0 +1,465 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/levels.py + turn_limit.py"
+  },
+  "realm_meta": {
+    "hell": {
+      "name": "地狱道",
+      "game_type": "heibaiqi",
+      "icon": "☯",
+      "total_levels": 5
+    },
+    "hungry": {
+      "name": "饿鬼道",
+      "game_type": "tiaoqi",
+      "icon": "👹",
+      "total_levels": 5
+    },
+    "animal": {
+      "name": "畜生道",
+      "game_type": "dongwuqi",
+      "icon": "🐅",
+      "total_levels": 5
+    },
+    "human": {
+      "name": "人道",
+      "game_type": "xiangqi",
+      "icon": "🧠",
+      "total_levels": 6
+    },
+    "asura": {
+      "name": "阿修罗道",
+      "game_type": "weiqi",
+      "icon": "⚔️",
+      "total_levels": 6
+    },
+    "heaven": {
+      "name": "天道",
+      "game_type": "wuziqi",
+      "icon": "☸️",
+      "total_levels": 6
+    }
+  },
+  "levels": [
+    {
+      "realm": "hell",
+      "index": 0,
+      "id": "hell_1",
+      "name": "暗之始",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hell",
+      "index": 1,
+      "id": "hell_2",
+      "name": "深渊",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hell",
+      "index": 2,
+      "id": "hell_3",
+      "name": "挣扎",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hell",
+      "index": 3,
+      "id": "hell_4",
+      "name": "逆转",
+      "type": "puzzle",
+      "objective_type": "capture_count",
+      "has_puzzle_data": true
+    },
+    {
+      "realm": "hell",
+      "index": 4,
+      "id": "hell_5",
+      "name": "翻覆者",
+      "type": "boss",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hungry",
+      "index": 0,
+      "id": "hungry_1",
+      "name": "饥饿",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hungry",
+      "index": 1,
+      "id": "hungry_2",
+      "name": "吞噬",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hungry",
+      "index": 2,
+      "id": "hungry_3",
+      "name": "追逐",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "hungry",
+      "index": 3,
+      "id": "hungry_4",
+      "name": "断桥",
+      "type": "puzzle",
+      "objective_type": "evacuation",
+      "has_puzzle_data": true
+    },
+    {
+      "realm": "hungry",
+      "index": 4,
+      "id": "hungry_5",
+      "name": "饕餮者",
+      "type": "boss",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "animal",
+      "index": 0,
+      "id": "animal_1",
+      "name": "丛林法则",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "animal",
+      "index": 1,
+      "id": "animal_2",
+      "name": "弱肉强食",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "animal",
+      "index": 2,
+      "id": "animal_3",
+      "name": "等级",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "animal",
+      "index": 3,
+      "id": "animal_4",
+      "name": "逆袭",
+      "type": "puzzle",
+      "objective_type": "assassination",
+      "has_puzzle_data": true
+    },
+    {
+      "realm": "animal",
+      "index": 4,
+      "id": "animal_5",
+      "name": "秩序者",
+      "type": "boss",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "human",
+      "index": 0,
+      "id": "human_1",
+      "name": "楚河汉界",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "human",
+      "index": 1,
+      "id": "human_2",
+      "name": "初窥天机",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "human",
+      "index": 2,
+      "id": "human_3",
+      "name": "兵临城下",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "human",
+      "index": 3,
+      "id": "human_4",
+      "name": "绝杀",
+      "type": "puzzle",
+      "objective_type": "turn_limit",
+      "has_puzzle_data": true
+    },
+    {
+      "realm": "human",
+      "index": 4,
+      "id": "human_5",
+      "name": "破军",
+      "type": "objective",
+      "objective_type": "capture_count",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "human",
+      "index": 5,
+      "id": "human_6",
+      "name": "算计者",
+      "type": "boss",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "asura",
+      "index": 0,
+      "id": "asura_1",
+      "name": "气之初始",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "asura",
+      "index": 1,
+      "id": "asura_2",
+      "name": "劫争",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "asura",
+      "index": 2,
+      "id": "asura_3",
+      "name": "天下布武",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "asura",
+      "index": 3,
+      "id": "asura_4",
+      "name": "活棋",
+      "type": "puzzle",
+      "objective_type": "survival",
+      "has_puzzle_data": true
+    },
+    {
+      "realm": "asura",
+      "index": 4,
+      "id": "asura_5",
+      "name": "屠龙",
+      "type": "objective",
+      "objective_type": "assassination",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "asura",
+      "index": 5,
+      "id": "asura_6",
+      "name": "狂乱者",
+      "type": "boss",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "heaven",
+      "index": 0,
+      "id": "heaven_1",
+      "name": "五子登仙",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "heaven",
+      "index": 1,
+      "id": "heaven_2",
+      "name": "连珠",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "heaven",
+      "index": 2,
+      "id": "heaven_3",
+      "name": "悟道",
+      "type": "standard",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "heaven",
+      "index": 3,
+      "id": "heaven_4",
+      "name": "一步登天",
+      "type": "puzzle",
+      "objective_type": "turn_limit",
+      "has_puzzle_data": true
+    },
+    {
+      "realm": "heaven",
+      "index": 4,
+      "id": "heaven_5",
+      "name": "天光",
+      "type": "objective",
+      "objective_type": "color_coverage",
+      "has_puzzle_data": false
+    },
+    {
+      "realm": "heaven",
+      "index": 5,
+      "id": "heaven_6",
+      "name": "禅定者",
+      "type": "boss",
+      "objective_type": "checkmate",
+      "has_puzzle_data": false
+    }
+  ],
+  "advance_cases": [
+    {
+      "name": "hell_0_to_1",
+      "realm": "hell",
+      "current_level": 0,
+      "expected_success": true,
+      "expected_new_index": 1
+    },
+    {
+      "name": "hell_last",
+      "realm": "hell",
+      "current_level": 4,
+      "expected_success": false
+    }
+  ],
+  "sandbox_cases": [
+    {
+      "realm": "hell",
+      "expected_turn_limit": 20,
+      "expected_ai_depth": 3,
+      "expected_name": "地狱道 · 沙盒",
+      "expected_objective": "checkmate"
+    },
+    {
+      "realm": "hungry",
+      "expected_turn_limit": 20,
+      "expected_ai_depth": 3,
+      "expected_name": "饿鬼道 · 沙盒",
+      "expected_objective": "checkmate"
+    },
+    {
+      "realm": "animal",
+      "expected_turn_limit": 20,
+      "expected_ai_depth": 3,
+      "expected_name": "畜生道 · 沙盒",
+      "expected_objective": "checkmate"
+    },
+    {
+      "realm": "human",
+      "expected_turn_limit": 20,
+      "expected_ai_depth": 3,
+      "expected_name": "人道 · 沙盒",
+      "expected_objective": "checkmate"
+    },
+    {
+      "realm": "asura",
+      "expected_turn_limit": 40,
+      "expected_ai_depth": 3,
+      "expected_name": "阿修罗道 · 沙盒",
+      "expected_objective": "checkmate"
+    },
+    {
+      "realm": "heaven",
+      "expected_turn_limit": 20,
+      "expected_ai_depth": 3,
+      "expected_name": "天道 · 沙盒",
+      "expected_objective": "checkmate"
+    }
+  ],
+  "realm_levels_status": {
+    "realm": "hell",
+    "levels_passed": 2,
+    "expected": [
+      "completed",
+      "completed",
+      "current",
+      "locked",
+      "locked"
+    ]
+  },
+  "turn_limit_cases": [
+    {
+      "name": "fresh",
+      "limit": 20,
+      "current": 0,
+      "expected_remaining": 20,
+      "expected_over": false,
+      "expected_progress": 0
+    },
+    {
+      "name": "half",
+      "limit": 20,
+      "current": 10,
+      "expected_remaining": 10,
+      "expected_over": false,
+      "expected_progress": 50
+    },
+    {
+      "name": "at_limit",
+      "limit": 20,
+      "current": 20,
+      "expected_remaining": 0,
+      "expected_over": true,
+      "expected_progress": 100
+    },
+    {
+      "name": "over_limit_progress_capped",
+      "limit": 20,
+      "current": 25,
+      "expected_remaining": 0,
+      "expected_over": true,
+      "expected_progress": 100
+    },
+    {
+      "name": "reset",
+      "limit": 20,
+      "current": 20,
+      "expected_remaining": 0,
+      "expected_over": true,
+      "expected_progress": 100,
+      "reset_to": 30,
+      "expected_after_reset_remaining": 30,
+      "expected_after_reset_over": false
+    }
+  ],
+  "turn_tick_case": {
+    "limit": 20,
+    "current": 19,
+    "expected_after_tick_over": true,
+    "expected_after_tick_current": 20,
+    "expected_after_tick_remaining": 0
+  }
+}

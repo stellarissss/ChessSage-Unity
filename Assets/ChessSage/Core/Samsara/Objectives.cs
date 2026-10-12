@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ChessSage.Core.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ChessSage.Core.Samsara
@@ -186,7 +187,8 @@ namespace ChessSage.Core.Samsara
                 {
                     var piece = item as JObject;
                     if (piece == null || !IsAlive(piece)) continue;
-                    if (!piecesSpec.Contains(SamsaraJson.GetString(piece, "type", ""))) continue;
+                    // 按值判定棋子类型是否在目标清单内（D-01：JArray.Contains 是引用比较，恒 false）。
+                    if (!piecesSpec.ContainsValue(SamsaraJson.GetString(piece, "type", ""))) continue;
                     var pos = piece["position"];
                     if (PositionAt(pos, 0) >= PositionAt(topLeft, 0) && PositionAt(pos, 0) <= PositionAt(bottomRight, 0)
                         && PositionAt(pos, 1) >= PositionAt(topLeft, 1) && PositionAt(pos, 1) <= PositionAt(bottomRight, 1))

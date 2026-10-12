@@ -80,13 +80,14 @@ namespace ChessSage.Core.Rules.Variants
             };
             boardState.Pieces.Add(piece);
 
-            boardState.MoveHistory.Add(new JObject
-            {
-                ["piece_id"] = id,
-                ["from"] = null,
-                ["to"] = new JArray(x, y),
-                ["captured"] = null,
-            });
+            // 【不要在这里写 MoveHistory】
+            // 历史记录的职责属于会话层（C# 侧是 GameSession.RecordMove），
+            // 对应 legacy-web 中由 main.py 落子流程负责 append 的那一步。
+            // 早期移植把 Python「会话层」的 append 误放进了规则引擎，于是与
+            // GameSession.RecordMove 叠加成"一次落子记两条历史"，会直接污染
+            // 悔棋栈与回放。已在本轮移除；由 GameSession 单点记录，
+            // 并由 PlacementGame_PlayerPlaceAdvancesTurnAndAiAnswers（wuziqi/heibaiqi/weiqi
+            // 三个 TestCase）断言"每次落子历史恰好 +1"，盯住不再复发。
 
             outcome.Ok = true;
             return outcome;

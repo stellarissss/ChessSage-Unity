@@ -1,0 +1,142 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/state.py"
+  },
+  "seed": {
+    "version": 4
+  },
+  "expected_defaults": {
+    "version": 4,
+    "current_realm": "hell",
+    "current_level": 0,
+    "skill_points": 0,
+    "karma_max": 120,
+    "karma_single_max": 120,
+    "initial_karma": 50,
+    "realm_overshoot_carryover": 0,
+    "current_turn": 0,
+    "turn_limit": 20,
+    "cheat_count": 0,
+    "overdraft_count": 0,
+    "no_cheat_this_level": true,
+    "total_levels_completed": 0,
+    "sandbox_mode": false,
+    "playthrough_count": 1,
+    "level_karma": 50,
+    "prayer_count": 0,
+    "realm_detections_all_zero": true,
+    "skills_keys": [
+      "stealth_t1"
+    ],
+    "realm_progress_keys": [
+      "animal",
+      "asura",
+      "heaven",
+      "hell",
+      "human",
+      "hungry"
+    ],
+    "memory_fragments_keys": [
+      "animal",
+      "asura",
+      "heaven",
+      "hell",
+      "human",
+      "hungry"
+    ],
+    "endings_keys": [
+      "corruption",
+      "enlightenment",
+      "exposed",
+      "samsara",
+      "true_me"
+    ],
+    "alignment": {
+      "enlightenment": 0,
+      "corruption": 0,
+      "rationality": 0,
+      "emotion": 0
+    },
+    "realm_progress_template": {
+      "completed": false,
+      "levels_passed": 0,
+      "no_cheat_full_clear": false
+    }
+  },
+  "normalize_cases": [
+    {
+      "input": "karma_capacity_t1",
+      "expected": "karma_capacity_t1"
+    },
+    {
+      "input": "karma_capacity_t1_t1",
+      "expected": "karma_capacity_t1"
+    },
+    {
+      "input": "stealth_t2a_t2",
+      "expected": "stealth_t2a"
+    },
+    {
+      "input": "whatever",
+      "expected": "whatever"
+    },
+    {
+      "input": "  stealth_t1  ",
+      "expected": "stealth_t1"
+    }
+  ],
+  "global_configs": [
+    "boss_definitions",
+    "formations",
+    "karma_events",
+    "level_pools",
+    "objective_types",
+    "overworld",
+    "puzzles",
+    "samsara_state",
+    "skill_tree",
+    "story",
+    "tiandao_boss"
+  ],
+  "key_paths": {
+    "story_endings": [
+      "enlightenment",
+      "corruption",
+      "samsara",
+      "true_me",
+      "exposed"
+    ],
+    "story_detection_keys": [
+      "judgment_text",
+      "reset_message"
+    ],
+    "tiandao_keys": [
+      "id",
+      "name",
+      "boss_battle",
+      "boss_dialogues"
+    ],
+    "level_pools_realms": [
+      "hell",
+      "hungry",
+      "animal",
+      "human",
+      "asura",
+      "heaven"
+    ],
+    "objective_types_keys": [
+      "assassination",
+      "board_coverage",
+      "capture_count",
+      "checkmate",
+      "color_coverage",
+      "compound",
+      "escort",
+      "evacuation",
+      "formation",
+      "survival",
+      "turn_limit"
+    ]
+  }
+}
