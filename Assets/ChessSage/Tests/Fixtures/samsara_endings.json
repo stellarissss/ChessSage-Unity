@@ -1,0 +1,647 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/endings.py"
+  },
+  "endings_meta": {
+    "enlightenment": {
+      "name": "悟道结局·破茧成蝶",
+      "type": "good"
+    },
+    "corruption": {
+      "name": "堕落结局·永堕轮回",
+      "type": "bad"
+    },
+    "samsara": {
+      "name": "轮回结局·继续修行",
+      "type": "neutral"
+    },
+    "true_me": {
+      "name": "真我结局·与自己和解",
+      "type": "true"
+    },
+    "exposed": {
+      "name": "识破结局·天道审判",
+      "type": "worst"
+    }
+  },
+  "cases": [
+    {
+      "name": "exposed_priority",
+      "setup": {
+        "prayer": 1,
+        "align": {},
+        "karma": 50,
+        "frags_all": false,
+        "realms_all": true,
+        "exposure": true,
+        "boss_defeated": true,
+        "final_choice": null,
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": true,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "exposed",
+      "expected_reason": "使用真心祈求 + 天道Boss战胜利 → 识破结局"
+    },
+    {
+      "name": "true_me",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 9
+        },
+        "karma": 50,
+        "frags_all": true,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": true,
+        "enlightenment": true,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "true_me",
+      "expected_reason": "全记忆碎片 + 悟道线 + 无作弊 + 无祈求 → 真我结局"
+    },
+    {
+      "name": "enlightenment",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 5
+        },
+        "karma": 50,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": true,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "悟道线 + 悟道值领先 + 业力低 → 悟道结局"
+    },
+    {
+      "name": "corruption",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "corruption": 5
+        },
+        "karma": 250,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "corruption",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": true,
+        "samsara": false
+      },
+      "expected_ending_id": "corruption",
+      "expected_reason": "堕落线 + 堕落值领先 + 业力高 → 堕落结局"
+    },
+    {
+      "name": "samsara",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 1,
+          "corruption": 1
+        },
+        "karma": 150,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": true
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "轮回选择 + alignment 接近 + 业力中 → 轮回结局"
+    },
+    {
+      "name": "enlight_boundary_e_minus_c_3",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 3
+        },
+        "karma": 50,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": true,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "悟道线 + 悟道值领先 + 业力低 → 悟道结局"
+    },
+    {
+      "name": "enlight_boundary_e_minus_c_2",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 2
+        },
+        "karma": 50,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "兜底：悟道值高于堕落值 → 悟道结局"
+    },
+    {
+      "name": "enlight_karma_99",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 5
+        },
+        "karma": 99,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": true,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "悟道线 + 悟道值领先 + 业力低 → 悟道结局"
+    },
+    {
+      "name": "enlight_karma_100_blocked",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 5
+        },
+        "karma": 100,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "兜底：悟道值高于堕落值 → 悟道结局"
+    },
+    {
+      "name": "corrupt_karma_201",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "corruption": 5
+        },
+        "karma": 201,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "corruption",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": true,
+        "samsara": false
+      },
+      "expected_ending_id": "corruption",
+      "expected_reason": "堕落线 + 堕落值领先 + 业力高 → 堕落结局"
+    },
+    {
+      "name": "corrupt_karma_200_blocked",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "corruption": 5
+        },
+        "karma": 200,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "corruption",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "corruption",
+      "expected_reason": "兜底：堕落值高于悟道值 → 堕落结局"
+    },
+    {
+      "name": "samsara_karma_100",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 0,
+          "corruption": 0
+        },
+        "karma": 100,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": true
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "轮回选择 + alignment 接近 + 业力中 → 轮回结局"
+    },
+    {
+      "name": "samsara_karma_99_blocked",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 0,
+          "corruption": 0
+        },
+        "karma": 99,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "兜底：alignment 均衡 → 轮回结局"
+    },
+    {
+      "name": "samsara_karma_200",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 1,
+          "corruption": 1
+        },
+        "karma": 200,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": true
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "轮回选择 + alignment 接近 + 业力中 → 轮回结局"
+    },
+    {
+      "name": "samsara_karma_201_blocked",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 1,
+          "corruption": 1
+        },
+        "karma": 201,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "兜底：alignment 均衡 → 轮回结局"
+    },
+    {
+      "name": "samsara_abs2",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 2,
+          "corruption": 0
+        },
+        "karma": 150,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": true
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "轮回选择 + alignment 接近 + 业力中 → 轮回结局"
+    },
+    {
+      "name": "samsara_abs3_blocked",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 3,
+          "corruption": 0
+        },
+        "karma": 150,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "samsara",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "兜底：悟道值高于堕落值 → 悟道结局"
+    },
+    {
+      "name": "true_me_beats_enlight",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 9
+        },
+        "karma": 50,
+        "frags_all": true,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": true,
+        "enlightenment": true,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "true_me",
+      "expected_reason": "全记忆碎片 + 悟道线 + 无作弊 + 无祈求 → 真我结局"
+    },
+    {
+      "name": "no_cheat_false_skips_true_me",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 9
+        },
+        "karma": 50,
+        "frags_all": true,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": "enlightenment",
+        "no_cheat_final": false
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": true,
+        "enlightenment": true,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "悟道线 + 悟道值领先 + 业力低 → 悟道结局"
+    },
+    {
+      "name": "exposed_beats_true_me",
+      "setup": {
+        "prayer": 1,
+        "align": {
+          "enlightenment": 9
+        },
+        "karma": 50,
+        "frags_all": true,
+        "realms_all": false,
+        "exposure": true,
+        "boss_defeated": true,
+        "final_choice": "enlightenment",
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": true,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "exposed",
+      "expected_reason": "使用真心祈求 + 天道Boss战胜利 → 识破结局"
+    },
+    {
+      "name": "prayer_no_boss_undetermined",
+      "setup": {
+        "prayer": 1,
+        "align": {
+          "enlightenment": 5
+        },
+        "karma": 50,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": null,
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": null,
+      "expected_reason": "已使用祈求但未完成天道Boss战，无法判定结局"
+    },
+    {
+      "name": "fallback_enlight",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 5
+        },
+        "karma": 150,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": null,
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "enlightenment",
+      "expected_reason": "兜底：悟道值高于堕落值 → 悟道结局"
+    },
+    {
+      "name": "fallback_corrupt",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "corruption": 5
+        },
+        "karma": 150,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": null,
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "corruption",
+      "expected_reason": "兜底：堕落值高于悟道值 → 堕落结局"
+    },
+    {
+      "name": "fallback_samsara",
+      "setup": {
+        "prayer": 0,
+        "align": {
+          "enlightenment": 3,
+          "corruption": 3
+        },
+        "karma": 50,
+        "frags_all": false,
+        "realms_all": false,
+        "exposure": false,
+        "boss_defeated": false,
+        "final_choice": null,
+        "no_cheat_final": true
+      },
+      "flags": {
+        "exposed": false,
+        "true_me": false,
+        "enlightenment": false,
+        "corruption": false,
+        "samsara": false
+      },
+      "expected_ending_id": "samsara",
+      "expected_reason": "兜底：alignment 均衡 → 轮回结局"
+    }
+  ],
+  "preview_enlight_case": {
+    "align": {
+      "enlightenment": 5
+    },
+    "karma": 50,
+    "expected": {
+      "predicted": "enlightenment",
+      "name": "悟道结局·破茧成蝶",
+      "condition": "悟道值(5) - 堕落值(0) ≥ 3 + 无祈求"
+    }
+  }
+}

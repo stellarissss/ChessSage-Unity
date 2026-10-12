@@ -1,0 +1,304 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/objectives.py + memory_fragments.py + choices.py"
+  },
+  "objective_cases": [
+    {
+      "name": "checkmate_win",
+      "objective": {
+        "type": "checkmate"
+      },
+      "game_state": {
+        "game_status": {
+          "state": "ended",
+          "winner": "red"
+        }
+      },
+      "current_turn": 0,
+      "expected": {
+        "completed": true,
+        "progress": 100,
+        "message": "已将死对方"
+      }
+    },
+    {
+      "name": "checkmate_no",
+      "objective": {
+        "type": "checkmate"
+      },
+      "game_state": {
+        "game_status": {
+          "state": "playing",
+          "winner": null
+        }
+      },
+      "current_turn": 0,
+      "expected": {
+        "completed": false,
+        "progress": 0,
+        "message": "继续将死对方"
+      }
+    },
+    {
+      "name": "capture_count_partial",
+      "objective": {
+        "type": "capture_count",
+        "target": 2
+      },
+      "game_state": {
+        "pieces": [
+          {
+            "is_alive": false,
+            "side": "black"
+          },
+          {
+            "is_alive": true,
+            "side": "black"
+          }
+        ]
+      },
+      "current_turn": 0,
+      "expected": {
+        "completed": false,
+        "progress": 50,
+        "message": "已吃掉1/2个棋子"
+      }
+    },
+    {
+      "name": "assassination",
+      "objective": {
+        "type": "assassination",
+        "target_piece": "tiger"
+      },
+      "game_state": {
+        "pieces": [
+          {
+            "type": "tiger",
+            "side": "black",
+            "is_alive": false
+          }
+        ]
+      },
+      "current_turn": 0,
+      "expected": {
+        "completed": true,
+        "progress": 100,
+        "message": "刺杀成功"
+      }
+    },
+    {
+      "name": "turn_limit_win",
+      "objective": {
+        "type": "turn_limit",
+        "max_turns": 20
+      },
+      "game_state": {
+        "game_status": {
+          "state": "ended",
+          "winner": "red"
+        }
+      },
+      "current_turn": 10,
+      "expected": {
+        "completed": true,
+        "progress": 100,
+        "message": "在限定回合内获胜"
+      }
+    },
+    {
+      "name": "turn_limit_used_up",
+      "objective": {
+        "type": "turn_limit",
+        "max_turns": 20
+      },
+      "game_state": {
+        "game_status": {
+          "state": "playing"
+        }
+      },
+      "current_turn": 20,
+      "expected": {
+        "completed": false,
+        "progress": 0,
+        "message": "回合已用完"
+      }
+    },
+    {
+      "name": "unknown_type",
+      "objective": {
+        "type": "no_such"
+      },
+      "game_state": {},
+      "current_turn": 0,
+      "expected": {
+        "completed": false,
+        "progress": 0,
+        "message": "未知目标类型"
+      }
+    }
+  ],
+  "memory_cases": [
+    {
+      "name": "locked_before_clear",
+      "expected": {
+        "success": false,
+        "already_unlocked": false,
+        "reason": "需全程无作弊通关此道"
+      }
+    },
+    {
+      "name": "unlock_after_clear",
+      "expected": {
+        "success": true,
+        "already_unlocked": false,
+        "reason": "解锁成功"
+      }
+    },
+    {
+      "name": "already_unlocked",
+      "expected": {
+        "success": false,
+        "already_unlocked": true,
+        "reason": "已解锁"
+      }
+    }
+  ],
+  "memory_status_keys": [
+    "realm",
+    "unlocked",
+    "title",
+    "id",
+    "cg",
+    "condition_met"
+  ],
+  "choice_cases": [
+    {
+      "name": "hell3_opt0",
+      "realm": "hell",
+      "level": "3",
+      "choice_index": 0,
+      "option_index": 0,
+      "expected": {
+        "success": true,
+        "option_text": "……好吧。也许有一点点。但我控制不住。",
+        "hint": "诚实面对",
+        "is_final": false
+      },
+      "expected_alignment": {
+        "enlightenment": 1,
+        "corruption": 0,
+        "rationality": 0,
+        "emotion": 0
+      },
+      "expected_karma_after": 50,
+      "expected_choices_made": 1
+    },
+    {
+      "name": "hell3_opt1",
+      "realm": "hell",
+      "level": "3",
+      "choice_index": 0,
+      "option_index": 1,
+      "expected": {
+        "success": true,
+        "option_text": "愧疚？赢了就行。愧疚有什么用。",
+        "hint": "逃避",
+        "is_final": false
+      },
+      "expected_alignment": {
+        "enlightenment": 0,
+        "corruption": 1,
+        "rationality": 0,
+        "emotion": 0
+      },
+      "expected_karma_after": 50,
+      "expected_choices_made": 1
+    },
+    {
+      "name": "human3_karma_delta",
+      "realm": "human",
+      "level": "3",
+      "choice_index": 0,
+      "option_index": 1,
+      "expected": {
+        "success": true,
+        "option_text": "不。我不想牺牲任何一个棋子。每一个棋子都有它的价值。",
+        "hint": "情感（业力+5）",
+        "is_final": false
+      },
+      "expected_alignment": {
+        "enlightenment": 0,
+        "corruption": 0,
+        "rationality": 0,
+        "emotion": 1
+      },
+      "expected_karma_after": 55,
+      "expected_choices_made": 1
+    },
+    {
+      "name": "heaven6_final0",
+      "realm": "heaven",
+      "level": "6",
+      "choice_index": 0,
+      "option_index": 0,
+      "expected": {
+        "success": true,
+        "option_text": "我找到了。规则不是束缚，而是选择的基础。自由，是理解之后的承担。",
+        "hint": "悟道结局",
+        "is_final": true
+      },
+      "expected_alignment": {
+        "enlightenment": 5,
+        "corruption": 0,
+        "rationality": 0,
+        "emotion": 0
+      },
+      "expected_karma_after": 50,
+      "expected_choices_made": 1
+    },
+    {
+      "name": "bad_panel",
+      "realm": "hell",
+      "level": "3",
+      "choice_index": 5,
+      "option_index": 0,
+      "expected": {
+        "success": false,
+        "option_text": null,
+        "hint": null,
+        "is_final": null
+      },
+      "expected_alignment": {
+        "enlightenment": 0,
+        "corruption": 0,
+        "rationality": 0,
+        "emotion": 0
+      },
+      "expected_karma_after": 50,
+      "expected_choices_made": 0
+    },
+    {
+      "name": "bad_option",
+      "realm": "hell",
+      "level": "3",
+      "choice_index": 0,
+      "option_index": 9,
+      "expected": {
+        "success": false,
+        "option_text": null,
+        "hint": null,
+        "is_final": null
+      },
+      "expected_alignment": {
+        "enlightenment": 0,
+        "corruption": 0,
+        "rationality": 0,
+        "emotion": 0
+      },
+      "expected_karma_after": 50,
+      "expected_choices_made": 0
+    }
+  ],
+  "no_choice_level_count": 0
+}

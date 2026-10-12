@@ -1,0 +1,130 @@
+{
+  "_meta": {
+    "generator": "tools/verify/gen-samsara-fixtures.py",
+    "source": "legacy-web/samsara/detection.py",
+    "note": "Δ = C × O^α；C 默认 0.1（stealth_t1 解锁后 0.07），α 默认 1.5（karma_capacity_t3a 解锁后 1.3）。"
+  },
+  "delta_cases": [
+    {
+      "name": "coefficient_0_1_alpha_1_5_O100",
+      "overshoot": 100,
+      "skills": [],
+      "expected": 100.0
+    },
+    {
+      "name": "O64",
+      "overshoot": 64,
+      "skills": [],
+      "expected": 51.2
+    },
+    {
+      "name": "O4",
+      "overshoot": 4,
+      "skills": [],
+      "expected": 0.8
+    },
+    {
+      "name": "O1",
+      "overshoot": 1,
+      "skills": [],
+      "expected": 0.1
+    },
+    {
+      "name": "O25",
+      "overshoot": 25,
+      "skills": [],
+      "expected": 12.5
+    },
+    {
+      "name": "nonpositive_O0",
+      "overshoot": 0,
+      "skills": [],
+      "expected": 0.0
+    },
+    {
+      "name": "nonpositive_neg",
+      "overshoot": -5,
+      "skills": [],
+      "expected": 0.0
+    },
+    {
+      "name": "stealth_t1_C_0_07_O100",
+      "overshoot": 100,
+      "skills": [
+        "stealth_t1"
+      ],
+      "expected": 70.0
+    },
+    {
+      "name": "stealth_t1_O64",
+      "overshoot": 64,
+      "skills": [
+        "stealth_t1"
+      ],
+      "expected": 35.84
+    },
+    {
+      "name": "alpha_1_3_O100",
+      "overshoot": 100,
+      "skills": [
+        "stealth_t1",
+        "karma_capacity_t1",
+        "karma_capacity_t3a"
+      ],
+      "expected": 27.867501938744816
+    }
+  ],
+  "monotonic_points": [
+    {
+      "overshoot": 1,
+      "delta": 0.1
+    },
+    {
+      "overshoot": 2,
+      "delta": 0.28284271247461906
+    },
+    {
+      "overshoot": 4,
+      "delta": 0.8
+    },
+    {
+      "overshoot": 8,
+      "delta": 2.2627416997969525
+    },
+    {
+      "overshoot": 16,
+      "delta": 6.4
+    },
+    {
+      "overshoot": 32,
+      "delta": 18.10193359837562
+    },
+    {
+      "overshoot": 64,
+      "delta": 51.2
+    },
+    {
+      "overshoot": 100,
+      "delta": 100.0
+    }
+  ],
+  "handle_overdraft_fixed": {
+    "nonpositive": {
+      "detected": false,
+      "delta": 0.0
+    },
+    "locked": {
+      "detected": false,
+      "locked": true,
+      "current": 0.0
+    },
+    "first_skip": {
+      "skip": true,
+      "consumed": true,
+      "current": 0.0,
+      "delta": 0.0
+    }
+  },
+  "judgment_text": "天道识破 · 你不是渴求胜利的战士，是作弊成性的怪物。",
+  "reset_message": "天道识破 · 妄改天规者，罚入轮回"
+}
