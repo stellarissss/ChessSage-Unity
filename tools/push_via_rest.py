@@ -28,6 +28,7 @@ if not TOKEN:
     sys.exit("缺少环境变量 GH_TOKEN")
 
 DRY = os.environ.get("DRY", "") == "1"
+CACHE_DIR = os.environ.get("GH_CACHE_DIR", "/workspace/ChessSage-Unity/Logs/gh-cache")
 
 
 def api(method, path, payload=None):
@@ -114,15 +115,47 @@ def local_snapshot(sha):
     return snap
 
 
-def remote_snapshot(commit_sha):
+def remote_snapshot(commit_sha, cache_path=None):
     """远端提交的内容快照：{路径: blob sha}。
 
     注意：不能用 tree sha 做等价判断——本脚本用 base_tree 增量拼树，
     GitHub 生成的 tree sha 与本地同内容的 tree sha 并不相等
     （条目顺序/嵌套结构由服务端决定）。只有逐文件的 blob sha 才可比。
+
+    本环境的 tree?recursive=1 响应体可达 800KB+，urllib 默认 read() 在网
+    络抖动时极易 IncompleteRead。本函数：
+      1) 若提供 cache_path 且文件存在 → 直接读 cache（绕开网络）；
+      2) 否则走 api()，并把成功响应落到 cache；
+      3) 加 30 次重试 + 长退避，绕过瞬时网络中断。
     """
-    data = api("GET", f"/repos/{REPO}/git/trees/{commit_sha}?recursive=1")
-    return {e["path"]: e["sha"] for e in data.get("tree", []) if e["type"] == "blob"}
+    import time as _t
+    if cache_path and os.path.exists(cache_path):
+        with open(cache_path, "rb") as f:
+            data = json.loads(f.read().decode("utf-8", "replace"))
+        return {e["path"]: e["sha"] for e in data.get("tree", []) if e["type"] == "blob"}
+
+    last_err = None
+    for attempt in range(30):
+        try:
+            data = api("GET", f"/repos/{REPO}/git/trees/{commit_sha}?recursive=1")
+            # 落地 cache：下次直接读，不再走网络
+            if cache_path:
+                try:
+                    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+                    with open(cache_path, "w", encoding="utf-8") as f:
+                        json.dump(data, f)
+                except Exception:
+                    pass
+            return {e["path"]: e["sha"] for e in data.get("tree", []) if e["type"] == "blob"}
+        except SystemExit:
+            raise
+        except Exception as e:
+            last_err = e
+            wait = min(2 ** min(attempt, 5), 15)
+            print(f"  [remote_snapshot 重试 {attempt+1}/30] {type(e).__name__}，{wait}s 后重试",
+                  flush=True)
+            _t.sleep(wait)
+    raise SystemExit(f"remote_snapshot 30 次重试耗尽: {last_err}")
 
 
 def resolve_remote_base(remote_sha):
@@ -137,7 +170,7 @@ def resolve_remote_base(remote_sha):
     解决办法：比较**内容快照**，在本地历史里找出与远端内容完全一致的
     最新提交；它就是"远端已达状态"在本地对应的提交。返回 (本地基准, 待推送提交列表)。
     """
-    want = remote_snapshot(remote_sha)
+    want = remote_snapshot(remote_sha, cache_path=f"{CACHE_DIR}/tree-{remote_sha}.json")
     for sha in git("rev-list", "HEAD").split():
         if local_snapshot(sha) == want:
             return sha
@@ -156,18 +189,26 @@ def main():
         return
 
     # 远端 HEAD 对应的本地等价提交（本地链路里 tree 相同的那个）
-    base = resolve_remote_base(remote)
-    if base is not None:
+    # GH_FORCE_BASE 可手动指定本地基准，绕过 snapshot 比对（适用于远端 push
+    # 工具自身版本与本地所有 commit 都不同的情况——snapshot 永远差 1 个文件）。
+    forced = os.environ.get("GH_FORCE_BASE")
+    if forced:
+        base = forced
         ahead = git("rev-list", "--reverse", f"{base}..{local}").split()
-        print(f"远端等价于本地 {base[:7]}，待推送 {len(ahead)} 个提交")
-        if not ahead:
-            print("远端内容与本地一致（sha 不同但树相同），无需推送。")
-            return
+        print(f"GH_FORCE_BASE={forced}，待推送 {len(ahead)} 个提交")
     else:
-        # 远端存在本地没有的历史（如历史被重写）：退回全量对齐，并明确告警。
-        base = local
-        ahead = [local]
-        print("⚠️  本地历史中找不到与远端 tree 相同的提交，按全量对齐处理")
+        base = resolve_remote_base(remote)
+        if base is not None:
+            ahead = git("rev-list", "--reverse", f"{base}..{local}").split()
+            print(f"远端等价于本地 {base[:7]}，待推送 {len(ahead)} 个提交")
+            if not ahead:
+                print("远端内容与本地一致（sha 不同但树相同），无需推送。")
+                return
+        else:
+            # 远端存在本地没有的历史（如历史被重写）：退回全量对齐，并明确告警。
+            base = local
+            ahead = [local]
+            print("⚠️  本地历史中找不到与远端 tree 相同的提交，按全量对齐处理")
 
     base_tree = api("GET", f"/repos/{REPO}/git/commits/{remote}")["tree"]["sha"]
 

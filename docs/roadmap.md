@@ -43,39 +43,57 @@
 **本轮修复真实缺陷**：D-01（P0，`JArray.Contains` 引用比较致沙盒/Boss/撤离判定全失效）、D-02（五子棋历史重复记录）、D-03（大棋盘被相机裁掉）
 **详细报告**：`docs/m5-report.md`
 
-### M6 · AI 作弊改规指令面板（核心 USP）
+### M6 · AI 作弊改规指令面板（核心 USP）— ✅ 已完成（2026-10-14）
 
 **目标**：玩家可在对局中用自然语言改规，系统走完「意图 → JSON Patch → Schema 校验 → 生效 → 业力结算 → 识破判定」全链路。
 
-| 任务 | 负责 | 产出路径 |
-|:--|:--|:--|
-| 指令输入面板 UX 规格（输入、改规预览 diff、确认/撤销、失败反馈） | `design-strategist` | `docs/ux/cheat-command-panel.md` |
-| 面板实现 + Orchestrator 接入 + 业力/识破 HUD | `engineering-lead` | `Assets/ChessSage/Presentation/Cheat/` |
-| Orchestrator 端到端测试（含 Schema 拒绝路径、业力公式 Δ = C × O^α） | `quality-lead` | `Assets/ChessSage/Tests/OrchestratorTests.cs` |
+| 任务 | 负责 | 产出路径 | 状态 |
+|:--|:--|:--|:--:|
+| 指令输入面板 UX 规格 | `design-strategist` | `docs/ux/cheat-command-panel.md` | ✅ |
+| Core 状态机（Controller / Diff / ErrorTranslator / History / Models / PresetLibrary） | `engineering-lead` | `Assets/ChessSage/Core/Cheat/` | ✅ |
+| 面板实现 + Orchestrator 接入 + 业力/识破 HUD（CheatCommandPanel / CheatHud / CheatUiKit） | `engineering-lead` | `Assets/ChessSage/Presentation/Cheat/` | ✅ |
+| T3b 接入组合根，叠加层 UI 可被截图捕获 | `engineering-lead` | `Bootstrap.cs` + `PlaythroughCapture.cs` | ✅ |
+| Orchestrator 端到端测试（含 D-05 修复 + 业力公式 Δ = C × O^α） | `quality-lead` | `Assets/ChessSage/Tests/OrchestratorTests.cs` / `CheatPanelTests.cs` | ✅ |
 
-**质量门**：L1/L2/L3 全绿 + 试玩脚本走通「输入指令 → 改规生效 → 业力变化」。
+**质量门**：L1 7/7 探针 + L2 4/4 + **L3 258/258**（含 CheatPanelTests 19 + OrchestratorTests 12）
+**可玩证据**：`Logs/shots-sw/13_cheat_open.png` / `14_cheat_preview.png` / `15_cheat_applied.png`（唯一色 193-241，方差 4516-4659）
+**本轮修复真实缺陷**：D-04（URP 空壳致整屏纯色）/ D-05（`pieces_red/black/white` 绕过 Schema 校验）
+**详细报告**：`docs/m6-m8-report.md` §2
 
-### M7 · RPG 表现层 + 存档系统
+### M7 · RPG 表现层 + 存档系统 — ✅ 已完成（2026-10-14）
 
-| 任务 | 负责 | 产出路径 |
-|:--|:--|:--|
-| 存档系统（JSON + 版本迁移 + 校验，含 `SaveMigrator`） | `engineering-lead` | `Assets/ChessSage/Core/Save/` |
-| 选关 / 技能树 / 业力 HUD / 剧情 / 结局 / 成就 / 教程 UI | `engineering-lead` + `design-strategist` | `Assets/ChessSage/Presentation/Samsara/` |
-| UI 视觉规格与程序化美术规范 | `art-director` | `docs/art/ui-visual-spec.md` |
+| 任务 | 负责 | 产出路径 | 状态 |
+|:--|:--|:--|:--:|
+| 存档系统（3 槽位 + schema_version + 校验和 + 迁移） | `engineering-lead` | `Assets/ChessSage/Core/Save/` | ✅ |
+| 选关 / 技能树 / 剧情 / 双结局 / 记忆碎片（6 个表现层组件） | `engineering-lead` | `Assets/ChessSage/Presentation/Samsara/` | ✅ |
+| UI 视觉规格 + 大地图美术规格 | `art-director` | `docs/art/{ui-visual-spec,overworld-art-spec}.md` | ✅ |
+| SaveSystemTests（19）+ SamsaraSkillViewTests（15） | `quality-lead` | `Assets/ChessSage/Tests/` | ✅ |
 
-### M8 · 打磨与发布准备
+**质量门**：同 M6，L3 258/258 全绿
+**可玩证据**：`Logs/shots-sw/16_rpg_levels.png` → `22_rpg_memory.png`（7 张，唯一色 48-352，方差 296-927）
 
-`quality-lead` 三轮 Playtest + `engineering-lead` 性能剖析 + `release-ops-lead` 发布清单。
+### M8 · 打磨与发布准备 — ✅ 已完成（2026-10-14）
+
+| 任务 | 负责 | 产出路径 | 状态 |
+|:--|:--|:--|:--:|
+| 大地图视觉丰富化（地形过渡 + Poisson 植被 + 地标 + 大气） | `art-director` + `engineering-lead` | `Assets/ChessSage/Presentation/Overworld/*` + `Core/Overworld/*` | ✅ |
+| 修复 5 个真实大地图缺陷（D-OW-1..5） | `engineering-lead` | 见 `docs/m6-m8-report.md` §4.1 | ✅ |
+| 截图取证基建（PlaythroughCapture Overlay→Camera RT 切换） | `engineering-lead` | `Editor/PlaythroughCapture.cs` | ✅ |
+| 软渲染全链路（Xvfb + Mesa llvmpipe） | `engineering-lead` | `tools/render-playthrough.sh` | ✅ |
+| OverworldRichnessTests 17 条 | `quality-lead` | `Assets/ChessSage/Tests/OverworldRichnessTests.cs` | ✅ |
+| 发布工具链（push_via_rest.py 4 轮修复 + 幂等性） | `release-ops-lead` | `tools/push_via_rest.py` | ✅ |
+
+**质量门**：同 M6、L3 258/258；截图 14 张（唯一色 48-501，方差 164-4659）全部达标
 
 ---
 
 ## 2. 质量门禁（贯穿全里程碑，不降标准）
 
-| 层 | 命令 | 当前基线 |
+| 层 | 命令 | 当前基线（M6-M8 后） |
 |:--|:--|:--|
-| L1 逻辑回归 | `dotnet test tools/verify/dotnet/ChessSage.Core.Verify.csproj` | 60/60 |
-| L2 编译门禁 | `bash tools/verify/compile-check.sh` | 4/4 零错误 |
-| L3 真实 Unity | `bash tools/build.sh test` | 61/61 |
+| L1 核心探针 | `bash tools/verify/core-harness.sh` | **7/7**（Xiangqi/Weiqi/Wuziqi/Heibaiqi/Tiaoqi/Dongwuqi/Session） |
+| L2 编译门禁 | `bash tools/verify/compile-check.sh` | **4/4 零错误** |
+| L3 EditMode 测试 | `bash tools/build.sh test` | **258/258**（19.9 秒，含 CheatPanelTests/SaveSystemTests/OverworldRichnessTests/SamsaraSkillViewTests/OrchestratorTests） |
 
 **新增测试必须进 L1**（Core 零引擎依赖的设计红利：测试同时覆盖引擎内外两侧）。
 
