@@ -238,32 +238,9 @@ namespace ChessSage.Core.Samsara
             if (_state.IsSkillUnlocked(skillId)) return false;
 
             var tierKey = tier.ToString();
-            if (tier > 1)
-            {
-                var prevSkill = branchId + "_t" + (tier - 1);
-                if (!_state.IsSkillUnlocked(prevSkill, tier - 1))
-                {
-                    var tiers = branch["tiers"] as JObject;
-                    var prevTier = tiers == null ? null : tiers[(tier - 1).ToString()] as JObject;
-                    if (prevTier != null && prevTier["options"] != null)
-                    {
-                        var hasPrev = false;
-                        foreach (var opt in (JArray)prevTier["options"])
-                        {
-                            if (_state.IsSkillUnlocked(SamsaraJson.GetString(opt as JObject, "id", ""), tier - 1))
-                            {
-                                hasPrev = true;
-                                break;
-                            }
-                        }
-                        if (!hasPrev) return false;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
+            // 前置判定与 GetSkillTreeView 共用同一处逻辑（MeetsPrerequisites），
+            // 避免「界面把某节点标为可解锁、点击却因前置失败」的双源不一致。
+            if (tier > 1 && !MeetsPrerequisites(skillId, tier)) return false;
 
             var allTiers = branch["tiers"] as JObject;
             var tierData = allTiers == null ? null : allTiers[tierKey] as JObject;
@@ -303,6 +280,92 @@ namespace ChessSage.Core.Samsara
             var id = skillId ?? string.Empty;
             var index = id.IndexOf("_t", StringComparison.Ordinal);
             return index < 0 ? id : id.Substring(0, index);
+        }
+
+        /// <summary>
+        /// 判断技能前置是否满足（<b>只读</b>：不检查点数、不改变任何状态）。
+        /// 规则：第 1 层恒可解锁；第 N(&gt;1) 层需同分支第 N-1 层已有任一技能解锁。
+        /// 这是 <see cref="UnlockSkill"/> 与 <see cref="GetSkillTreeView"/> 共用的唯一前置判定，
+        /// 保证「界面说可解锁」与「实际能解锁」不会打架。
+        /// </summary>
+        public bool MeetsPrerequisites(string skillId, int tier)
+        {
+            if (tier <= 1) return true;
+
+            var branchId = SplitBranchId(skillId);
+            var branches = _skillTree["branches"] as JObject;
+            var branch = branches == null ? null : branches[branchId] as JObject;
+            if (branch == null) return false;
+
+            // 单选项层：id 形如 <branch>_t<N-1>，直接查即可命中。
+            if (_state.IsSkillUnlocked(branchId + "_t" + (tier - 1), tier - 1)) return true;
+
+            // 多选项层：上一层的任一选项解锁即视为满足。
+            var tiers = branch["tiers"] as JObject;
+            var prevTier = tiers == null ? null : tiers[(tier - 1).ToString()] as JObject;
+            var options = prevTier == null ? null : prevTier["options"] as JArray;
+            if (options != null)
+            {
+                foreach (var opt in options)
+                {
+                    if (_state.IsSkillUnlocked(SamsaraJson.GetString(opt as JObject, "id", ""), tier - 1)) return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 返回带 <c>state</c> 字段的技能树视图（专供表现层渲染，逻辑单源留在 Core）：
+        ///   · <c>unlocked</c>  — 已解锁；
+        ///   · <c>available</c> — 未解锁但前置满足（有足够技能点即可解锁）；
+        ///   · <c>locked</c>    — 未解锁且前置不满足。
+        /// 每个节点另附 <c>branch</c> / <c>branch_name</c> / <c>tier</c>，界面无需再解析 id。
+        /// 结构与 <see cref="GetSkillTree"/> 完全一致（同一份 tier/options 形状），只是多注入这几个字段。
+        /// </summary>
+        public JObject GetSkillTreeView()
+        {
+            var tree = GetSkillTree();
+            var result = new JObject();
+            foreach (var branchProp in tree.Properties())
+            {
+                var branch = branchProp.Value as JObject;
+                if (branch == null) continue;
+                var branchName = SamsaraJson.GetString(branch, "name", "");
+                var branchOut = (JObject)branch.DeepClone();
+
+                var tiers = branchOut["tiers"] as JObject;
+                if (tiers != null)
+                {
+                    foreach (var tierProp in tiers.Properties())
+                    {
+                        var tier = ParseTier(tierProp.Name) ?? 0;
+                        var tierData = tierProp.Value as JObject;
+                        if (tierData == null) continue;
+                        var options = tierData["options"] as JArray;
+                        if (options != null)
+                        {
+                            foreach (var opt in options) DecorateNode(opt as JObject, branchProp.Name, branchName, tier);
+                        }
+                        else
+                        {
+                            DecorateNode(tierData, branchProp.Name, branchName, tier);
+                        }
+                    }
+                }
+                result[branchProp.Name] = branchOut;
+            }
+            return result;
+        }
+
+        private void DecorateNode(JObject node, string branchId, string branchName, int tier)
+        {
+            if (node == null) return;
+            var id = SamsaraJson.GetString(node, "id", "");
+            var unlocked = _state.IsSkillUnlocked(id, tier);
+            node["branch"] = branchId;
+            node["branch_name"] = branchName;
+            node["tier"] = tier;
+            node["state"] = unlocked ? "unlocked" : (MeetsPrerequisites(id, tier) ? "available" : "locked");
         }
 
         /// <summary>返回尚未解锁的可选技能列表。</summary>

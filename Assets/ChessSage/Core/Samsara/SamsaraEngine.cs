@@ -169,6 +169,18 @@ namespace ChessSage.Core.Samsara
             return State.GetSkillPoints();
         }
 
+        /// <summary>带 state（unlocked/available/locked）的技能树视图，供表现层直接渲染。</summary>
+        public JObject GetSkillTreeView()
+        {
+            return Skills.GetSkillTreeView();
+        }
+
+        /// <summary>前置是否满足（只读，不扣点）。表现层据此决定节点是否可点击。</summary>
+        public bool CanUnlockSkill(string skillId, int tier)
+        {
+            return Skills.MeetsPrerequisites(skillId, tier);
+        }
+
         public bool UnlockSkill(string skillId, int tier)
         {
             return Skills.UnlockSkill(skillId, tier);
