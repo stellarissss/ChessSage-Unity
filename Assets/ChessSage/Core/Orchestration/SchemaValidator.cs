@@ -89,6 +89,24 @@ namespace ChessSage.Core.Orchestration
             SchemaCache.Clear();
         }
 
+        /// <summary>
+        /// 把「带 side 后缀的配置名」归一化到其基名。
+        ///
+        /// 背景（缺陷 D-05）：C 类改规（<c>HandleActionCWithLogAsync</c> / C+ 类）传给校验层的
+        /// 配置名是 <c>pieces_red</c> / <c>pieces_black</c> / <c>pieces_white</c>（见
+        /// <c>OrchestratorEngine.SideConfigFor</c>），而硬校验的 switch 只写了 <c>case "pieces"</c>，
+        /// 于是这些 side 变体落到 <c>default</c> 分支被**静默放行**，非法棋规原语得以注入对局。
+        ///
+        /// 归一化后所有 <c>pieces_*</c> 复用同一条 <c>pieces</c> 校验路径，从根上杜绝
+        /// 「再加一个带后缀的名字就绕开校验」的分叉。
+        /// </summary>
+        public static string NormalizeConfigName(string configName)
+        {
+            if (string.IsNullOrEmpty(configName)) return configName;
+            if (configName.StartsWith("pieces_", StringComparison.Ordinal)) return "pieces";
+            return configName;
+        }
+
         /// <summary>按配置名校验，返回 (是否通过, 错误信息)；错误信息形如 "[路径] 描述"。</summary>
         public static (bool ok, string error) ValidateConfig(string configName, JObject configData)
         {
@@ -168,14 +186,16 @@ namespace ChessSage.Core.Orchestration
         /// <summary>对 AI 生成的配置执行硬编码 Schema 校验（对齐 _hard_validate_config）。</summary>
         public static (bool ok, string error) HardValidateConfig(string configName, JObject configData)
         {
-            switch (configName)
+            // 先归一化配置名，使 pieces_red / pieces_black / pieces_white 与 pieces 走**同一条**
+            // 校验路径（缺陷 D-05：此前 side 后缀名落 default 被静默放行）。
+            switch (NormalizeConfigName(configName))
             {
                 case "board_state": return ValidateBoardState(configData);
                 case "pieces": return ValidatePieces(configData);
                 case "rules": return ValidateRules(configData);
                 case "ui_config": return ValidateUiConfig(configData);
                 case "board": return ValidateBoard(configData);
-                default: return (true, ""); // 未知类型跳过
+                default: return (true, ""); // 未知类型跳过（真实未知名不进入本闸门）
             }
         }
     }
