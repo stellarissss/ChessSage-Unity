@@ -1,10 +1,15 @@
 using System.IO;
+using ChessSage.Core.Cheat;
 using ChessSage.Core.Config;
 using ChessSage.Core.Game;
 using ChessSage.Core.Mechanism;
+using ChessSage.Core.Orchestration;
+using ChessSage.Core.Samsara;
 using ChessSage.Presentation.Board;
+using ChessSage.Presentation.Cheat;
 using ChessSage.Presentation.Game;
 using ChessSage.Presentation.Hub;
+using ChessSage.Presentation.Samsara;
 using UnityEngine;
 
 namespace ChessSage.Presentation
@@ -52,8 +57,33 @@ namespace ChessSage.Presentation
         VariantHub _hub;
         string _activeVariant;
 
+        // ── 作弊改规链路（T3b：接入组合根，让 USP 真正可触达）────────────
+        // 长生命周期：SamsaraEngine 跨棋种保留业力/识破；面板与 HUD 只建一次。
+        // 每局的 CheatController / OrchestratorEngine 在 LaunchVariant 里按新会话重建。
+        SamsaraEngine _samsara;
+        OrchestratorEngine _orchestrator;
+        CheatController _cheat;
+        CheatCommandPanel _cheatPanel;
+        CheatHud _cheatHud;
+        SamsaraRpg _rpg;
+
         /// <summary>当前对局棋种 id；在 hub 界面（无对局）时为 null。</summary>
         public string ActiveVariant => _activeVariant;
+
+        /// <summary>当前局作弊协调器（hub 无对局时为 null）。试玩脚本经此读取业力/识破。</summary>
+        public CheatController Cheat => _cheat;
+
+        /// <summary>作弊改规面板（常驻「⚡改规」入口 + 抽屉），供试玩脚本用公开 API 驱动。</summary>
+        public CheatCommandPanel CheatPanel => _cheatPanel;
+
+        /// <summary>业力 / 识破常驻 HUD。</summary>
+        public CheatHud CheatHudView => _cheatHud;
+
+        /// <summary>六道 RPG 表现层控制器（选关 / 技能树 / 剧情 / 结局 / 记忆）。</summary>
+        public SamsaraRpg Rpg => _rpg;
+
+        /// <summary>六道轮回引擎（Core）。仅供组合根与试玩脚本读取，表现层由 <see cref="Rpg"/> 内持有。</summary>
+        public SamsaraEngine Samsara => _samsara;
 
         void Awake()
         {
@@ -81,8 +111,63 @@ namespace ChessSage.Presentation
             _hub.Bootstrap = this;
             _hub.Build();
 
+            // 作弊链路的长生命周期部件先就位；每局的协调器在 LaunchVariant 内重建。
+            EnsureCheatComponents();
+
             if (StartAtHub) EnterHub();
             else LaunchVariant(StartVariant);
+        }
+
+        /// <summary>
+        /// 构造作弊链路的<b>长生命周期</b>部件：<see cref="SamsaraEngine"/>（跨棋种保留业力/识破）、
+        /// 面板与 HUD。每局的 <see cref="CheatController"/> 与 <see cref="OrchestratorEngine"/> 在
+        /// <see cref="LaunchVariant"/> 内按当前会话重建（见 <see cref="WireCheat"/>），
+        /// 从而「切换棋种 → 重建 GameSession」时面板永远绑到新对局、不会绑死旧 session。
+        /// </summary>
+        void EnsureCheatComponents()
+        {
+            if (_samsara == null)
+            {
+                // savePath=null：本切片不落盘（仅内存态），避免污染玩家存档。
+                _samsara = new SamsaraEngine(GlobalConfigDir(), null);
+            }
+
+            _cheatHud = GetComponent<CheatHud>();
+            if (_cheatHud == null) _cheatHud = gameObject.AddComponent<CheatHud>();
+
+            _cheatPanel = GetComponent<CheatCommandPanel>();
+            if (_cheatPanel == null) _cheatPanel = gameObject.AddComponent<CheatCommandPanel>();
+
+            // 六道 RPG 表现层：与作弊链路同为长生命周期，只建一次；界面数据源是 _samsara（注入，不 new）。
+            _rpg = GetComponent<SamsaraRpg>();
+            if (_rpg == null) _rpg = gameObject.AddComponent<SamsaraRpg>();
+            _rpg.Bind(this, _samsara);
+        }
+
+        /// <summary>global 配置目录（<see cref="SamsaraEngine"/> 的真源目录）。</summary>
+        string GlobalConfigDir() => Path.Combine(ConfigsRoot(), "global");
+
+        /// <summary>
+        /// 把作弊面板 / HUD / 协调器接到<b>当前</b> <see cref="_session"/>。
+        /// 每次 <see cref="LaunchVariant"/> 都必须调用——切棋种会 new 一个 GameSession，
+        /// 绑死旧 session 会让改规落到已废弃的对局上（历史缺陷模式）。
+        /// </summary>
+        void WireCheat(string variantId)
+        {
+            if (_samsara == null || _cheatPanel == null || _cheatHud == null) return;
+
+            // 无密钥 / 断网时 LlmClient.IsAvailable=false，CheatController 自动进入离线降级
+            // （UX §10.1），预置指令链路（CheatPresetLibrary）照常可走，USP 仍可演示。
+            _orchestrator = new OrchestratorEngine(new LlmClient(), ConfigsRoot()) { GameType = variantId };
+            _cheat = new CheatController(_session, _samsara, _orchestrator);
+
+            _cheatHud.Bind(_cheat);
+            _cheatHud.SetVisible(true);
+
+            _cheatPanel.Bind(_cheat, _router, Screen, _cheatHud);
+            _cheatPanel.SetVisible(true);
+            // 默认收起抽屉：主屏只留「⚡改规（I）」常驻入口，棋盘不被遮挡（UX §2.1）。
+            _cheatPanel.Close();
         }
 
         /// <summary>
@@ -101,6 +186,7 @@ namespace ChessSage.Presentation
                 if (Screen != null) Screen.Attach(_session);
                 FitBoardToCamera();
                 if (_hub != null) _hub.Hide();
+                WireCheat(variantId);   // 面板/HUD 重新绑定到新对局（切棋种必走）
                 Debug.Log($"[ChessSage] 已启动棋种：{variantId}（{config.SideScheme}）");
             }
             catch (System.Exception e)
@@ -117,6 +203,13 @@ namespace ChessSage.Presentation
             if (Screen != null) Screen.Detach();
             if (_highlights != null) _highlights.Clear();
             if (_hub != null) _hub.Show();
+
+            // 作弊链路随对局一起收殓：hub 无对局，隐藏面板与 HUD，避免点击穿透与陈旧状态。
+            _cheat = null;
+            _orchestrator = null;
+            if (_cheatPanel != null) _cheatPanel.SetVisible(false);
+            if (_cheatHud != null) _cheatHud.SetVisible(false);
+
             Debug.Log("[ChessSage] 已进入棋种选择 hub");
         }
 

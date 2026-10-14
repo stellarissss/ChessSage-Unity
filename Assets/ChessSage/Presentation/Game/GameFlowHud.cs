@@ -18,10 +18,17 @@ namespace ChessSage.Presentation.Game
 
         GameSession _session;
         string _hint;
+        bool _hidden;
 
         public void Bind(GameSession session) => _session = session;
 
         public void SetHint(string text) => _hint = text;
+
+        /// <summary>
+        /// 临时隐藏 HUD。RPG 全屏界面（<c>SamsaraRpg</c>）打开时调用，避免本 HUD 的 legacy
+        /// <c>OnGUI</c>（绘制在 UGUI 之上）盖住演出层；关闭界面时恢复为 true。
+        /// </summary>
+        public void SetVisible(bool visible) => _hidden = !visible;
 
         void Update()
         {
@@ -34,7 +41,7 @@ namespace ChessSage.Presentation.Game
 
         void OnGUI()
         {
-            if (_session == null) return;
+            if (_hidden || _session == null) return;
 
             GUILayout.BeginArea(new Rect(16, 16, 320, 200), GUI.skin.box);
             GUILayout.Label($"棋种：{DisplayVariant(_session.Config.Variant)}");

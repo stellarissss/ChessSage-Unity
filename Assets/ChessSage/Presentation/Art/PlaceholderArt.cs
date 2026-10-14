@@ -65,7 +65,7 @@ namespace ChessSage.Presentation.Art
                 if (InsideShape(shape, fx, fy, c, 0f)) px[i] = body;
                 else if (InsideShape(shape, fx, fy, c, 2f)) px[i] = rim;   // 内缩一圈作为描边
             }
-            return Finish(tex, side + "_" + NormalizeType(type));
+            return Finish(tex, px, side + "_" + NormalizeType(type));
         }
 
         /// <summary>各棋类内部命名不统一（soldier/pawn、chariot/rook…），统一归一化后再映射形状。</summary>
@@ -171,7 +171,7 @@ namespace ChessSage.Presentation.Art
                 var dy = Mathf.Max(Mathf.Abs(fy) - (c - r), 0f);
                 if (dx * dx + dy * dy <= r * r) px[y * Size + x] = body;
             }
-            return Finish(tex, key);
+            return Finish(tex, px, key);
         }
 
         static Sprite Disc(string key, Color body)
@@ -187,7 +187,7 @@ namespace ChessSage.Presentation.Art
                 var dy = y + 0.5f - c;
                 if (dx * dx + dy * dy <= r * r) px[y * Size + x] = body;
             }
-            return Finish(tex, key);
+            return Finish(tex, px, key);
         }
 
         static Sprite Ring(string key, Color body)
@@ -205,7 +205,7 @@ namespace ChessSage.Presentation.Art
                 var d2 = dx * dx + dy * dy;
                 if (d2 <= outer * outer && d2 >= inner * inner) px[y * Size + x] = body;
             }
-            return Finish(tex, key);
+            return Finish(tex, px, key);
         }
 
         // ── 纹理工具 ────────────────────────────────────────────
@@ -217,8 +217,11 @@ namespace ChessSage.Presentation.Art
             hideFlags = HideFlags.HideAndDontSave,
         };
 
-        static Sprite Finish(Texture2D tex, string key)
+        static Sprite Finish(Texture2D tex, Color[] px, string key)
         {
+            // 把逐像素生成的结果真正写进纹理——否则纹理保持未初始化状态，
+            // 所有占位图都会退化成同一块均匀灰块（棋盘没有格线、棋子没有形状与配色）。
+            tex.SetPixels(px);
             tex.Apply(false, false);
             var s = Sprite.Create(tex, new Rect(0f, 0f, Size, Size), new Vector2(0.5f, 0.5f), PixelsPerUnit);
             s.name = "ph_" + key;

@@ -88,6 +88,17 @@ namespace ChessSage.Presentation.Game
         bool _inputSubscribed;
 
         /// <summary>
+        /// 临时屏蔽棋盘<b>走子</b>输入。作弊面板需要玩家在棋盘上「点选一个目标格」取址时置 true，
+        /// 避免该次点击被当成走子/落子误触。
+        ///
+        /// 【为何是「早退」而非「退订」】屏蔽期间<b>不解除</b> <see cref="SubscribeInput"/> 建立的
+        /// 订阅（那个订阅一旦缺失，表现就是 L3 曾实测抓到的「整个游戏点不动」）。这里只在
+        /// <see cref="OnCellClicked"/> 入口早退，<see cref="BoardInputRouter"/> 的事件仍照常派发给
+        /// 其他订阅者（如作弊面板的取址监听），语义最小、互不干扰。
+        /// </summary>
+        public bool BoardInputSuppressed { get; set; }
+
+        /// <summary>
         /// 订阅输入事件。<b>不能放在 OnEnable</b>：组合根在同一帧先 AddComponent 再
         /// 注入依赖，OnEnable 执行时 <see cref="Input"/> 还是 null，订阅会被静默跳过——
         /// 表现为"整个游戏点不动"。L3 试玩实测抓到此缺陷，订阅移到注入完成后的
@@ -120,6 +131,7 @@ namespace ChessSage.Presentation.Game
         void OnCellClicked(int x, int y)
         {
             Debug.Log($"[对局] 点击 ({x},{y})：回合={_session?.CurrentTurn ?? "无会话"}");
+            if (BoardInputSuppressed) return;   // 作弊面板取址期间：放行事件给面板，本处不处理走子
             if (_session == null || _session.IsEnded) return;
             if (_session.IsAiTurn) { SetHint("AI 正在思考…"); return; }
 
@@ -336,6 +348,19 @@ namespace ChessSage.Presentation.Game
             if (Board != null) Board.MarkDirty();
             if (Hud != null) Hud.Bind(_session);
             if (_session.IsPlacementGame) UpdatePlacementHighlights();
+        }
+
+        /// <summary>
+        /// 只重绘棋盘视图，<b>不改变回合、选择态与终局态</b>。
+        ///
+        /// 用途：作弊面板「确认施展 / 撤回AI修改」改的是棋子走法与形态，不改「轮到谁」，
+        /// 因此无需走完整 <see cref="Refresh"/>（它会 rebind HUD 并重算落子高亮，可能抹掉玩家
+        /// 当前的选择高亮）。改规后仅需让棋盘按最新配置重绘即可，故单独开一个最小入口，
+        /// 把「改规重绘」与「回合推进重绘」两种语义区分开。
+        /// </summary>
+        public void RefreshBoardOnly()
+        {
+            if (Board != null) Board.MarkDirty();
         }
 
         void ClearSelection()

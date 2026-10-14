@@ -10,8 +10,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-UNITY_ROOT="${UNITY_ROOT:-/opt/unity}"
-EDITOR="$UNITY_ROOT/editor/Editor/Data"
+UNITY_ROOT="${UNITY_ROOT:-/opt/unity/Editor}"
+# 兼容旧值：若用户提供 /opt/unity，自动补上 /Editor。
+case "$UNITY_ROOT" in
+  */Editor) EDITOR="$UNITY_ROOT/Data" ;;
+  *)         EDITOR="$UNITY_ROOT/Editor/Data" ;;
+esac
 
 DOTNET="$EDITOR/NetCoreRuntime/dotnet"
 CSC="$EDITOR/DotNetSdkRoslyn/csc.dll"
