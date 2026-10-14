@@ -21,6 +21,9 @@ namespace ChessSage.Presentation.Overworld
         [Tooltip("格/秒。取自 world.speed，经等距投影折算。")]
         public float CellsPerSecond = 8f;
 
+        [Tooltip("与分块渲染器一致的每格世界缩放。**必须与地形一致**，否则角色会随距离漂离所在瓦片。")]
+        public float TileScale = 0.96f;
+
         [Tooltip("跨一格所需秒数；由 CellsPerSecond 推导，勿直接改。")]
         public float MoveSecondsPerCell => 1f / Mathf.Max(0.1f, CellsPerSecond);
 
@@ -52,9 +55,43 @@ namespace ChessSage.Presentation.Overworld
             _cellY = _fromY = _toY = map.PlayerSpawn[1];
             _moving = false;
             _t = 0f;
-            transform.position = IsoGrid.CellToWorld(_cellX, _cellY,
-                map.GetHeight(_cellX, _cellY), TerrainPalette.IsRaised(map.GetTerrain(_cellX, _cellY)));
+            transform.position = CellWorld(_cellX, _cellY);
+            BuildVisual();
             if (Cam != null) SnapCamera();
+        }
+
+        SpriteRenderer _body, _shadow;
+        float _bobPhase;
+        bool _faceLeft;
+
+        /// <summary>程序化立绘 + 落地投影。作为子物体随 transform 移动，便于独立做上下浮动。</summary>
+        void BuildVisual()
+        {
+            if (_body != null) { RefreshVisualOrder(); return; }
+
+            var shadowGo = new GameObject("player_shadow");
+            shadowGo.transform.SetParent(transform, false);
+            _shadow = shadowGo.AddComponent<SpriteRenderer>();
+            _shadow.sprite = DecorAtlas.Shadow();
+            _shadow.color = new Color(1f, 1f, 1f, 0.55f);
+            _shadow.transform.localScale = new Vector3(1.1f, 0.5f, 1f);
+
+            var bodyGo = new GameObject("player_body");
+            bodyGo.transform.SetParent(transform, false);
+            _body = bodyGo.AddComponent<SpriteRenderer>();
+            _body.sprite = PlayerArt.Character();
+            _body.color = Color.white;
+            _body.transform.localScale = new Vector3(1.6f, 1.6f, 1f);
+
+            RefreshVisualOrder();
+        }
+
+        /// <summary>角色参与等距画家排序：与地形同一序号体系，才能正确地"走进建筑后面"。</summary>
+        void RefreshVisualOrder()
+        {
+            int order = OverworldSort.Base(CellX, CellY) + 4;
+            if (_body != null) _body.sortingOrder = order;
+            if (_shadow != null) _shadow.sortingOrder = order - 1;
         }
 
         void Update()
@@ -64,8 +101,30 @@ namespace ChessSage.Presentation.Overworld
             if (!_moving) ReadInput();
             if (_moving) Advance(Time.deltaTime);
 
+            UpdateVisual(Time.deltaTime);
+
             if (Chunks != null) Chunks.SyncViewport(CellX, CellY);
             if (Fog != null) Fog.Reveal(CellX, CellY);
+        }
+
+        /// <summary>行走时的上下浮动 + 朝向翻转 + 排序刷新。纯表现，不参与逻辑。</summary>
+        void UpdateVisual(float dt)
+        {
+            if (_body == null) return;
+            if (_moving)
+            {
+                _bobPhase += dt * 12f;
+                float bob = Mathf.Abs(Mathf.Sin(_bobPhase)) * 0.12f;
+                _body.transform.localPosition = new Vector3(0f, bob, 0f);
+            }
+            else
+            {
+                _bobPhase = 0f;
+                _body.transform.localPosition = Vector3.zero;
+            }
+
+            _body.transform.localScale = new Vector3(_faceLeft ? -1.6f : 1.6f, 1.6f, 1f);
+            RefreshVisualOrder();
         }
 
         void ReadInput()
@@ -102,6 +161,8 @@ namespace ChessSage.Presentation.Overworld
             _toX = nx; _toY = ny;
             _t = 0f;
             _moving = true;
+            // 等距下屏幕左右由 (dx - dy) 决定：为负则向屏幕左走，翻转立绘。
+            _faceLeft = (dx - dy) < 0;
             return true;
         }
 
@@ -137,10 +198,11 @@ namespace ChessSage.Presentation.Overworld
         /// <summary>缓动：起步加速、到位减速，避免"瞬移感"，是手感提升的关键细节。</summary>
         static float SmoothStep(float t) => t * t * (3f - 2f * t);
 
+        /// <summary>格 → 世界坐标。<b>必须乘 TileScale</b>，与地形瓦片/装饰/道路同一坐标系。</summary>
         Vector3 CellWorld(int x, int y)
         {
             var kind = Map.GetTerrain(x, y);
-            return IsoGrid.CellToWorld(x, y, Map.GetHeight(x, y), TerrainPalette.IsRaised(kind));
+            return IsoGrid.CellToWorld(x, y, Map.GetHeight(x, y), TerrainPalette.IsRaised(kind)) * TileScale;
         }
 
         void SnapCamera()

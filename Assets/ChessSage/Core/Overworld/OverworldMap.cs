@@ -83,6 +83,107 @@ namespace ChessSage.Core.Overworld
     }
 
     /// <summary>
+    /// 地形视觉分组。<b>分组而非逐一对比</b>是过渡渲染性能的关键：
+    /// 13 种地形两两组合有 78 种边界，若按精确地形配对生成过渡面，图集会爆炸；
+    /// 归并为 6 组后，只需判断"两侧是否同组"，边界数量骤降一个数量级。
+    /// </summary>
+    public enum TerrainGroup : byte
+    {
+        Water = 0,   // 深水 / 浅滩
+        Sand = 1,    // 沙滩 / 盐湖 / 干河床
+        Grass = 2,   // 草地 / 丘陵
+        Forest = 3,  // （预留：密林类草地）
+        Rock = 4,    // 山地 / 高岭 / 裸岩 / 外圈群山
+        Snow = 5,    // 冰面
+        Lava = 6,    // 岩浆
+    }
+
+    /// <summary>轴对齐的道路段。原版道路数据是「横段 / 竖段」两种，非自由折线。</summary>
+    public struct RoadSegment
+    {
+        public readonly string Id;
+        public readonly bool Horizontal;   // true: 沿 x 铺开(y 固定)；false: 沿 y 铺开(x 固定)
+        public readonly int Axis;          // Horizontal 时为 y，否则为 x
+        public readonly int From, To;      // 区间端点（含）
+        public RoadSegment(string id, bool horizontal, int axis, int from, int to)
+        { Id = id; Horizontal = horizontal; Axis = axis; From = from; To = to; }
+    }
+
+    /// <summary>河流：若干折线段（segments of polylines）。</summary>
+    public sealed class RiverData
+    {
+        public string Id;
+        public string Name;
+        public bool Lava;
+        public bool Dry;
+        public readonly List<int[]> Segments = new List<int[]>();   // 每段扁平化 [x,y,x,y,...]
+    }
+
+    /// <summary>湖泊（圆形）。</summary>
+    public sealed class LakeData
+    {
+        public string Id;
+        public string Name;
+        public int Cx, Cy, R;
+        public string Kind;   // ice / fresh / oasis / lava
+    }
+
+    /// <summary>山脉脊线（用于绘制山脊与投影）。</summary>
+    public sealed class MountainRangeData
+    {
+        public string Id;
+        public string Name;
+        public readonly List<int[]> Spine = new List<int[]>();   // [x,y] 点列
+        public float Peak;
+        public float Band;
+    }
+
+    /// <summary>桥梁。</summary>
+    public sealed class BridgeData
+    {
+        public string Id;
+        public string Name;
+        public int X, Y;
+        public string Type;   // stone / wood
+    }
+
+    /// <summary>
+    /// 每个区域的装饰规格（来自 overworld.json 的 <c>decor_plant</c>）。
+    /// 这是原版设计意图的直接载体：不同区域的植被密度与种类本就不同。
+    /// </summary>
+    public sealed class DecorRegionSpec
+    {
+        public string RegionId;
+        public string Theme;          // farm / town / dungeon / battle
+        public int[] Pool = System.Array.Empty<int>();
+        public float DensityLo, DensityHi;
+        public int RadiusLo, RadiusHi;
+        public bool Solid;
+    }
+
+    /// <summary>地形分组映射：驱动过渡面的生成。</summary>
+    public static class TerrainGroups
+    {
+        public static TerrainGroup Of(TerrainKind t) => t switch
+        {
+            TerrainKind.DeepWater => TerrainGroup.Water,
+            TerrainKind.Shallow => TerrainGroup.Water,
+            TerrainKind.Beach => TerrainGroup.Sand,
+            TerrainKind.SaltLake => TerrainGroup.Sand,
+            TerrainKind.DryRiver => TerrainGroup.Sand,
+            TerrainKind.Grass => TerrainGroup.Grass,
+            TerrainKind.Hill => TerrainGroup.Grass,
+            TerrainKind.Mountain => TerrainGroup.Rock,
+            TerrainKind.Ridge => TerrainGroup.Snow,
+            TerrainKind.BareRock => TerrainGroup.Rock,
+            TerrainKind.Wall => TerrainGroup.Rock,
+            TerrainKind.Ice => TerrainGroup.Snow,
+            TerrainKind.Lava => TerrainGroup.Lava,
+            _ => TerrainGroup.Grass,
+        };
+    }
+
+    /// <summary>
     /// 六道大陆地图数据（<b>单一真相源</b>）。
     ///
     /// 直接承载 legacy-web <c>configs/overworld.json</c> 的 <c>baked</c> 字段：
@@ -114,6 +215,32 @@ namespace ChessSage.Core.Overworld
         public readonly List<Poi> Pois = new List<Poi>();
         public readonly List<RoadPath> Roads = new List<RoadPath>();
 
+        // ── 富数据（决定性视觉分层的来源，全部继承自原版设计） ────────────────
+
+        /// <summary>轴对齐道路段。</summary>
+        public readonly List<RoadSegment> RoadSegments = new List<RoadSegment>();
+
+        /// <summary>河流（含岩浆河/干河床）。</summary>
+        public readonly List<RiverData> Rivers = new List<RiverData>();
+
+        /// <summary>湖泊。</summary>
+        public readonly List<LakeData> Lakes = new List<LakeData>();
+
+        /// <summary>山脉脊线。</summary>
+        public readonly List<MountainRangeData> Mountains = new List<MountainRangeData>();
+
+        /// <summary>桥梁。</summary>
+        public readonly List<BridgeData> Bridges = new List<BridgeData>();
+
+        /// <summary>山口（成对端点，用于在地图上标出可穿越的隘口）。</summary>
+        public readonly List<int[]> Passes = new List<int[]>();
+
+        /// <summary>区域 id → 装饰规格。</summary>
+        public readonly Dictionary<string, DecorRegionSpec> DecorSpecs = new Dictionary<string, DecorRegionSpec>();
+
+        /// <summary>原版预烘的装饰实例：[x, y, theme, tileIndex, solid]。</summary>
+        public readonly List<int[]> PrebakedDecor = new List<int[]>();
+
         public int[] PlayerSpawn = { 0, 0 };
 
         // ── 查询 ──────────────────────────────────────────────────────────────
@@ -137,6 +264,42 @@ namespace ChessSage.Core.Overworld
         {
             int i = GetRegionIndex(x, y);
             return i >= 0 && i < Regions.Count ? Regions[i] : null;
+        }
+
+        /// <summary>该格所属区域的装饰规格（无则 null）。</summary>
+        public DecorRegionSpec DecorSpecAt(int x, int y)
+        {
+            var r = GetRegion(x, y);
+            if (r == null || r.Id == null) return null;
+            return DecorSpecs.TryGetValue(r.Id, out var spec) ? spec : null;
+        }
+
+        /// <summary>该格是否在任意湖泊内（湖泊是正圆，O(湖泊数)=6，可直接算）。</summary>
+        public bool InLake(int x, int y)
+        {
+            for (int i = 0; i < Lakes.Count; i++)
+            {
+                var l = Lakes[i];
+                int dx = x - l.Cx, dy = y - l.Cy;
+                if (dx * dx + dy * dy <= l.R * l.R) return true;
+            }
+            return false;
+        }
+
+        /// <summary>该格是否为水面地形。</summary>
+        public bool IsWaterAt(int x, int y) => IsWater(GetTerrain(x, y));
+
+        /// <summary>
+        /// 该格是否邻近水面（切比雪夫距离 ≤ <paramref name="r"/>）。
+        /// 用于"芦苇只长在水边""树木避开沼泽"这类生态门控，比统一撒点自然得多。
+        /// </summary>
+        public bool NearWater(int x, int y, int r)
+        {
+            if (IsWaterAt(x, y)) return true;
+            for (int dy = -r; dy <= r; dy++)
+                for (int dx = -r; dx <= r; dx++)
+                    if (IsWaterAt(x + dx, y + dy)) return true;
+            return false;
         }
 
         /// <summary>
@@ -228,11 +391,128 @@ namespace ChessSage.Core.Overworld
                 });
             }
 
+            // 道路：两种形态并存 —— 折线(points) 或 轴对齐段(x,y0,y1 / y,x0,x1)。
             foreach (var t in root["roads"] as JArray ?? new JArray())
             {
                 if (t is not JObject o) continue;
-                var pts = Flat(o["points"]) ?? Array.Empty<int>();
-                map.Roads.Add(new RoadPath(o["id"]?.Value<string>() ?? "road", pts));
+                var id = o["id"]?.Value<string>() ?? "road";
+                if (o["points"] is JArray pts)
+                {
+                    map.Roads.Add(new RoadPath(id, Flat(pts) ?? Array.Empty<int>()));
+                    continue;
+                }
+                if (o["x"] != null && o["y0"] != null && o["y1"] != null)
+                    map.RoadSegments.Add(new RoadSegment(id, false,
+                        o["x"].Value<int>(), o["y0"].Value<int>(), o["y1"].Value<int>()));
+                else if (o["y"] != null && o["x0"] != null && o["x1"] != null)
+                    map.RoadSegments.Add(new RoadSegment(id, true,
+                        o["y"].Value<int>(), o["x0"].Value<int>(), o["x1"].Value<int>()));
+            }
+
+            // 河流：segs 为「折线数组的数组」，每段扁平化成 [x,y,x,y,...]。
+            foreach (var prop in (root["rivers"] as JObject) ?? new JObject())
+            {
+                if (prop.Value is not JObject ro) continue;
+                var river = new RiverData
+                {
+                    Id = prop.Key,
+                    Name = ro["name"]?.Value<string>() ?? prop.Key,
+                    Lava = ro["lava"]?.Value<bool>() ?? false,
+                    Dry = ro["dry"]?.Value<bool>() ?? false,
+                };
+                foreach (var seg in ro["segs"] as JArray ?? new JArray())
+                {
+                    var flat = new List<int>();
+                    foreach (var pt in seg as JArray ?? new JArray())
+                    {
+                        if (pt is JArray xy && xy.Count >= 2)
+                        { flat.Add(xy[0].Value<int>()); flat.Add(xy[1].Value<int>()); }
+                    }
+                    if (flat.Count >= 4) river.Segments.Add(flat.ToArray());
+                }
+                map.Rivers.Add(river);
+            }
+
+            // 湖泊 / 山脉 / 桥 / 山口：结构简单，逐字段读取。
+            foreach (var t in root["lakes"] as JArray ?? new JArray())
+            {
+                if (t is not JObject o) continue;
+                map.Lakes.Add(new LakeData
+                {
+                    Id = o["id"]?.Value<string>(),
+                    Name = o["name"]?.Value<string>() ?? "",
+                    Cx = o["cx"]?.Value<int>() ?? 0,
+                    Cy = o["cy"]?.Value<int>() ?? 0,
+                    R = o["r"]?.Value<int>() ?? 0,
+                    Kind = o["kind"]?.Value<string>() ?? "fresh",
+                });
+            }
+
+            foreach (var t in root["mountains"] as JArray ?? new JArray())
+            {
+                if (t is not JObject o) continue;
+                var mr = new MountainRangeData
+                {
+                    Id = o["id"]?.Value<string>(),
+                    Name = o["name"]?.Value<string>() ?? "",
+                    Peak = (float)(o["peak"]?.Value<double>() ?? 0.8),
+                    Band = (float)(o["band"]?.Value<double>() ?? 4.0),
+                };
+                foreach (var sp in o["spine"] as JArray ?? new JArray())
+                    if (sp is JArray xy && xy.Count >= 2)
+                        mr.Spine.Add(new[] { xy[0].Value<int>(), xy[1].Value<int>() });
+                map.Mountains.Add(mr);
+            }
+
+            foreach (var t in root["bridges"] as JArray ?? new JArray())
+            {
+                if (t is not JObject o) continue;
+                map.Bridges.Add(new BridgeData
+                {
+                    Id = o["id"]?.Value<string>(),
+                    Name = o["name"]?.Value<string>() ?? "",
+                    X = o["x"]?.Value<int>() ?? 0,
+                    Y = o["y"]?.Value<int>() ?? 0,
+                    Type = o["type"]?.Value<string>() ?? "stone",
+                });
+            }
+
+            foreach (var t in root["passes"] as JArray ?? new JArray())
+            {
+                if (t is not JObject o) continue;
+                map.Passes.Add(new[] { o["x"]?.Value<int>() ?? 0, o["y"]?.Value<int>() ?? 0 });
+            }
+
+            // 区域装饰规格。
+            foreach (var prop in (root["decor_plant"] as JObject) ?? new JObject())
+            {
+                if (prop.Value is not JObject o) continue;
+                map.DecorSpecs[prop.Key] = new DecorRegionSpec
+                {
+                    RegionId = prop.Key,
+                    Theme = o["theme"]?.Value<string>() ?? "farm",
+                    Pool = Flat(o["pool"]) ?? Array.Empty<int>(),
+                    DensityLo = (float)(o["d_lo"]?.Value<double>() ?? 0.1),
+                    DensityHi = (float)(o["d_hi"]?.Value<double>() ?? 0.2),
+                    RadiusLo = o["r_lo"]?.Value<int>() ?? 3,
+                    RadiusHi = o["r_hi"]?.Value<int>() ?? 4,
+                    Solid = o["solid"]?.Value<bool>() ?? false,
+                };
+            }
+
+            // 预烘装饰（原版产物，作为"设计意图"参考与兜底；运行时以 Poisson 重排）。
+            // 行结构为混合类型 [x:int, y:int, theme:string, tile:int, solid:bool]，不能走 Flat()。
+            foreach (var t in root["decor"] as JArray ?? new JArray())
+            {
+                if (t is not JArray row || row.Count < 5) continue;
+                map.PrebakedDecor.Add(new[]
+                {
+                    row[0].Value<int>(),
+                    row[1].Value<int>(),
+                    ThemeIndex(row[2]?.Value<string>()),
+                    row[3].Value<int>(),
+                    row[4].Value<bool>() ? 1 : 0,
+                });
             }
 
             var player = root["player"] as JObject;
@@ -292,5 +572,15 @@ namespace ChessSage.Core.Overworld
             for (int i = 0; i < a.Count; i++) r[i] = a[i].Value<int>();
             return r;
         }
+
+        /// <summary>主题名 → 紧凑索引（原版装饰行里的 theme 是字符串，统一成 int 便于 Core 处理）。</summary>
+        static int ThemeIndex(string theme) => theme switch
+        {
+            "town" => 0,
+            "farm" => 1,
+            "dungeon" => 2,
+            "battle" => 3,
+            _ => 1,
+        };
     }
 }
