@@ -45,6 +45,11 @@ namespace ChessSage.Presentation.Game
 
             GUILayout.BeginArea(new Rect(16, 16, 320, 200), GUI.skin.box);
             GUILayout.Label($"棋种：{DisplayVariant(_session.Config.Variant)}");
+            // P2-7：常驻明示玩家所属阵营。围棋/黑白棋玩家执黑、落子渲染偏白时，
+            // 没有这行玩家会把颜色与回合对不上号（测评实测的「配色反转」感知问题）。
+            string you = SideLabel(_session.PlayerSide);
+            string foe = _session.Rules != null ? SideLabel(_session.Rules.Opposite(_session.PlayerSide)) : "对方";
+            GUILayout.Label($"你执{you} · 对方执{foe}");
             GUILayout.Label($"回合：{SideLabel(_session.CurrentTurn)}" +
                             (_session.IsEnded ? "（已结束）" : _session.IsAiTurn ? "（AI 思考中）" : "（你）"));
             if (_session.CanUndo) GUILayout.Label($"悔棋：按 {UndoKey} 或点击按钮");

@@ -3,6 +3,7 @@ using ChessSage.Core.Config;
 using ChessSage.Core.Overworld;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ChessSage.Presentation.Overworld
 {
@@ -224,6 +225,9 @@ namespace ChessSage.Presentation.Overworld
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.E)) Interact();
+            // P2-11：Esc = 返回主界面（与 Main 场景 Bootstrap 的 Esc 路由对应：
+            // 大地图是独立场景，没有上级模态，直接回 Main）。
+            if (Input.GetKeyDown(KeyCode.Escape)) ReturnToMain();
             float scroll = Input.mouseScrollDelta.y;
             if (Mathf.Abs(scroll) > 0.01f && CameraRig != null) CameraRig.Zoom(scroll);
 
@@ -254,6 +258,18 @@ namespace ChessSage.Presentation.Overworld
             Debug.Log("[ChessSage][里程碑] " + text);
         }
 
+        /// <summary>
+        /// 返回主界面（Main 场景）。P2-11：大地图此前的唯一出路是杀进程——
+        /// 发布包里它是死内容。这里直接 <see cref="SceneManager.LoadScene(string)"/>
+        /// 而不走事件：Overworld 场景之上没有上层订阅者（与 POI 进对局的
+        /// <see cref="RealmEntered"/> 事件不同，那个事件有组合根消费）。
+        /// </summary>
+        public void ReturnToMain()
+        {
+            Debug.Log("[ChessSage] 离开六道大陆，返回主界面");
+            SceneManager.LoadScene("Main");
+        }
+
         void OnGUI()
         {
             GUILayout.BeginArea(new Rect(16, 16, 340, 280), GUI.skin.box);
@@ -276,6 +292,11 @@ namespace ChessSage.Presentation.Overworld
             }
             GUILayout.Label(LastHint);
             GUILayout.Label("WASD/方向键 移动　E 交互　滚轮 缩放");
+            GUILayout.EndArea();
+
+            // P2-11：右上角常驻「返回主界面」出口（Esc 等效）。
+            GUILayout.BeginArea(new Rect(Screen.width - 216, 16, 200, 60), GUI.skin.box);
+            if (GUILayout.Button("返回主界面（Esc）", GUILayout.Height(44))) ReturnToMain();
             GUILayout.EndArea();
 
             if (!string.IsNullOrEmpty(_milestone) && Time.unscaledTime < _milestoneUntil)

@@ -85,15 +85,14 @@
 
 ```bash
 unzip ChessSage-Linux-x64-v1.0.0.zip
-cd ChessSage-Linux-x64
 ./ChessSage.x86_64
 ```
 
-要求：Linux x86_64、OpenGL 3.2+（或 Mesa llvmpipe 软件渲染）。
+要求：Linux x86_64、OpenGL 3.2+（或 Mesa llvmpipe 软件渲染）。zip 为平铺结构，可执行文件 `ChessSage.x86_64` 即位于解压根目录；若下载后无执行位，先 `chmod +x ChessSage.x86_64`。
 
 ### 操作
 
-- 启动后进入棋种 hub → 选择棋种对局；
+- 启动后默认进入象棋对局；「返回棋种选择」或 Esc 进入棋种 hub 切换棋种；
 - 对局中点「改写天规」打开作弊指令面板；
 - 「六道轮回」进入 RPG 层（选关 / 技能 / 剧情 / 结局）；
 - Esc 返回 hub。

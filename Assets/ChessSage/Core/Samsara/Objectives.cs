@@ -100,6 +100,8 @@ namespace ChessSage.Core.Samsara
             switch (objType)
             {
                 case "checkmate": return CheckCheckmate(objective, gameState);
+                // most_discs：黑白棋（heibaiqi/翻转棋）专用——终局子多者胜。详见 CheckMostDiscs 注释。
+                case "most_discs": return CheckMostDiscs(objective, gameState);
                 case "capture_count": return CheckCaptureCount(objective, gameState);
                 case "turn_limit": return CheckTurnLimit(objective, gameState);
                 case "evacuation": return CheckEvacuation(objective, gameState);
@@ -137,6 +139,45 @@ namespace ChessSage.Core.Samsara
                 return Result(true, 100, "已将死对方");
             }
             return Result(false, 0, "继续将死对方");
+        }
+
+        // 为黑白棋（heibaiqi / 翻转棋）新增的目标类型：终局子多者胜。
+        //
+        // 为什么需要它：六道轮回 RPG「地狱道」(global/level_pools.json 的 hell 道，
+        // game_type=heibaiqi) 原本误用 checkmate——但黑白棋根本没有「将死」概念，
+        // HUD 显示"将死对方"且目标永远无法判定达成。正确目标应为 most_discs，与
+        // heibaiqi/rules.json 的 win_conditions.most_discs 同名同义：游戏结束（或
+        // 达到 turn_limit）时棋子多的一方获胜。
+        //
+        // player / opponent 的判定口径：目标系统（ObjectiveSystem.Check）只拿到
+        // objective + gameState，二者都不携带 PlayerSide，上层调用方也未传入玩家阵营；
+        // 因此与既有的 capture_count / assassination 保持一致——敌方固定为 "black"，
+        // 玩家侧即盘面上"非 black（且非空格）"的另一色（heibaiqi 下为 "white"）。
+        // 数子时不看 is_alive：黑白棋的棋子只翻转不死亡，"数子"应统计盘面全部棋子。
+        private static JObject CheckMostDiscs(JObject objective, JObject gameState)
+        {
+            const string opponentSide = "black";
+            var playerDiscs = 0;
+            var opponentDiscs = 0;
+            var pieces = Pieces(gameState);
+            if (pieces != null)
+            {
+                foreach (var item in pieces)
+                {
+                    var piece = item as JObject;
+                    if (piece == null) continue;
+                    var side = Side(piece);
+                    if (side == opponentSide) opponentDiscs++;
+                    // 玩家侧 = 盘面上非敌方且非空格的另一色（heibaiqi 为 white）。
+                    else if (side.Length > 0) playerDiscs++;
+                }
+            }
+
+            // 严格大于才算达成：平子或少于对方都判 false。
+            var completed = playerDiscs > opponentDiscs;
+            var total = playerDiscs + opponentDiscs;
+            var progress = total > 0 ? Math.Min(100, (int)(playerDiscs / (double)total * 100)) : 0;
+            return Result(completed, progress, "我方" + playerDiscs + "子 / 对方" + opponentDiscs + "子");
         }
 
         private static JObject CheckCaptureCount(JObject objective, JObject gameState)

@@ -16,8 +16,10 @@ namespace ChessSage.Presentation.Samsara
     ///
     /// 【界面路由】用轻量 <see cref="UiScreenStack"/> 管理多屏，避免各界面互相覆盖留下僵尸面板。
     /// 【对局 HUD】业力 / 识破 HUD 直接复用既有 <c>CheatHud</c>，本层绝不重造第二个 HUD。
-    /// 【进入 / 退出】左下角常驻「☸ 六道轮回」入口（L 键等效）；每屏都有「返回 / 关闭」，
-    /// Esc 退栈，栈空即关闭——与棋种 hub、作弊面板互不抢屏（本层 sortingOrder 最高，仅在全屏模态时覆盖）。
+        /// 【进入 / 退出】左下角常驻「☸ 六道轮回」入口（L 键等效）；每屏都有「返回 / 关闭」，
+        /// Esc 退栈由组合根 <c>Bootstrap</c> 按模态优先级统一路由（RPG → 作弊面板 → 对局），
+        /// 本类不自行消费 Esc，避免同帧双弹两层——与棋种 hub、作弊面板互不抢屏
+        /// （本层 sortingOrder 最高，仅在全屏模态时覆盖）。
     ///
     /// 【输入】棋盘输入走原始鼠标事件、不经 EventSystem，故模态打开时必须置
     /// <c>GameScreen.BoardInputSuppressed</c>，否则点界面会穿透到棋盘误落子。
@@ -224,7 +226,8 @@ namespace ChessSage.Presentation.Samsara
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.L)) Toggle();
-            else if (Input.GetKeyDown(KeyCode.Escape) && IsOpen) Back();
+            // Esc 不在此处消费：已收口到组合根 Bootstrap.Update 的模态优先级路由
+            // （RPG → 作弊面板 → 对局）。若此处也消费 Esc，同帧会连弹两层界面栈。
         }
     }
 }

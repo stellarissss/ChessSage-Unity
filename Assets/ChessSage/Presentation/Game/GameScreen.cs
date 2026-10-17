@@ -46,6 +46,9 @@ namespace ChessSage.Presentation.Game
             _selectedPieceId = null;
             _selectedMoves.Clear();
             _placementCache.Clear();
+            // P2-10a：清掉上一个会话的残留提示。跳棋的「AI 正在思考…」曾粘到下一个
+            // 黑白棋对局里，玩家以为 AI 还在思考——换会话必须换掉旧文案。
+            SetHint(null);
 
             if (Board != null)
             {
@@ -62,8 +65,16 @@ namespace ChessSage.Presentation.Game
                     Board.Bind(null, 9, 10);
                 }
             }
+            // P1-4：高亮层换算世界坐标的真源是 BoardView；注入一次，之后格坐标重算才有着落。
+            if (Highlights != null && Highlights.Board == null) Highlights.Board = Board;
             SubscribeInput();
             Refresh();
+
+            // P0-1：AI 先手开局的唯一调度点（与走子/落子后的 AI 切棋种共用）。
+            // 跳棋配置开局 current_turn 即 AI 方，而此前只有 CommitMove / CommitPlacement /
+            // Undo 会调 ScheduleAiTurn——开局 AI 永不启动，对局永久停在「AI 正在思考…」。
+            // 这里在 Attach 末尾统一判定：AI 先手则启动协程；玩家先手不调度（维持既有节奏）。
+            if (_session != null && _session.IsAiTurn) ScheduleAiTurn();
         }
 
         /// <summary>
@@ -180,29 +191,28 @@ namespace ChessSage.Presentation.Game
             return null;
         }
 
-        /// <summary>把当前选中的可走点投影到世界坐标，交给标记层渲染（可吃子点用红色）。</summary>
+        /// <summary>
+        /// 把当前选中的可走点投影到高亮层（可吃子点用红色）。
+        /// 传<b>格坐标</b>而非世界坐标：高亮层经 <see cref="BoardView"/> 现算世界坐标，
+        /// 格宽被缩放（<c>FitBoardToCamera</c>）后自动重算，绿点不会与格心错位（P1-4）。
+        /// </summary>
         void ShowHighlights()
         {
             if (Highlights == null || Board == null) return;
             if (_selectedMoves.Count == 0) { Highlights.Clear(); return; }
+            if (_session == null) { Highlights.Clear(); return; }
 
-            var moves = new List<Vector3>(_selectedMoves.Count);
+            var cells = new List<Vector2Int>(_selectedMoves.Count);
             var capture = new List<bool>(_selectedMoves.Count);
-            if (_session != null)
+            var st = _session.State;
+            for (int i = 0; i < _selectedMoves.Count; i++)
             {
-                var st = _session.State;
-                for (int i = 0; i < _selectedMoves.Count; i++)
-                {
-                    var t = st.GetPieceAt(_selectedMoves[i][0], _selectedMoves[i][1]);
-                    capture.Add(t != null && t.IsAlive);
-                }
+                cells.Add(new Vector2Int(_selectedMoves[i][0], _selectedMoves[i][1]));
+                var t = st.GetPieceAt(_selectedMoves[i][0], _selectedMoves[i][1]);
+                capture.Add(t != null && t.IsAlive);
             }
 
-            // 标记层是世界空间：直接给世界坐标，棋盘移动/缩放时标记自动跟随。
-            for (int i = 0; i < _selectedMoves.Count; i++)
-                moves.Add(Board.transform.TransformPoint(Board.CellToLocal(_selectedMoves[i][0], _selectedMoves[i][1])));
-
-            Highlights.SetMoves(moves, capture);
+            Highlights.SetCells(cells, capture);
         }
 
         void CommitMove(int toX, int toY)
@@ -301,12 +311,13 @@ namespace ChessSage.Presentation.Game
             _placementCache = _session.GetValidPlacements();
             if (_placementCache.Count == 0) { Highlights.Clear(); return; }
 
-            var points = new List<Vector3>(_placementCache.Count);
+            var cells = new List<Vector2Int>(_placementCache.Count);
             for (int i = 0; i < _placementCache.Count; i++)
-                points.Add(Board.transform.TransformPoint(Board.CellToLocal(_placementCache[i][0], _placementCache[i][1])));
+                cells.Add(new Vector2Int(_placementCache[i][0], _placementCache[i][1]));
 
             // 落子类无"可吃子"语义，capture 传 null → 统一用可走点色（绿）。
-            Highlights.SetMoves(points, null);
+            // 传格坐标而非世界坐标：格宽缩放后高亮仍与格心对齐（P1-4）。
+            Highlights.SetCells(cells, null);
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -371,10 +382,17 @@ namespace ChessSage.Presentation.Game
             SetHint(null);
         }
 
+        /// <summary>
+        /// 对局结束事件（参数为胜方 side；和局为 null/空）。
+        /// P1-5：组合根 <c>Bootstrap</c> 订阅此事件做自动存档——表现层不直接调存档系统。
+        /// </summary>
+        public event System.Action<string> GameEnded;
+
         void OnGameEnd(string winner)
         {
             var label = string.IsNullOrEmpty(winner) ? "和局" : SideLabel(winner);
             SetHint($"对局结束：{label} 胜");
+            GameEnded?.Invoke(winner);
         }
 
         static string SideLabel(string side)
@@ -385,18 +403,38 @@ namespace ChessSage.Presentation.Game
             if (Hud != null) Hud.SetHint(text);
         }
 
-        /// <summary>悔棋（U 键或 HUD 按钮）。两条分支共用：回到玩家回合后自动重排 AI 回合。</summary>
+        /// <summary>
+        /// 悔棋（U 键或 HUD 按钮）。语义＝「悔棋到玩家回合」。
+        ///
+        /// 【为什么不能只弹一手】玩家落子后 AI 立即应手，此时撤一手只能撤掉 AI 刚走的
+        /// 那手，玩家自己的手永远撤不掉（测评实测连按 U 三次画面零变化）。因此循环撤到
+        /// 轮到玩家为止；<see cref="GameSession.CanUndo"/> 兜底防止异常配置下死循环。
+        /// 撤到玩家回合后自然是玩家回合，不再急于重排 AI。
+        /// </summary>
         public void Undo()
         {
-            if (_session == null || _session.IsAiTurn) return;
-            if (!_session.UndoLastMove())
+            if (_session == null) return;
+
+            // 先停掉可能在跑的 AI 协程：否则悔棋刚撤完，协程下一帧又替 AI 落子，
+            // 撤掉的回合又被 AI 走一遍。
+            if (_aiRoutine != null) { StopCoroutine(_aiRoutine); _aiRoutine = null; }
+
+            if (!_session.CanUndo)
             {
                 SetHint("没有可悔的棋");
                 return;
             }
+
+            int guard = 0;
+            while (_session.CanUndo && _session.IsAiTurn && guard++ < 64)
+                _session.UndoLastMove();
+
             ClearSelection();
             Refresh();
-            if (_session.IsAiTurn) ScheduleAiTurn();
+
+            // 兜底：若因机制连控撤到头仍是 AI 回合（正常配置不会到此），补一次调度，
+            // 避免对局永远停在 AI 回合却无人推进。
+            if (_session != null && !_session.IsEnded && _session.IsAiTurn) ScheduleAiTurn();
         }
     }
 }

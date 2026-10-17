@@ -13,19 +13,19 @@
       {
         "id": "hell_1", "type": "standard", "name": "暗之始", "difficulty": 1,
         "ai_personality": "normal", "ai_depth": 2, "turn_limit": 20,
-        "objective": {"type": "checkmate"},
+        "objective": {"type": "most_discs"},
         "description": "标准开局，在20回合内翻转更多棋子获胜。教学关：体验基本玩法。"
       },
       {
         "id": "hell_2", "type": "standard", "name": "深渊", "difficulty": 2,
         "ai_personality": "normal", "ai_depth": 3, "turn_limit": 20,
-        "objective": {"type": "checkmate"},
+        "objective": {"type": "most_discs"},
         "description": "AI稍强，注意角部和边缘的控制。"
       },
       {
         "id": "hell_3", "type": "standard", "name": "挣扎", "difficulty": 3,
         "ai_personality": "aggressive", "ai_depth": 3, "turn_limit": 20,
-        "objective": {"type": "checkmate"},
+        "objective": {"type": "most_discs"},
         "description": "AI采取激进策略，抢占关键位置。"
       },
       {
@@ -38,7 +38,7 @@
       {
         "id": "hell_5", "type": "boss", "name": "翻覆者", "difficulty": 4,
         "ai_personality": "aggressive", "ai_depth": 4, "turn_limit": 20,
-        "objective": {"type": "checkmate"},
+        "objective": {"type": "most_discs"},
         "boss_id": "flipper",
         "description": "地狱道守道者·翻覆者。修改规则有30%概率被翻转效果。"
       }

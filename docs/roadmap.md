@@ -85,6 +85,20 @@
 
 **质量门**：同 M6、L3 258/258；截图 14 张（唯一色 48-501，方差 164-4659）全部达标
 
+### v1.0.1 · 修复轮（测评回应）— 🟡 进行中
+
+**目标**：回应 v1.0.0 玩家测评报告的 14 项缺陷（含 2 个 P0），修复后发布 v1.0.1。
+
+| 任务 | 负责 | 产出路径 | 状态 |
+|:--|:--|:--|:--:|
+| P0 ×2：跳棋 AI 先手不启动（对局永久思考）；改规面板 HTTP 402 文案误导 + 失败卡无恢复路径 | `engineering-lead` | `Assets/ChessSage/Presentation/Game/`、`Cheat/` | 🟡 进行中 |
+| P1 ×5：悔棋回到玩家回合；hub 进入时落点高亮错位；RPG 面板「关闭✕」返回上一层；红方在下 + HUD 阵营常驻；跳棋初始回合对齐规则文件 | `engineering-lead` | `Assets/ChessSage/Presentation/` | 🟡 进行中 |
+| P2 ×4：地狱道目标文案；动物棋物种形状 + 占位美术对比度；hub 玩法文案；改规面板「前往技能树」直达 | `engineering-lead` + `art-director` | `Assets/ChessSage/Presentation/` | 🟡 进行中 |
+| 新增 ×3：RPG 进度自动存档（多槽位 + SHA-256 + 版本迁移）；Esc 进棋种 hub；大地图接入 hub 入口并随包构建 | `engineering-lead` | `Assets/ChessSage/Core/Save/`、`Presentation/`、`Overworld/` | 🟡 进行中 |
+| 发行文档：v1.0.0 发行说明勘误（启动流程 / 解压目录）、v1.0.1 changelog 预起草、README.txt 同步建议、路线图与看板更新 | `release-ops-lead` | `docs/release-notes-v1.0.1.md` 等 | ✅ 已完成 |
+
+**已知问题**：自然语言改规依赖的服务密钥欠费——已改为明确提示并引导预置指令，密钥续费后该功能自动恢复。
+
 ---
 
 ## 2. 质量门禁（贯穿全里程碑，不降标准）

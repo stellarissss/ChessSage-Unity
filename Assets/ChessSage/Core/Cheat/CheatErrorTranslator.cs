@@ -98,6 +98,10 @@ namespace ChessSage.Core.Cheat
     /// <summary>
     /// 失败反馈翻译器（UX §7）：把引擎的技术性 message / SchemaValidator 的错误串
     /// 包装成「为什么不行 + 怎么改能行」。**严禁**只回"非法指令"四个字。
+    ///
+    /// 【密钥级故障分支】402（欠费）/401·403（无效或未授权）在传输层与服务端 "HTTP &lt;code&gt;"
+    /// 错误体同文本，但语义是「重试也无用」：因此必须先于超时/网络分支判断，出路指向预置指令
+    /// 而非重新施展——否则欠费会被误导成网络超时，玩家无限重试永远失败（v1.0.0 测评 P0-2a）。
     /// </summary>
     public static class CheatErrorTranslator
     {
@@ -109,6 +113,15 @@ namespace ChessSage.Core.Cheat
 
         /// <summary>成功类结果返回 null；否则返回结构化失败反馈（UX §7.1 映射表）。</summary>
         public static CheatFailure Present(JObject result)
+        {
+            var failure = PresentCore(result);
+            // 失败卡的 Reason 文本区仅 260px 高：HTTP 错误体 / LLM 原文动辄数百字，直接渲染会溢出卡片。
+            // 统一在出口处截到 120 字以内——技术细节（状态码、错误体原文）不入玩家文案（P0-2a 复盘）。
+            if (failure != null) failure.Reason = ClampReason(failure.Reason);
+            return failure;
+        }
+
+        static CheatFailure PresentCore(JObject result)
         {
             if (result == null) return new CheatFailure { Title = "⚠️ 天道没有回应", Reason = "结果为空。" };
 
@@ -173,6 +186,37 @@ namespace ChessSage.Core.Cheat
                     f.Actions.Add(new CheatAction("打开预置指令", CheatActionKind.OpenPresets));
                     return f;
                 }
+                // ── 密钥级故障（必须先于下面的超时/网络分支判断）──────────────────
+                // DeepSeek 欠费返回 "HTTP 402: ... Insufficient Balance"，无效/未授权密钥返回
+                // "HTTP 401/403: ... Invalid ... key"——两类文本都含 "HTTP"，若落入下面的超时分支，
+                // 会提示"重新施展"而重试永远失败（v1.0.0 测评 P0-2a：误导玩家无限重试）。
+                // 这两类故障的出路不是重试，而是降级到预置指令：自然语言通道已断，对局与预置不受影响。
+                if (msg.Contains("402")
+                    || msg.IndexOf("Insufficient Balance", StringComparison.OrdinalIgnoreCase) >= 0
+                    || msg.Contains("余额不足"))
+                {
+                    var f = new CheatFailure
+                    {
+                        Title = "🔋 天道密钥额度已用完",
+                        Reason = "自然语言改规暂不可用（服务密钥欠费）。你仍可使用全部预置改规与完整对局功能。",
+                    };
+                    f.Actions.Add(new CheatAction("打开预置指令", CheatActionKind.OpenPresets));
+                    f.Actions.Add(new CheatAction("知道了", CheatActionKind.None));
+                    return f;
+                }
+                if (msg.Contains("401") || msg.Contains("403")
+                    || Regex.IsMatch(msg, "Invalid.*key", RegexOptions.IgnoreCase)
+                    || msg.Contains("无效") || msg.Contains("未授权"))
+                {
+                    var f = new CheatFailure
+                    {
+                        Title = "🔑 天道密钥无效或未授权",
+                        Reason = "自然语言改规暂不可用（服务密钥无效或未授权）。你仍可使用全部预置改规与完整对局功能。",
+                    };
+                    f.Actions.Add(new CheatAction("打开预置指令", CheatActionKind.OpenPresets));
+                    f.Actions.Add(new CheatAction("知道了", CheatActionKind.None));
+                    return f;
+                }
                 if (msg.Contains("超时") || msg.Contains("网络") || msg.Contains("被取消") || msg.Contains("HTTP"))
                 {
                     var f = new CheatFailure
@@ -215,6 +259,13 @@ namespace ChessSage.Core.Cheat
             };
             generic.Actions.Add(new CheatAction("重新施展", CheatActionKind.Retry));
             return generic;
+        }
+
+        /// <summary>把 Reason 截到 120 字以内（超长以 … 收尾）：失败卡文本区容量有限，技术性长文必须截断。</summary>
+        static string ClampReason(string reason)
+        {
+            if (string.IsNullOrEmpty(reason) || reason.Length <= 120) return reason;
+            return reason.Substring(0, 119) + "…";
         }
 
         /// <summary>Schema 校验错误串的人读翻译（UX §7.2）。</summary>

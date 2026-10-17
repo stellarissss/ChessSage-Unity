@@ -4,6 +4,11 @@
     "description": "使对方无路可走",
     "turn_limit": 20
   },
+  "most_discs": {
+    "name": "终局子多者胜",
+    "description": "终局时棋子多的一方获胜（黑白棋）",
+    "turn_limit": 20
+  },
   "capture_count": {
     "name": "吃子数目标",
     "description": "吃掉对方指定数量的棋子",

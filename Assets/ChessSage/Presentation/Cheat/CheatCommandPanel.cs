@@ -119,6 +119,8 @@ namespace ChessSage.Presentation.Cheat
             if (_drawer == null) return;
             if (_state == State.Processing) return;   // 处理中不可收起
             _drawer.SetActive(false);
+            // 收起时必须清失败卡：_failureVisible 无任何复位路径时，再次打开会原样重现红色失败卡（P0-2b，实测复现）。
+            SetFailureVisible(false);
             if (_state != State.Input) SetState(State.Input);
         }
 
@@ -446,6 +448,9 @@ namespace ChessSage.Presentation.Cheat
             _procStage.text = "◐ 天道正在推演你的妄念…";
             _procSub.text = "阶段：意图解析";
             SetState(State.Processing);
+            // 防御性清失败卡：Processing 中失败卡本就被 ApplyState 隐藏，但清标志位可防止
+            // 本次结果回到输入态时上一张红色失败卡残留重现（P0-2b）。
+            SetFailureVisible(false);
 
             var cts = new CancellationTokenSource();
             var task = _controller.SubmitAsync(command, cts.Token);
@@ -697,6 +702,8 @@ namespace ChessSage.Presentation.Cheat
                 if (_screen != null) _screen.RefreshBoardOnly();
                 if (_hud != null) _hud.Refresh();
                 UpdateUndoRuleButton();
+                // 撤回成功即视为失败态已消化：清失败卡再回输入态，否则红色失败卡在输入态重现（P0-2b）。
+                SetFailureVisible(false);
                 SetState(State.Input);
             }
         }
@@ -717,6 +724,8 @@ namespace ChessSage.Presentation.Cheat
         void EnterOffline()
         {
             _controller?.SetOffline(true);
+            // 转入离线时清失败卡：离线引导卡随后由调用方自行展示，避免旧失败卡的标志位残留（P0-2b）。
+            SetFailureVisible(false);
             RebuildPresets();
             SetState(State.Offline);
         }
@@ -786,6 +795,16 @@ namespace ChessSage.Presentation.Cheat
                 }
             }
 
+            // 失败卡必须永远有退路（P0-2b）：翻译器可能给出零个动作（如"天道静候"/结果为空/fun），
+            // 此时卡上没有任何可点之物，玩家被永久困在红色失败卡前。故渲染完动作后总是补一个
+            // 「知道了」关闭按钮；若最后一个动作已是 None（取消/知道了），则不重复追加。
+            if (failure.Actions == null || failure.Actions.Count == 0
+                || failure.Actions[failure.Actions.Count - 1].Kind != CheatActionKind.None)
+            {
+                CheatUiKit.Button(_failureActions.transform, "知道了", 22,
+                    new Color(0.22f, 0.26f, 0.34f, 1f), () => SetFailureVisible(false));
+            }
+
             SetFailureVisible(true);
             SetState(State.Input);
         }
@@ -800,6 +819,10 @@ namespace ChessSage.Presentation.Cheat
         {
             switch (action.Kind)
             {
+                case CheatActionKind.None:
+                    // 「取消 / 知道了」：只收起失败卡回到输入态。此前无此 case，点击按钮毫无反应（P0-2b）。
+                    SetFailureVisible(false);
+                    break;
                 case CheatActionKind.ApplySuggestion:
                 case CheatActionKind.SplitSteps:
                     SetInputText(!string.IsNullOrEmpty(action.FillText) ? action.FillText : command);
@@ -821,7 +844,13 @@ namespace ChessSage.Presentation.Cheat
                     RebuildPresets();
                     break;
                 case CheatActionKind.GoSkillTree:
-                    if (_hud != null) _hud.Flash("技能树尚未在此版本开放（敬请期待）");
+                    // P2-10d：技能树实际已开放可玩（SamsaraRpg.ShowSkills），此处不再弹
+                    // 「尚未开放」的过期文案，直接打开技能树界面。面板与 SamsaraRpg 同在
+                    // Bootstrap 所在 GameObject 上，GetComponent 即可拿到；
+                    // 万一引用缺失（异常装配），退而给出可达路径文案，至少不骗玩家。
+                    var rpg = GetComponent<ChessSage.Presentation.Samsara.SamsaraRpg>();
+                    if (rpg != null) rpg.ShowSkills();
+                    else if (_hud != null) _hud.Flash("技能树已开放：点左下角「☸ 六道轮回」进入");
                     break;
             }
         }

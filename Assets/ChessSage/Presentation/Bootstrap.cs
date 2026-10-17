@@ -1,10 +1,12 @@
 using System.IO;
+using ChessSage.Core.Board;
 using ChessSage.Core.Cheat;
 using ChessSage.Core.Config;
 using ChessSage.Core.Game;
 using ChessSage.Core.Mechanism;
 using ChessSage.Core.Orchestration;
 using ChessSage.Core.Samsara;
+using ChessSage.Core.Save;
 using ChessSage.Presentation.Board;
 using ChessSage.Presentation.Cheat;
 using ChessSage.Presentation.Game;
@@ -57,6 +59,11 @@ namespace ChessSage.Presentation
         VariantHub _hub;
         string _activeVariant;
 
+        // ── 存档（P1-5：接 SaveManager，落盘 persistentDataPath/saves）─────────
+        SaveManager _saveManager;
+        string _saveDir;
+        double _playtimeSeconds;
+
         // ── 作弊改规链路（T3b：接入组合根，让 USP 真正可触达）────────────
         // 长生命周期：SamsaraEngine 跨棋种保留业力/识破；面板与 HUD 只建一次。
         // 每局的 CheatController / OrchestratorEngine 在 LaunchVariant 里按新会话重建。
@@ -93,6 +100,8 @@ namespace ChessSage.Presentation
 
             _highlights = FindObjectOfType<HighlightLayer>();
             if (_highlights == null) _highlights = new GameObject("Highlights").AddComponent<HighlightLayer>();
+            // P1-4：高亮层按格坐标现算世界坐标，真源是 BoardView——组合根负责注入。
+            _highlights.Board = _board;
 
             _router = FindObjectOfType<BoardInputRouter>();
             if (_router == null) _router = _board.gameObject.AddComponent<BoardInputRouter>();
@@ -105,6 +114,10 @@ namespace ChessSage.Presentation
             Screen.Input = _router;
             Screen.Hud = FindObjectOfType<GameFlowHud>();
             if (Screen.Hud == null) Screen.Hud = gameObject.AddComponent<GameFlowHud>();
+
+            // P1-5：对局结束 → 自动存档。先退订再订阅，保证重复 Awake 不双挂。
+            Screen.GameEnded -= OnSessionEnded;
+            Screen.GameEnded += OnSessionEnded;
 
             _hub = GetComponent<VariantHub>();
             if (_hub == null) _hub = gameObject.AddComponent<VariantHub>();
@@ -128,8 +141,18 @@ namespace ChessSage.Presentation
         {
             if (_samsara == null)
             {
-                // savePath=null：本切片不落盘（仅内存态），避免污染玩家存档。
+                // savePath=null：SamsaraEngine 的真源仍是 global 配置模板（不读旧存档重启），
+                // 持久化改由 SaveManager + FileSaveStorage 负责（P1-5：多槽位 + SHA-256 +
+                // 版本迁移 + Autosave）。二者分工：引擎管内存态，SaveManager 管落盘信封。
                 _samsara = new SamsaraEngine(GlobalConfigDir(), null);
+            }
+
+            // P1-5：存档系统接线。目录用 persistentDataPath（跨平台可写）；
+            // 之前此处传 savePath=null 等于「仅内存态」，进度从不落盘。
+            if (_saveManager == null)
+            {
+                _saveDir = Path.Combine(Application.persistentDataPath, "saves");
+                _saveManager = new SaveManager(new FileSaveStorage(_saveDir));
             }
 
             _cheatHud = GetComponent<CheatHud>();
@@ -177,14 +200,23 @@ namespace ChessSage.Presentation
         /// </summary>
         public void LaunchVariant(string variantId)
         {
+            // P1-5：切换棋种前先把上一局自动存档（首局启动时 _session 为 null，跳过）。
+            if (_session != null) Autosave("切换棋种");
             try
             {
                 var loader = new ConfigLoader(ConfigsRoot());
                 var config = loader.LoadVariant(variantId);
                 _session = new GameSession(config, new MechanismEngine(config.Rules));
                 _activeVariant = variantId;
-                if (Screen != null) Screen.Attach(_session);
+
+                // P1-4：先定格宽，再 Attach。FitBoardToCamera 读的是 _board.Layout
+                // （由 Attach 内的 Board.Bind 设置），因此这里先按新棋种手动绑一次布局
+                // （Attach 会用同一布局重绑，幂等）——否则 Fit 读到的是上一个棋种的
+                // 布局（首局甚至为 null 直接跳过），大棋盘格宽不改，点击与视觉全错位。
+                if (_board != null)
+                    _board.Bind(_session.State, BoardLayoutFactory.FromBoardConfig(config.Board));
                 FitBoardToCamera();
+                if (Screen != null) Screen.Attach(_session);
                 if (_hub != null) _hub.Hide();
                 WireCheat(variantId);   // 面板/HUD 重新绑定到新对局（切棋种必走）
                 Debug.Log($"[ChessSage] 已启动棋种：{variantId}（{config.SideScheme}）");
@@ -211,6 +243,67 @@ namespace ChessSage.Presentation
             if (_cheatHud != null) _cheatHud.SetVisible(false);
 
             Debug.Log("[ChessSage] 已进入棋种选择 hub");
+        }
+
+        // ── 每帧：游玩时长累计 + Esc 模态路由 ──────────────────────────────
+
+        void Update()
+        {
+            _playtimeSeconds += Time.deltaTime;   // 存档元信息用（对局总时长）
+
+            // Esc 按模态优先级路由（release-notes v1.0.0 承诺「Esc 退栈/回 hub」）。
+            // 收口在组合根一处：RPG 界面（sortingOrder 最高）开着先退它一层；
+            // 作弊面板开着收抽屉；都没有且正在对局才回 hub。
+            // 注意 SamsaraRpg 自有 Esc 消费已移除（避免同帧连弹两层）。
+            if (!Input.GetKeyDown(KeyCode.Escape)) return;
+            if (_rpg != null && _rpg.IsOpen) { _rpg.Back(); return; }
+            if (_cheatPanel != null && _cheatPanel.IsOpen) { _cheatPanel.Close(); return; }
+            if (_activeVariant != null) EnterHub();
+        }
+
+        // ── 自动存档（P1-5）──────────────────────────────────────────────
+
+        /// <summary>
+        /// 对局结束回调（<see cref="GameScreen.GameEnded"/>）：终局是天然存档点。
+        /// </summary>
+        void OnSessionEnded(string winner)
+        {
+            Autosave("对局结束");
+        }
+
+        /// <summary>应用退出：最后再存一次，保证进度不丢。</summary>
+        void OnApplicationQuit()
+        {
+            Autosave("退出游戏");
+        }
+
+        /// <summary>
+        /// 自动存档：RPG 进度（<see cref="SamsaraEngine"/> 全状态）+ 对局信息
+        /// （棋种 / 棋盘快照 / 手数 / 是否终局）经 <see cref="SaveManager.Autosave"/>
+        /// 写入 <c>persistentDataPath/saves/autosave.json</c>（SHA-256 信封）。
+        /// 触发点：切换棋种、对局结束、退出游戏。
+        /// </summary>
+        void Autosave(string reason)
+        {
+            if (_saveManager == null) return;
+            try
+            {
+                var progress = GameProgressCapture.FromSession(_session);
+                progress["autosave_reason"] = reason;
+                var variant = _activeVariant ?? string.Empty;
+                var result = _saveManager.Autosave(
+                    SamsaraSaveAdapter.Capture(_samsara),
+                    progress, variant, _playtimeSeconds);
+                if (result.Success)
+                    Debug.Log($"[ChessSage] 自动存档（{reason}）：棋种 " +
+                              (string.IsNullOrEmpty(variant) ? "hub" : variant) +
+                              $"，时长 {_playtimeSeconds:F0}s，目录 {_saveDir}");
+            }
+            catch (System.Exception e)
+            {
+                // 存档失败绝不能打断对局：最多损失一次自动存档，HUD 不弹错。
+                Debug.LogWarning($"[ChessSage] 自动存档失败（{reason}）：{e.Message}");
+            }
         }
 
         /// <summary>

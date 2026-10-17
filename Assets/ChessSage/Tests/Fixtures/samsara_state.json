@@ -135,6 +135,7 @@
       "escort",
       "evacuation",
       "formation",
+      "most_discs",
       "survival",
       "turn_limit"
     ]

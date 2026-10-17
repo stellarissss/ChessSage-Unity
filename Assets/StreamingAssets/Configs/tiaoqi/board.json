@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "version": "1.0",
-    "description": "中国跳棋六角星棋盘 - 121位置双倍列坐标系统"
+    "description": "中国跳棋，全部棋子送入对方营区"
   },
   "geometry": {
     "board_type": "hexagonal_star",

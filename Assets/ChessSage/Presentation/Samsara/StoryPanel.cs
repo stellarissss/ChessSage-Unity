@@ -47,7 +47,9 @@ namespace ChessSage.Presentation.Samsara
             _title = Txt(_root.transform, "", 30, TextAnchor.MiddleLeft, RpgUi.Gold);
             RpgUi.Place(_title.rectTransform, 60f, 30f, 1500f, 44f);
 
-            var close = Btn(_root.transform, "关闭 ✕", 22, new Color(0.20f, 0.22f, 0.28f, 1f), _rpg.Close);
+            // P2-6：「关闭 ✕」与「← 返回」同为退一层（Back）。此前 ✕ 绑 Close 会
+            // 清空整个界面栈直接掉回 hub——剧情是从选关推进来的，关掉剧情理应回到选关。
+            var close = Btn(_root.transform, "关闭 ✕", 22, new Color(0.20f, 0.22f, 0.28f, 1f), _rpg.Back);
             RpgUi.Place(RpgUi.Rect(close.gameObject), 1700f, 30f, 160f, 50f);
 
             var box = RpgUi.NewUi("Box", _root.transform);

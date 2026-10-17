@@ -1,5 +1,5 @@
 {
-  "_metadata": {"version": "2.0", "description": "五子棋棋盘几何定义与渲染配置"},
+  "_metadata": {"version": "2.0", "description": "五子棋，先连五子者胜"},
   "geometry": {
     "width": 15,
     "height": 15,

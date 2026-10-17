@@ -39,7 +39,7 @@ namespace ChessSage.Presentation.Art
 
         // ── 棋子：形状区分类型，配色区分阵营 ───────────────────
 
-        enum Shape { Circle, Square, Diamond, Hexagon, Pentagon, Elephant, Cross }
+        enum Shape { Circle, Square, Diamond, Hexagon, Pentagon, Elephant, Cross, Triangle, Star, Heart }
 
         static Sprite BuildPiece(string side, string type)
         {
@@ -47,14 +47,18 @@ namespace ChessSage.Presentation.Art
             switch (side)
             {
                 case "red": body = new Color(0.85f, 0.26f, 0.21f); rim = new Color(0.44f, 0.08f, 0.06f); break;
-                case "white": body = new Color(0.95f, 0.95f, 0.93f); rim = new Color(0.24f, 0.24f, 0.27f); break;
-                default: body = new Color(0.23f, 0.25f, 0.31f); rim = new Color(0.06f, 0.07f, 0.10f); break;
+                // P2-7：白子描边加深 + 加粗一圈。浅褐棋盘（0.88/0.82/0.70）上近白棋子
+                // 原先只有 0.24 的深灰细边，远看糊成一片；提到 0.35 并加宽描边后轮廓明确。
+                case "white": body = new Color(0.95f, 0.95f, 0.93f); rim = new Color(0.35f, 0.35f, 0.38f); break;
+                // 黑方保持深色，仅微提亮度，确保与浅褐底格有清晰分离（不为对齐而牺牲对比）。
+                default: body = new Color(0.27f, 0.29f, 0.35f); rim = new Color(0.09f, 0.10f, 0.14f); break;
             }
 
             var shape = ShapeFor(NormalizeType(type));
             var tex = NewTexture();
             var px = new Color[Size * Size];
             var c = Size / 2f;
+            float rimWidth = side == "white" ? 3f : 2f;   // P2-7：白子描边加粗一圈
 
             for (var y = 0; y < Size; y++)
             for (var x = 0; x < Size; x++)
@@ -63,7 +67,7 @@ namespace ChessSage.Presentation.Art
                 var fy = y + 0.5f;
                 var i = y * Size + x;
                 if (InsideShape(shape, fx, fy, c, 0f)) px[i] = body;
-                else if (InsideShape(shape, fx, fy, c, 2f)) px[i] = rim;   // 内缩一圈作为描边
+                else if (InsideShape(shape, fx, fy, c, rimWidth)) px[i] = rim;   // 内缩一圈作为描边
             }
             return Finish(tex, px, side + "_" + NormalizeType(type));
         }
@@ -95,6 +99,17 @@ namespace ChessSage.Presentation.Art
                 case "cannon": return Shape.Circle;
                 case "soldier": return Shape.Cross;
                 case "stone": return Shape.Diamond;
+                // P2-10b：斗兽棋 8 兽各分配独特形状（象已复用 Elephant）。
+                // 旧实现只认象棋/围棋类型名，7 种动物全落到 default→Circle，
+                // 加上红/黑双方配色在占位图下都偏暗，盘中棋子「全色同形」无法分辨。
+                // 形状区分兽种、配色区分阵营，8 兽两两可辨。
+                case "lion": return Shape.Triangle;
+                case "tiger": return Shape.Star;
+                case "leopard": return Shape.Heart;
+                case "wolf": return Shape.Square;
+                case "dog": return Shape.Pentagon;
+                case "cat": return Shape.Hexagon;
+                case "rat": return Shape.Circle;
                 default: return Shape.Circle;
             }
         }
@@ -139,8 +154,60 @@ namespace ChessSage.Presentation.Art
                     var h = Mathf.Abs(y - c) <= t && Mathf.Abs(x - c) <= c - arm;
                     return v || h;
                 }
+                case Shape.Triangle:
+                {
+                    // 尖顶向上的等腰三角形：纹理行 0 在左下（见 TerrainAtlas 行倒置约定），
+                    // 故顶点取大 y（屏幕上方）、底边取小 y，逐行线性收窄。
+                    var apex = Size - 5f - shrink;
+                    var baseY = 5f + shrink;
+                    if (y < baseY || y > apex) return false;
+                    var half = (c - 6f - shrink) * (apex - y) / (apex - baseY);
+                    return Mathf.Abs(x - c) <= half;
+                }
+                case Shape.Star:
+                {
+                    // 五角星：外半径 R / 内半径 r 交替的 10 顶点（顶点朝上），射线法判内。
+                    // 纹理原点在左下，顶点须取 +90°（大 y = 屏幕上方）。
+                    var R = c - 4f - shrink;
+                    if (R <= 0f) return false;
+                    return InStar(x, y, c, c, R, R * 0.45f);
+                }
+                case Shape.Heart:
+                {
+                    // 心形经典隐式方程（数学 y 向上）：(x²+y²−1)³ − x²y³ ≤ 0。
+                    // 纹理原点在左下，故 hy 取 +(y−c)/s：纹理大 y（屏幕上方）→ 数学上方 → 双瓣朝上。
+                    var s = (c - 5f - shrink) / 1.25f;
+                    if (s <= 0f) return false;
+                    float hx = (x - c) / s;
+                    float hy = (y - c) / s;
+                    float d = hx * hx + hy * hy - 1f;
+                    return d * d * d - hx * hx * hy * hy * hy <= 0f;
+                }
                 default: return false;
             }
+        }
+
+        /// <summary>五角星判内：10 顶点射线法（奇偶穿越计数）。纹理原点在左下，首顶点取 +90° 朝上。</summary>
+        static bool InStar(float px, float py, float cx, float cy, float R, float r)
+        {
+            bool inside = false;
+            float prevX = 0f, prevY = 0f;
+            for (int k = 0; k <= 10; k++)   // 多走一步闭合最后一条边
+            {
+                int v = k % 10;
+                float rad = (v & 1) == 0 ? R : r;
+                float ang = Mathf.PI / 2f + v * Mathf.PI / 5f;
+                float vx = cx + rad * Mathf.Cos(ang);
+                float vy = cy + rad * Mathf.Sin(ang);
+                if (k > 0 && (vy > py) != (prevY > py))
+                {
+                    float cross = (prevX - vx) * (py - vy) / (prevY - vy) + vx;
+                    if (px < cross) inside = !inside;
+                }
+                prevX = vx;
+                prevY = vy;
+            }
+            return inside;
         }
 
         static bool InPolygon(float px, float py, float cx, float cy, float r, int sides, float rot)

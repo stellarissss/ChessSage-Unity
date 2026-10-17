@@ -17,6 +17,7 @@ namespace ChessSage.Build
     {
         const string SceneDir = "Assets/ChessSage/Presentation/Scenes";
         const string ScenePath = SceneDir + "/Main.unity";
+        const string OverworldScenePath = SceneDir + "/Overworld.unity";
 
         public static void BuildLinux() => Build(BuildTarget.StandaloneLinux64, "Linux");
         public static void BuildWindows() => Build(BuildTarget.StandaloneWindows64, "Windows");
@@ -37,7 +38,10 @@ namespace ChessSage.Build
                 string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".x86_64";
                 var options = new BuildPlayerOptions
                 {
-                    scenes = new[] { ScenePath },
+                    // P2-11：构建场景 = Main（启动场景，index 0）+ Overworld（六道大陆）。
+                    // 此前只打 Main 一场景，发布包里大地图是死内容，hub 的入口按钮
+                    // 点下去只会黑屏——两场景必须同时进包。
+                    scenes = BuildScenes(),
                     locationPathName = Path.Combine(outDir, "ChessSage" + ext),
                     target = target,
                     options = BuildOptions.None,
@@ -80,6 +84,26 @@ namespace ChessSage.Build
                 scenes.Insert(0, new EditorBuildSettingsScene(ScenePath, true));
                 EditorBuildSettings.scenes = scenes.ToArray();
             }
+        }
+
+        /// <summary>
+        /// 构建场景列表：真源为 EditorBuildSettings 里 enabled 的场景，外加
+        /// Overworld（若磁盘存在但未登记则补入）。Main 强制置顶（index 0）——
+        /// 发布包的启动场景必须是主界面，否则进游戏直接播大地图。
+        /// </summary>
+        static string[] BuildScenes()
+        {
+            var paths = new List<string>();
+            foreach (var s in EditorBuildSettings.scenes)
+                if (s.enabled && !string.IsNullOrEmpty(s.path) && !paths.Contains(s.path))
+                    paths.Add(s.path);
+
+            if (File.Exists(OverworldScenePath) && !paths.Contains(OverworldScenePath))
+                paths.Add(OverworldScenePath);
+
+            paths.Remove(ScenePath);
+            paths.Insert(0, ScenePath);   // Main 恒为启动场景（index 0）
+            return paths.ToArray();
         }
     }
 }

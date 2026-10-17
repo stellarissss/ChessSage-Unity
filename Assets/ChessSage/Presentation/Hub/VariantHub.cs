@@ -4,6 +4,7 @@ using ChessSage.Core.Config;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ChessSage.Presentation.Hub
@@ -125,6 +126,46 @@ namespace ChessSage.Presentation.Hub
 
             foreach (var id in AvailableVariants())
                 CreateVariantButton(listGo.transform, id);
+
+            // P2-11：六道大陆入口（Overworld 场景自包含，两场景均已进 Build Settings）。
+            BuildOverworldButton(_hubPanel.transform);
+        }
+
+        /// <summary>
+        /// 「🗺 六道大陆」入口：切到 Overworld 场景探索大地图（M8 重做的等距大地图）。
+        /// 放在棋种列表下方，不抢主路径；场景自包含（自带相机 / 玩家 / 配置加载），
+        /// 不依赖 Main 场景的任何对象。
+        /// </summary>
+        void BuildOverworldButton(Transform parent)
+        {
+            var go = NewUi("OverworldEntry", parent);
+            var img = go.AddComponent<Image>();
+            img.color = new Color(0.12f, 0.22f, 0.30f, 1f);
+
+            var rt = go.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.5f, 0f);
+            rt.anchorMax = new Vector2(0.5f, 0f);
+            rt.pivot = new Vector2(0.5f, 0f);
+            rt.anchoredPosition = new Vector2(0f, 48f);
+            rt.sizeDelta = new Vector2(460f, 64f);
+
+            var btn = go.AddComponent<Button>();
+            var colors = btn.colors;
+            colors.highlightedColor = new Color(0.20f, 0.34f, 0.46f, 1f);
+            colors.pressedColor = new Color(0.26f, 0.44f, 0.58f, 1f);
+            btn.colors = colors;
+            btn.onClick.AddListener(EnterOverworld);
+
+            var label = NewText(go.transform, "🗺 六道大陆 · 探索大地图", 26, TextAnchor.MiddleCenter);
+            Stretch(label.rectTransform);
+        }
+
+        void EnterOverworld()
+        {
+            Debug.Log("[Hub] 进入六道大陆（Overworld）");
+            // 场景名对应 Assets/ChessSage/Presentation/Scenes/Overworld.unity；
+            // 构建场景列表由 BuildScript.BuildScenes 保证 Main(index 0) + Overworld 双入包。
+            SceneManager.LoadScene("Overworld");
         }
 
         void BuildGameBar()

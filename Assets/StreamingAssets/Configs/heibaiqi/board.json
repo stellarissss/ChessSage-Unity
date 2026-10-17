@@ -2,7 +2,7 @@
   "_metadata": {
     "version": "1.0",
     "game": "heibaiqi",
-    "description": "8×8 黑白棋标准棋盘"
+    "description": "黑白棋，夹吃翻面、子多者胜"
   },
   "geometry": {
     "width": 8,
