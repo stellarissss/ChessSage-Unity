@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""创建 GitHub Release v1.0.1 并上传 Linux 播放器 zip 资产。"""
+"""创建 GitHub Release（默认 v1.1.0）并上传 Linux 播放器 zip 资产。"""
 import base64
 import json
 import os
@@ -14,11 +14,14 @@ TOKEN = os.environ.get("GH_TOKEN")
 if not TOKEN:
     sys.exit("缺少 GH_TOKEN")
 
-TAG = "v1.0.1"
-NAME = "v1.0.1 —— 测评回应（缺陷修复轮）"
-TARGET = os.environ.get("GH_TARGET", "5cb3154")  # 远程 main HEAD
-ZIP = os.environ.get("GH_ZIP", "Builds/ChessSage-Linux-x64-v1.0.1.zip")
-NOTES = os.environ.get("GH_NOTES", "docs/release-notes-v1.0.1.md")
+TAG = os.environ.get("GH_TAG", "v1.1.0")
+NAME = os.environ.get("GH_NAME", "v1.1.0 —— AI Agent 驱动作弊（核心重制）")
+TARGET = os.environ.get("GH_TARGET", "")  # 远程 main HEAD（必填）
+ZIP = os.environ.get("GH_ZIP", "Builds/ChessSage-Linux-x64-v1.1.0.zip")
+NOTES = os.environ.get("GH_NOTES", "docs/release-notes-v1.1.0.md")
+
+if not TARGET:
+    sys.exit("缺少环境变量 GH_TARGET（远程 main HEAD 的完整 SHA）")
 
 
 def api(method, path, payload=None, binary=None, content_type=None):
