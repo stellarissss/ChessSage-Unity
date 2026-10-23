@@ -1,0 +1,101 @@
+{
+  "id": "TRJ-E1-01",
+  "version": 1,
+  "note": "S1 正常流：读棋盘 → apply_config_patch 改棋盘宽度 → commit_preview。karma=10 为固定种子(sessionSeed=20260101, requestSeq=1)下的精确值（f(5850)=10.14, sigma=0.9883）。",
+  "command": "把棋盘加宽到 8 列",
+  "allowed_tools": [
+    "get_board_state",
+    "get_config_slice",
+    "get_karma_state",
+    "move_piece",
+    "apply_config_patch",
+    "set_objective",
+    "undo_last_change",
+    "commit_preview"
+  ],
+  "seed": 20260101,
+  "cancel_before_round": 0,
+  "rounds": [
+    {
+      "request_digest": "271d8ce064fa18ff",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "name": "get_board_state",
+            "arguments": "{\"include\":[\"pieces\"]}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1200,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "760c27c6d67ab06d",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_2",
+            "name": "apply_config_patch",
+            "arguments": "{\"operations\":[{\"target\":\"board\",\"patch\":[{\"op\":\"replace\",\"path\":\"/width\",\"value\":8}]}]}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1800,
+          "completion_tokens": 400,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "0b96c146eaf60b0d",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_3",
+            "name": "commit_preview",
+            "arguments": "{\"summary\":\"已把棋盘加宽到 8 列\"}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 2000,
+          "completion_tokens": 150,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    }
+  ],
+  "expected": {
+    "tool_sequence": [
+      "get_board_state",
+      "apply_config_patch",
+      "commit_preview"
+    ],
+    "result_type": "applied",
+    "token_eff": 5850,
+    "rounds": 3,
+    "writes": 1,
+    "cap_warned": false,
+    "timed_out": false,
+    "modified_keys": [
+      "board"
+    ],
+    "karma_exact": 10,
+    "karma_min": 8,
+    "karma_max": 13,
+    "trajectory_error_codes": [],
+    "scope": "ui_config"
+  }
+}

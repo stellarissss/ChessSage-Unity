@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using ChessSage.Core.Agent;
 using ChessSage.Core.Cheat;
 using ChessSage.Core.Config;
 using ChessSage.Core.Game;
@@ -35,7 +36,8 @@ namespace ChessSage.Tests
                 Session = new GameSession(config, new MechanismEngine(config.Rules));
                 _fx = new SamsaraFixture();
                 var client = new LlmClient(apiKey);           // 空 key ⇒ IsAvailable=false（离线）
-                var engine = new OrchestratorEngine(client, null) { GameType = variant };
+                // E2-S1/S6：引擎换成 AgentEngine（同形构造 + GameType 变体参数保持）。
+                var engine = new AgentEngine(client, null) { GameType = variant };
                 SchemaValidator.SchemaDir = TestEnv.SchemasRoot;
                 SchemaValidator.ClearCache();
                 Controller = new CheatController(Session, _fx.Engine, engine);
@@ -167,6 +169,108 @@ namespace ChessSage.Tests
         }
 
         static string Translate(string raw) => CheatErrorTranslator.TranslateValidationMessage(raw);
+
+        // ── E2-S5：Agent 新错误形状的翻译（工具白名单 / 参数损坏 / 顶格警示 / 20s 收尾）──
+
+        [Test]
+        public void ErrorTranslator_ToolLocked_GuidesToSkillTree()
+        {
+            var f = CheatErrorTranslator.Present(new JObject
+            {
+                ["type"] = "error",
+                ["error_code"] = "TOOL_LOCKED",
+                ["error"] = "天道未允：该能力需在技能树解锁",
+                ["hint"] = "先用 get_karma_state 查看已解锁能力",
+            });
+
+            Assert.IsNotNull(f, "未解锁必须给失败卡");
+            StringAssert.Contains("未解锁", f.Title);
+            Assert.IsTrue(f.Actions.Exists(a => a.Kind == CheatActionKind.GoSkillTree), "应含前往技能树");
+        }
+
+        [Test]
+        public void ErrorTranslator_ScopeLocked_NamesUnlockableScope()
+        {
+            var f = CheatErrorTranslator.Present(new JObject
+            {
+                ["type"] = "error",
+                ["error_code"] = "SCOPE_LOCKED",
+                ["error"] = "天道未允：ui_config 需在技能树解锁「前端修改」",
+                ["hint"] = "ui_config/board 需 cheat_mastery_t1b",
+            });
+
+            Assert.IsNotNull(f);
+            Assert.IsTrue(f.Actions.Exists(a => a.Kind == CheatActionKind.GoSkillTree),
+                "作用域拒绝同样指向技能树（可操作出路）");
+            StringAssert.Contains("解锁", f.Reason + f.Title);
+        }
+
+        [Test]
+        public void ErrorTranslator_CorruptToolArgs_GuidesToRetry()
+        {
+            foreach (var code in new[] { "BAD_ARGS_JSON", "SCHEMA_INVALID", "OPS_LIMIT_EXCEEDED", "UNKNOWN_TOOL" })
+            {
+                var f = CheatErrorTranslator.Present(new JObject
+                {
+                    ["type"] = "error",
+                    ["error_code"] = code,
+                    ["error"] = "参数不符合 inputSchema: operations 不得为空",
+                    ["hint"] = "对照工具描述的 inputSchema 修正后重试",
+                });
+                Assert.IsNotNull(f, code + " 应有失败卡");
+                Assert.IsTrue(f.Actions.Exists(a => a.Kind == CheatActionKind.Retry)
+                              || f.Actions.Exists(a => a.Kind == CheatActionKind.ChangeWording),
+                    code + " 应给出重试/换说法的出路（可操作）");
+                StringAssert.DoesNotContain("inputSchema", f.Reason, code + " 不得把机器契约文本直接抛给玩家");
+                StringAssert.DoesNotContain("errorCode", f.Reason);
+            }
+
+            // 硬校验失败（CONFIG_INVALID）：保留坐标与范围（原 OrchestratorTests 的可操作性断言，E2-S6 原样继承）。
+            var oob = CheatErrorTranslator.Present(new JObject
+            {
+                ["type"] = "error",
+                ["error_code"] = "CONFIG_INVALID",
+                ["error"] = "pieces_red 验证失败: Schema校验失败: [pieces.0.position.0] 12 超出棋盘范围 (0-8)",
+            });
+            StringAssert.Contains("横坐标", oob.Reason, "应翻译为横坐标越界");
+            StringAssert.Contains("0–8", oob.Reason, "应给出合法范围");
+            StringAssert.DoesNotContain("position", oob.Reason, "不得残留原始 JSON Pointer");
+        }
+
+        [Test]
+        public void ErrorTranslator_TimeoutZeroWrite_UsesDesignCopy_AndNoCharge()
+        {
+            // 设计 §3.2 #17 / §3.5：20s 到点·零写入
+            var f = CheatErrorTranslator.Present(new JObject
+            {
+                ["type"] = "error",
+                ["error_code"] = "TIMEOUT",
+                ["error"] = "天道默然：天道推演到点（20s），已为你保留可行变更",
+            });
+
+            Assert.IsNotNull(f);
+            StringAssert.Contains("力竭", f.Reason, "到点文案应为「天道力竭…」");
+            StringAssert.Contains("不耗业力", f.Reason, "零写入不收费必须明说");
+            Assert.IsTrue(f.Actions.Exists(a => a.Kind == CheatActionKind.ChangeWording)
+                          || f.Actions.Exists(a => a.Kind == CheatActionKind.SplitSteps),
+                "应给出可行动建议（换个说法 / 拆两步）");
+        }
+
+        [Test]
+        public void ErrorTranslator_CapWarning_AppendsCapLine_WithClampSemantics()
+        {
+            var f = CheatErrorTranslator.Present(new JObject
+            {
+                ["type"] = "error",
+                ["error_code"] = "TOOL_ERRORS",
+                ["error"] = "天道屡屡受挫（连续工具错误）",
+                ["cap_warned"] = true,
+            });
+
+            Assert.IsNotNull(f);
+            StringAssert.Contains("120", f.Reason, "顶格警示必须点名上限 120");
+            StringAssert.Contains("放行", f.Reason, "裁决 #3：clamp 放行而非拦截（文案不得写「拦截/拒绝」）");
+        }
 
         // ── 预置指令（UX §10）──────────────────────────────────────────
 
@@ -314,6 +418,87 @@ namespace ChessSage.Tests
             var res = h.Controller.Confirm(preview);
             Assert.AreEqual(30, res.Overshoot, "溢出量 30");
             Assert.Greater(res.DetectionDelta, 0.0, "溢出应产生识破增量");
+        }
+
+        // ── E2-S6：从 OrchestratorTests 原样迁移的契约用例（换 Harness，断言强度不降）──
+
+        [Test]
+        public void RuleUndo_RefundsNoKarma_AndLeavesMoveHistoryUntouched()
+        {
+            using var h = new Harness("xiangqi");
+            var preset = FindPreset("让我的马可以横着走");
+            int horseBefore = MoveCount(h.Session.Config.PiecesA, "horse");
+            int karmaBefore = h.Samsara.GetKarma();
+
+            var res = h.Controller.Confirm(h.Controller.SubmitPreset(preset));
+            Assert.IsTrue(res.Applied);
+            int karmaAfterCheat = h.Samsara.GetKarma();
+            Assert.AreEqual(karmaBefore + res.Cost, karmaAfterCheat, "确认应扣费");
+            Assert.AreEqual(horseBefore + 1, MoveCount(h.Session.Config.PiecesA, "horse"), "改规应生效");
+            Assert.IsTrue(h.Controller.HasRuleUndo, "确认后应入改规栈");
+            int movesAtUndo = h.Session.State.MoveHistory.Count;
+
+            Assert.IsTrue(h.Controller.UndoRule(out _), "应可撤回改规");
+            Assert.AreEqual(horseBefore, MoveCount(h.Session.Config.PiecesA, "horse"), "撤回后规则回退");
+            Assert.AreEqual(karmaAfterCheat, h.Samsara.GetKarma(), "撤回不返还业力（世界观自洽）");
+            Assert.AreEqual(movesAtUndo, h.Session.State.MoveHistory.Count, "撤回改规不回退棋谱");
+            Assert.IsFalse(h.Controller.HasRuleUndo, "栈应已空");
+        }
+
+        [Test]
+        public void RuleStack_IsIndependent_OfGameMoveUndoStack()
+        {
+            using var h = new Harness("xiangqi");
+            int horseBefore = MoveCount(h.Session.Config.PiecesA, "horse");
+            Assert.IsTrue(h.Controller.Confirm(h.Controller.SubmitPreset(FindPreset("让我的马可以横着走"))).Applied);
+            Assert.AreEqual(1, h.Controller.RuleUndoDepth, "改规栈深度应为 1");
+
+            // 改规后再走一手棋：只推进棋局栈，不扰动改规栈
+            ChessSage.Core.Model.Piece piece = null;
+            foreach (var p in h.Session.State.Pieces)
+                if (p.IsAlive && p.Side == "red" && h.Session.GetValidMoves(p.Id).Count > 0) { piece = p; break; }
+            Assert.IsNotNull(piece, "应存在可走子的红方棋子");
+            var target = h.Session.GetValidMoves(piece.Id)[0];
+            Assert.IsTrue(h.Session.MakePlayerMove(piece.Id, target[0], target[1]).Success, "合法走子应成功");
+            Assert.IsTrue(h.Controller.NeedsMismatchWarning, "改规后已走子，撤回前应提示局面可能不一致");
+            Assert.AreEqual(1, h.Controller.RuleUndoDepth, "走子不得改变改规栈深度");
+            Assert.AreEqual(horseBefore + 1, MoveCount(h.Session.Config.PiecesA, "horse"), "走子不影响已生效改规");
+
+            int movesAfterMove = h.Session.State.MoveHistory.Count;
+            Assert.IsTrue(h.Session.UndoLastMove(), "悔棋应成功");
+            Assert.Less(h.Session.State.MoveHistory.Count, movesAfterMove, "悔棋应回退棋谱");
+            Assert.AreEqual(1, h.Controller.RuleUndoDepth, "悔棋不得弹改规栈");
+            Assert.AreEqual(horseBefore + 1, MoveCount(h.Session.Config.PiecesA, "horse"), "悔棋不得回退改规");
+
+            int movesBeforeRuleUndo = h.Session.State.MoveHistory.Count;
+            Assert.IsTrue(h.Controller.UndoRule(out _), "应可撤回改规");
+            Assert.AreEqual(horseBefore, MoveCount(h.Session.Config.PiecesA, "horse"), "撤回改规应回退规则");
+            Assert.AreEqual(movesBeforeRuleUndo, h.Session.State.MoveHistory.Count, "撤回改规不得回退棋谱");
+        }
+
+        [Test]
+        public void D05_CClassRuleConfig_IsValidatedNotBypassed()
+        {
+            SchemaValidator.SchemaDir = TestEnv.SchemasRoot;
+            SchemaValidator.ClearCache();
+
+            var bad = JObject.Parse(
+                "{\"side\":\"red\",\"pieces\":{\"horse\":{\"label\":\"马\",\"moves\":["
+                + "{\"kind\":\"teleport\",\"land\":\"any\",\"sym\":\"rotate4\",\"to\":[1,0]}]}}}");
+
+            Assert.IsFalse(SchemaValidator.HardValidateConfig("pieces", bad).ok, "基准：pieces 应拒绝非法原语");
+            Assert.IsFalse(SchemaValidator.HardValidateConfig("pieces_red", bad).ok, "pieces_red 不应绕过 Schema");
+            Assert.IsFalse(SchemaValidator.HardValidateConfig("pieces_black", bad).ok, "pieces_black 不应绕过 Schema");
+            Assert.IsFalse(SchemaValidator.HardValidateConfig("pieces_white", bad).ok, "pieces_white 不应绕过 Schema");
+
+            var goodPiecesRed = TestEnv.LoadConfig("xiangqi", "pieces_red");
+            Assert.IsTrue(SchemaValidator.HardValidateConfig("pieces_red", goodPiecesRed).ok,
+                "合法的 pieces_red 应通过（证明 D-05 修复沿用同一校验、未过度拒绝）");
+
+            Assert.AreEqual("pieces", SchemaValidator.NormalizeConfigName("pieces_red"));
+            Assert.AreEqual("pieces", SchemaValidator.NormalizeConfigName("pieces_black"));
+            Assert.AreEqual("pieces", SchemaValidator.NormalizeConfigName("pieces_white"));
+            Assert.AreEqual("rules", SchemaValidator.NormalizeConfigName("rules"), "非 pieces 名不得被改写");
         }
 
         // ── 工具 ────────────────────────────────────────────────────────

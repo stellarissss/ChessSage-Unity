@@ -409,9 +409,19 @@ def gen_skills() -> dict:
         "expected": new_state(skills=all_ids).get_skill_modifiers(),
     })
 
-    # allowed classifications
-    def allowed(skills):
-        return sorted(new_state(skills=skills).get_allowed_classifications())
+    # ── 门控轴：工具权限（E2-S3「天机型谱」）────────────────────────────
+    # 旧轴 allowed_classifications（A/B/C/C+/D/E/F）已随 IntentModels.Classification 下线；
+    # 这里刻意**不**从 legacy 推导，而是镜像 C# SamsaraState.GetAllowedTools()/GetAllowedPatchTargets()
+    # 的静态表（legacy 没有工具轴；把新引擎语义写进旧实现会破坏单源真源）。
+    # 守卫：SamsaraSkillTests.ToolNames_ExistInAgentRegistry_NoDrift 双向校验本表与 AgentToolSchemas 注册表。
+    # 改这里必须同步改 C# 与 Assets/ChessSage/Tests/Fixtures/samsara_skills.json 的 _derivation 说明。
+    _TOOLS_ALWAYS = [
+        "apply_config_patch", "commit_preview", "get_board_state", "get_config_slice",
+        "get_karma_state", "move_piece", "undo_last_change",
+    ]  # 6 个恒可用（L0 读 + L1 写/元写）+ apply_config_patch（旧 A/B/C 补丁通道不得降级）
+    _TOOLS_T1A = sorted(_TOOLS_ALWAYS + ["set_objective"])          # t1a：改胜条
+    _TARGETS_ALWAYS = ["board_state", "pieces_black", "pieces_red", "pieces_white", "rules"]
+    _TARGETS_T1B = sorted(_TARGETS_ALWAYS + ["board", "ui_config"])  # t1b：改容颜 / 棋盘尺寸
 
     return {
         "_meta": {"generator": "tools/verify/gen-samsara-fixtures.py",
@@ -422,10 +432,35 @@ def gen_skills() -> dict:
         "unlock_cases": unlock_cases,
         "available_from_fresh": avail,
         "modifier_cases": modifier_cases,
-        "allowed_classifications": {
-            "fresh": allowed(["stealth_t1"]),
-            "with_t1a": allowed(["stealth_t1", "cheat_mastery_t1a"]),
-            "with_t1a_t1b": allowed(["stealth_t1", "cheat_mastery_t1a", "cheat_mastery_t1b"]),
+        "allowed_tools": {
+            "_derivation": [
+                "E2-S3 门控换轴（「天机型谱」，ADR-6 + 设计侧 §2.3）。镜像 C# SamsaraState.GetAllowedTools()，非 legacy 推导。",
+                "恒可用 = get_board_state / get_config_slice / get_karma_state / move_piece / undo_last_change / commit_preview + apply_config_patch。",
+                "apply_config_patch 恒可用是设计侧 §2.3 的硬要求（patch_piece_moves / patch_mechanism 恒可用 = 旧 A/B/C 不得降级）；",
+                "8 工具模型把旧 A2/B/C/C+/D/D2 折叠进同一补丁通道，且 t1a/t1b 是 cheat_mastery.tier1 的互斥选项——",
+                "把补丁工具绑到任一分支都会让另一分支的玩家与全部新档失去改规能力。",
+                "cheat_mastery_t1a（自定义棋子，旧 C+ 分支）⇒ + set_objective（改胜条，旧 A2/C 核心）。",
+                "cheat_mastery_t1b（前端修改，旧 D 分支）⇒ 工具集不变，仅解锁 apply_config_patch 的作用域：ui_config / board。",
+                "旧分类轴小节（A/B/C/C+/D/E/F）已随旧分类模型下线，现无任何 C# 消费方（源码零残留）。",
+                "生成方式：本表由 tools/verify/gen-samsara-fixtures.py 的镜像常量产出（可重生成、字节稳定）；",
+                "镜像常量与 C# 的双向防漂移守卫见 SamsaraSkillTests.ToolNames_ExistInAgentRegistry_NoDrift。",
+            ],
+            "fresh": sorted(_TOOLS_ALWAYS),
+            "with_t1a": _TOOLS_T1A,
+            "with_t1b_only": sorted(_TOOLS_ALWAYS),
+            "with_t1a_t1b": _TOOLS_T1A,
+        },
+        "allowed_patch_targets": {
+            "_derivation": [
+                "apply_config_patch 的作用域轴（ADR-6 第三条：t1b 解锁 ui_config / board）。",
+                "恒可用作用域 = 旧 A/B/C 的落点（pieces_* 改走法、rules 改机制、board_state 走棋/移子）；",
+                "cheat_mastery_t1b ⇒ + ui_config（旧 D 改容颜）、+ board（棋盘尺寸）。",
+                "未解锁作用域由 ToolRouter 在执行点强制（errorCode=SCOPE_LOCKED，文案走 CheatErrorTranslator）。",
+            ],
+            "fresh": sorted(_TARGETS_ALWAYS),
+            "with_t1a": sorted(_TARGETS_ALWAYS),
+            "with_t1b_only": _TARGETS_T1B,
+            "with_t1a_t1b": _TARGETS_T1B,
         },
     }
 

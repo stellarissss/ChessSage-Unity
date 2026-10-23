@@ -1,0 +1,49 @@
+{
+  "id": "TRJ-E1-05",
+  "version": 1,
+  "note": "S12 零写入闲聊：模型直接文字回复（无 tool_calls）⇒ fun 恒 1 点（旧 E 类同口径），不进 f/roll/discount/flat。",
+  "command": "今天天气如何",
+  "allowed_tools": [
+    "get_board_state",
+    "get_config_slice",
+    "get_karma_state",
+    "move_piece",
+    "apply_config_patch",
+    "set_objective",
+    "undo_last_change",
+    "commit_preview"
+  ],
+  "seed": 20260101,
+  "cancel_before_round": 0,
+  "rounds": [
+    {
+      "request_digest": "7245aaf08ecb5d88",
+      "response": {
+        "content": "今日天象不错，宜动棋。",
+        "tool_calls": [],
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 1500,
+          "completion_tokens": 80,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    }
+  ],
+  "expected": {
+    "tool_sequence": [],
+    "result_type": "fun",
+    "token_eff": 1580,
+    "rounds": 1,
+    "writes": 0,
+    "cap_warned": false,
+    "timed_out": false,
+    "modified_keys": [],
+    "karma_exact": 1,
+    "karma_min": 1,
+    "karma_max": 1,
+    "trajectory_error_codes": [],
+    "scope": ""
+  }
+}

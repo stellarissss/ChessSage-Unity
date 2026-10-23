@@ -1,0 +1,122 @@
+{
+  "id": "TRJ-E1-06",
+  "version": 1,
+  "note": "S4 轮次上限（收尾策略 A）：4 轮内只读 3 次 + 写 1 次、从不 commit ⇒ 轮次耗尽，有写入 ⇒ partial 预览按 f(T_stop) 计价（karma=47（board_state ×2.9））。 [E3-C] board_state scope weight 2.9 applied.",
+  "command": "多读几遍再改",
+  "allowed_tools": [
+    "get_board_state",
+    "get_config_slice",
+    "get_karma_state",
+    "move_piece",
+    "apply_config_patch",
+    "set_objective",
+    "undo_last_change",
+    "commit_preview"
+  ],
+  "seed": 20260101,
+  "cancel_before_round": 0,
+  "rounds": [
+    {
+      "request_digest": "8f9547651ced8dd5",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "name": "get_board_state",
+            "arguments": "{}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1200,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "f16c1815408f3115",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_2",
+            "name": "move_piece",
+            "arguments": "{\"action\":\"move\",\"piece_id\":\"r_chariot_1\",\"to\":[4,8]}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1500,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "6653b43efaa3dcc2",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_3",
+            "name": "get_board_state",
+            "arguments": "{}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1900,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "ef95be05567c538a",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_4",
+            "name": "get_board_state",
+            "arguments": "{}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 2300,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    }
+  ],
+  "expected": {
+    "tool_sequence": [
+      "get_board_state",
+      "move_piece",
+      "get_board_state",
+      "get_board_state"
+    ],
+    "result_type": "partial",
+    "token_eff": 8100,
+    "rounds": 4,
+    "writes": 1,
+    "cap_warned": false,
+    "timed_out": false,
+    "modified_keys": [
+      "board_state"
+    ],
+    "karma_exact": 47,
+    "karma_min": 37,
+    "karma_max": 61,
+    "trajectory_error_codes": [],
+    "scope": "board_state"
+  }
+}

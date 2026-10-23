@@ -1,0 +1,101 @@
+{
+  "id": "TRJ-E1-04",
+  "version": 1,
+  "note": "S7 幻觉自愈：首轮调用不存在的工具 conquer_world ⇒ UNKNOWN_TOOL 结构化错误回喂（不抛异常、零突变），次轮改调 get_board_state。全程零写入 ⇒ fun 恒 1 点（零写入等价旧 E 类）。",
+  "command": "看看现在的局势",
+  "allowed_tools": [
+    "get_board_state",
+    "get_config_slice",
+    "get_karma_state",
+    "move_piece",
+    "apply_config_patch",
+    "set_objective",
+    "undo_last_change",
+    "commit_preview"
+  ],
+  "seed": 20260101,
+  "cancel_before_round": 0,
+  "rounds": [
+    {
+      "request_digest": "d8bfce750a2eac88",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "name": "conquer_world",
+            "arguments": "{}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1000,
+          "completion_tokens": 100,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "6e93c6e1ec8b47f5",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_2",
+            "name": "get_board_state",
+            "arguments": "{}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1300,
+          "completion_tokens": 200,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "3156444de7d0a6be",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_3",
+            "name": "commit_preview",
+            "arguments": "{\"summary\":\"了解了一下局势，未做改动\"}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1600,
+          "completion_tokens": 120,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    }
+  ],
+  "expected": {
+    "tool_sequence": [
+      "conquer_world",
+      "get_board_state",
+      "commit_preview"
+    ],
+    "result_type": "fun",
+    "token_eff": 4320,
+    "rounds": 3,
+    "writes": 0,
+    "cap_warned": false,
+    "timed_out": false,
+    "modified_keys": [],
+    "karma_exact": 1,
+    "karma_min": 1,
+    "karma_max": 1,
+    "trajectory_error_codes": [
+      "UNKNOWN_TOOL"
+    ],
+    "scope": ""
+  }
+}

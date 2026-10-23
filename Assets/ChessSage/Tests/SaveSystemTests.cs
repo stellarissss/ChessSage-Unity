@@ -409,5 +409,50 @@ namespace ChessSage.Tests
             Assert.AreEqual(source.Engine.GetCurrentLevel(), target.Engine.GetCurrentLevel(),
                 "关卡应经存档往返后一致");
         }
+
+        // ── REG-04（E2-S6 增补）：前端态键集合换轴 + v1.0.1 旧档无害化 ──────
+
+        [Test]
+        public void FrontendState_ExposesAllowedTools_AndNoLegacyClassificationKey()
+        {
+            using var f = new SamsaraFixture();
+            f.SetSkills(new[] { "stealth_t1" });
+
+            var front = f.Engine.State.GetFrontendState();
+
+            Assert.IsNotNull(front["allowed_tools"], "新轴键 allowed_tools 必须存在");
+            Assert.IsInstanceOf<JArray>(front["allowed_tools"]);
+            CollectionAssert.Contains(((JArray)front["allowed_tools"]).ToObject<string[]>(),
+                "move_piece", "新轴是工具名集合");
+            Assert.IsNull(front["allowed_classifications"],
+                "旧分类键不得残留（QA §4.2.6：键集合快照含新轴键、无旧分类键）");
+
+            // 换轴不回退存档 schema：本字段是 GetFrontendState 派生量，不在 GetFullState 内。
+            var full = f.Engine.State.GetFullState();
+            Assert.IsNull(full["allowed_tools"], "派生字段不得进入持久化数据（否则触发 schema v3）");
+            Assert.IsNull(full["allowed_classifications"], "旧派生字段同样不得持久化");
+        }
+
+        [Test]
+        public void LegacyV101State_WithClassificationKey_LoadsWithoutError_AndKeyIsHarmless()
+        {
+            // v1.0.1 存档里夹带旧派生键（外部/调试写入的极端情形）：读入必须不炸，且不污染新轴。
+            var legacy = SampleSamsara(karma: 66, level: 2, realm: "hell");
+            legacy["allowed_classifications"] = new JArray("A", "B", "C", "E", "F");
+
+            using var f = new SamsaraFixture(legacy);
+            Assert.AreEqual(66, f.Engine.GetKarma(), "旧档业力应正常读入");
+
+            var front = f.Engine.State.GetFrontendState();
+            Assert.IsNotNull(front["allowed_tools"], "新轴照常派生");
+            Assert.IsNull(front["allowed_classifications"], "旧键不得被回显到前端态");
+            CollectionAssert.DoesNotContain(
+                ((JArray)front["allowed_tools"]).ToObject<string[]>(),
+                "A", "旧分类值不得渗进新轴");
+
+            // 读档后再写盘：旧键既不参与派生，也不破坏后续业务（业力增减正常）。
+            f.Engine.IncreaseKarma(10);
+            Assert.AreEqual(76, f.Engine.GetKarma(), "旧档读入后业务链路正常");
+        }
     }
 }

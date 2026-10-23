@@ -46,6 +46,14 @@ namespace ChessSage.Tests
 #endif
         }
 
+        /// <summary>
+        /// 同步等待异步测试体。Unity 2022 内置 NUnit 3.5 的 EditMode 运行器不支持 async Task 测试
+        /// （报 "Method has non-void return value"），而 dotnet test（NUnit 3.14）支持。
+        /// 统一改写为「同步方法 + 在此处等待」——两边跑同一份断言，行为等价。
+        /// </summary>
+        public static void RunSync(System.Func<System.Threading.Tasks.Task> body)
+            => body().GetAwaiter().GetResult();
+
         public static JObject LoadJson(string path)
         {
             if (!File.Exists(path)) throw new FileNotFoundException("找不到 JSON 文件", path);

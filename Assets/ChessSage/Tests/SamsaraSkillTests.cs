@@ -93,26 +93,97 @@ namespace ChessSage.Tests
         }
 
         [Test]
-        public void AllowedClassifications_MatchPythonGolden()
+        public void AllowedTools_MatchDerivationGolden()
         {
+            // E2-S3 换轴：门控语义由「作弊分类 A-F」改为「工具权限（天机型谱）」。
+            // 期望值来源 = samsara_skills.json → allowed_tools（手写 + _derivation 注释，见该小节）。
             var fx = SamsaraFixture.Fixture("samsara_skills");
-            var exp = (JObject)fx["allowed_classifications"];
+            var exp = (JObject)fx["allowed_tools"];
 
             using (var f = new SamsaraFixture())
             {
                 f.SetSkills(new[] { "stealth_t1" });
-                CollectionAssert.AreEqual(ToStrings((JArray)exp["fresh"]), Sorted(f), "默认分类");
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["fresh"]), SortedTools(f), "新档：恒可用集");
             }
             using (var f = new SamsaraFixture())
             {
                 f.SetSkills(new[] { "stealth_t1", "cheat_mastery_t1a" });
-                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1a"]), Sorted(f), "解锁 C+ 后");
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1a"]), SortedTools(f), "解锁 t1a：+ 改胜条");
+            }
+            using (var f = new SamsaraFixture())
+            {
+                // t1b 是 t1a 的互斥分支（cheat_mastery.tier1 二选一）：工具集不放开新工具，只放开作用域。
+                f.SetSkills(new[] { "stealth_t1", "cheat_mastery_t1b" });
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1b_only"]), SortedTools(f), "只解锁 t1b：工具集不变");
             }
             using (var f = new SamsaraFixture())
             {
                 f.SetSkills(new[] { "stealth_t1", "cheat_mastery_t1a", "cheat_mastery_t1b" });
-                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1a_t1b"]), Sorted(f), "解锁 C+ 与 D 后");
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1a_t1b"]), SortedTools(f), "两者皆解锁");
             }
+        }
+
+        [Test]
+        public void AllowedPatchTargets_MatchDerivationGolden()
+        {
+            // 作用域轴（ADR-6 第三条）：t1b 解锁 ui_config / board；其余（旧 A/B/C 落点）恒可用。
+            var fx = SamsaraFixture.Fixture("samsara_skills");
+            var exp = (JObject)fx["allowed_patch_targets"];
+
+            using (var f = new SamsaraFixture())
+            {
+                f.SetSkills(new[] { "stealth_t1" });
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["fresh"]), SortedTargets(f), "新档作用域");
+                CollectionAssert.DoesNotContain(SortedTargets(f), "ui_config", "新档不得改容颜（旧 D 门控保持）");
+            }
+            using (var f = new SamsaraFixture())
+            {
+                f.SetSkills(new[] { "stealth_t1", "cheat_mastery_t1a" });
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1a"]), SortedTargets(f), "t1a 不放开 ui/board");
+            }
+            using (var f = new SamsaraFixture())
+            {
+                f.SetSkills(new[] { "stealth_t1", "cheat_mastery_t1b" });
+                var actual = SortedTargets(f);
+                CollectionAssert.AreEqual(ToStrings((JArray)exp["with_t1b_only"]), actual, "t1b 解锁 ui/board");
+                CollectionAssert.Contains(actual, "ui_config");
+                CollectionAssert.Contains(actual, "board");
+            }
+        }
+
+        [Test]
+        public void ToolNames_ExistInAgentRegistry_NoDrift()
+        {
+            // 防漂移守卫：Samsara 侧的名字必须全部是 AgentToolSchemas 注册表里的真工具，
+            // 且注册表每个工具都必须至少被某一档覆盖（否则工具永远不可达 = 死能力）。
+            var registry = new List<string>();
+            foreach (var def in ChessSage.Core.Agent.AgentToolSchemas.All) registry.Add(def.Name);
+
+            var fx = SamsaraFixture.Fixture("samsara_skills");
+            var covered = new List<string>();
+            var union = new List<string>();
+            foreach (var prop in ((JObject)fx["allowed_tools"]).Properties())
+            {
+                if (prop.Name.StartsWith("_", System.StringComparison.Ordinal)) continue;
+                foreach (var name in ToStrings((JArray)prop.Value))
+                {
+                    CollectionAssert.Contains(registry, name, "夹具引用了不存在的工具名");
+                    if (!union.Contains(name)) union.Add(name);
+                }
+            }
+            foreach (var name in registry)
+                CollectionAssert.Contains(union, name, $"工具 {name} 在任何技能档位都不可达（死能力）");
+
+            // 同一份守卫直接打在实现上（不只看夹具）：新档 + t1a + t1b 的并集 = 全注册表。
+            using var f = new SamsaraFixture();
+            f.SetSkills(new[] { "stealth_t1", "cheat_mastery_t1a", "cheat_mastery_t1b" });
+            foreach (var name in f.Engine.State.GetAllowedTools())
+            {
+                CollectionAssert.Contains(registry, name);
+                if (!covered.Contains(name)) covered.Add(name);
+            }
+            foreach (var name in registry)
+                CollectionAssert.Contains(covered, name, $"全解锁状态下工具 {name} 仍不可达");
         }
 
         [Test]
@@ -160,9 +231,16 @@ namespace ChessSage.Tests
             Assert.IsFalse(f.Engine.Skills.UnlockSkill("not_a_skill", 1), "不在技能树中的 id 应被拒");
         }
 
-        static List<string> Sorted(SamsaraFixture f)
+        static List<string> SortedTools(SamsaraFixture f)
         {
-            var list = new List<string>(f.Engine.State.GetAllowedClassifications());
+            var list = new List<string>(f.Engine.State.GetAllowedTools());
+            list.Sort(System.StringComparer.Ordinal);
+            return list;
+        }
+
+        static List<string> SortedTargets(SamsaraFixture f)
+        {
+            var list = new List<string>(f.Engine.State.GetAllowedPatchTargets());
             list.Sort(System.StringComparer.Ordinal);
             return list;
         }

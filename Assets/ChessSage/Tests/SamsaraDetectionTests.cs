@@ -130,6 +130,71 @@ namespace ChessSage.Tests
             Assert.IsTrue(f.Engine.State.IsExposurePathTriggered(), "标记识破路径");
         }
 
+        // ── 自 OrchestratorTests 迁入（E2-S6：换 Harness，断言强度不降）────────
+
+        [Test]
+        public void Check_ThresholdBoundaries_AreDeterministic()
+        {
+            using var f = new SamsaraFixture();
+            var det = f.Engine.Detection;
+
+            Assert.IsFalse(det.Check(0.0), "概率 0 恒不命中");
+            Assert.IsFalse(det.Check(-1.0), "负概率恒不命中");
+            Assert.IsTrue(det.Check(100.0), "概率满值必命中（roll∈[0,100) < 100）");
+
+            f.Engine.State.ResetOnDetection();
+            Assert.IsTrue(f.Engine.IsDetectionLocked(), "被识破后应锁死");
+            Assert.IsFalse(det.Check(100.0), "锁死后即使概率满值也恒不命中");
+        }
+
+        [Test]
+        public void NonPositiveOvershoot_NoSettlement()
+        {
+            using var f = new SamsaraFixture();
+            var res = f.Engine.Detection.HandleOverdraft(0.0);
+            Assert.IsFalse(res["detected"].Value<bool>(), "无溢出不结算");
+            Assert.AreEqual(0.0, res["delta"].Value<double>(), 1e-9, "无溢出 Δ=0");
+            Assert.AreEqual(0.0, f.Engine.GetDetection(), 1e-9, "无溢出识破概率不变");
+        }
+
+        [Test]
+        public void Overshoot_AccumulatesDelta_OrDetects()
+        {
+            using var f = new SamsaraFixture();
+            // 新档会自动下发入门技能 stealth_t1（C=0.07）；此处清空以锁定「名义默认」C=0.1/α=1.5。
+            f.SetSkills(new string[0]);
+            var res = f.Engine.Detection.HandleOverdraft(4.0);   // 默认 C/α ⇒ Δ=0.8
+
+            Assert.AreEqual(0.1 * System.Math.Pow(4, 1.5), res["delta"].Value<double>(), 1e-9, "Δ 应等于公式值");
+            // 结算含随机判定（roll<current）；未命中 → 概率累计为 Δ，命中 → 归零并锁死。二者取一并覆盖。
+            double after = f.Engine.GetDetection();
+            Assert.That(after, Is.EqualTo(0.0).Within(1e-9)
+                .Or.EqualTo(0.1 * System.Math.Pow(4, 1.5)).Within(1e-9),
+                "溢出后概率要么累计为 Δ，要么命中归零");
+        }
+
+        [Test]
+        public void OvershootOf100_AlwaysDetected_AndResetsRealmDetection()
+        {
+            using var f = new SamsaraFixture();
+            f.SetSkills(new string[0]);   // 锁定名义默认 C=0.1/α=1.5（清掉入门技能 stealth_t1）
+            // O=100，默认 C/α ⇒ Δ=100 ⇒ 概率封顶 100 ⇒ 必中
+            var res = f.Engine.Detection.HandleOverdraft(100.0);
+
+            Assert.IsTrue(res["detected"].Value<bool>(), "O=100 应必被识破");
+            Assert.AreEqual(100.0, res["delta"].Value<double>(), 1e-9, "Δ=0.1×100^1.5=100");
+            Assert.AreEqual(0.0, res["current"].Value<double>(), 1e-9, "命中后概率清空");
+            Assert.IsTrue(res["locked"].Value<bool>(), "命中后锁死");
+            Assert.AreEqual(f.Engine.Detection.GetJudgmentText(), res["message"].Value<string>(), "应给出判词");
+            Assert.IsTrue(f.Engine.IsDetectionLocked(), "状态机应进入锁死");
+            Assert.AreEqual(0.0, f.Engine.GetDetection(), 1e-9, "锁死后概率归零");
+
+            // 锁死后再次溢出：不再累积、不再判定
+            var again = f.Engine.Detection.HandleOverdraft(100.0);
+            Assert.IsFalse(again["detected"].Value<bool>(), "锁死后不再判定");
+            Assert.AreEqual(0.0, again["delta"].Value<double>(), 1e-9, "锁死后不再累积 Δ");
+        }
+
         [Test]
         public void JudgmentText_ComesFromStoryJson()
         {

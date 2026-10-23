@@ -1,0 +1,80 @@
+{
+  "id": "TRJ-E1-02",
+  "version": 1,
+  "note": "S9 顶格放行（裁决 #3）：T_eff=52000 远超触顶 token（120≈25K），CapWarning=true 但循环不拦截，commit 后 karma clamp 到 120 放行。karma=120 与 sigma 无关（314.2*0.8=251>120 必然 clamp）。",
+  "command": "大改棋盘和规则",
+  "allowed_tools": [
+    "get_board_state",
+    "get_config_slice",
+    "get_karma_state",
+    "move_piece",
+    "apply_config_patch",
+    "set_objective",
+    "undo_last_change",
+    "commit_preview"
+  ],
+  "seed": 20260101,
+  "cancel_before_round": 0,
+  "rounds": [
+    {
+      "request_digest": "7b64a3d4d799e077",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "name": "apply_config_patch",
+            "arguments": "{\"operations\":[{\"target\":\"board\",\"patch\":[{\"op\":\"replace\",\"path\":\"/width\",\"value\":8}]}]}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 20000,
+          "completion_tokens": 4000,
+          "reasoning_tokens": 1500,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "26a8a61f5e713758",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_2",
+            "name": "commit_preview",
+            "arguments": "{\"summary\":\"大手笔改完了\"}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 26000,
+          "completion_tokens": 2000,
+          "reasoning_tokens": 800,
+          "cached_prompt_tokens": 0
+        }
+      }
+    }
+  ],
+  "expected": {
+    "tool_sequence": [
+      "apply_config_patch",
+      "commit_preview"
+    ],
+    "result_type": "applied",
+    "token_eff": 52000,
+    "rounds": 2,
+    "writes": 1,
+    "cap_warned": true,
+    "timed_out": false,
+    "modified_keys": [
+      "board"
+    ],
+    "karma_exact": 120,
+    "karma_min": 120,
+    "karma_max": 120,
+    "trajectory_error_codes": [],
+    "scope": "ui_config"
+  }
+}

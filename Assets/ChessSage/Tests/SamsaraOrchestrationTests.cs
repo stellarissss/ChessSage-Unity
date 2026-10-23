@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using ChessSage.Core.Orchestration;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -6,68 +5,22 @@ using NUnit.Framework;
 namespace ChessSage.Tests
 {
     /// <summary>
-    /// 编排层（Orchestration）纯逻辑测试（M5-B 顺带项）。
+    /// 编排层（Orchestration）纯逻辑测试。
     ///
-    /// 说明：<c>OrchestratorEngine</c> 依赖 LLM 网络调用，不做联网测试。
-    /// 本类只覆盖**离线可判定**的纯逻辑：
-    ///   • KarmaEstimator 的业力公式/价目表与 samsara 业力模型的一致性（Δ = C × O^α）；
-    ///   • SchemaValidator 的 Schema 校验通过/拒绝路径（含棋盘越界检查）。
+    /// 【E2-S6 迁移说明】原 8 项中 4 项测 <c>KarmaEstimator</c>（旧「分类价目表 + LLM 评估」双层级流水线）：
+    ///   `KarmaEstimator_FallbackTable_MatchesPythonGolden` / `KarmaEstimator_DetectionDelta_MatchesFormula` /
+    ///   `KarmaEstimator_IncreaseDecrease_ConsistentWithSamsara` / `KarmaEstimator_SingleMax_Rejected`
+    /// —— 随 E2-S7 删除 <c>KarmaEstimator.cs</c> 一并删除；其等价覆盖分别由
+    ///   · `KarmaFormulaTests`（token→业力曲线 / 波动 / clamp / 折扣链，KRM-01…17）；
+    ///   · `SamsaraKarmaTests`（RPG 层业力状态机：Increase/Decrease/单次上限）；
+    ///   · `SamsaraDetectionTests`（Δ = C×O^α 与溢出结算）
+    /// 承担（QA §4.2.4 登记在案）。
+    ///
+    /// 保留的 4 项 <c>SchemaValidator</c> 用例（校验器未替换，D-05 修复价值不随架构过期），
+    /// 并接收自 `OrchestratorTests` 原样迁入的 1 项（错误串三要素）。
     /// </summary>
     public sealed class SamsaraOrchestrationTests
     {
-        // ── KarmaEstimator 与 samsara 业力公式一致性 ─────────────────
-
-        [Test]
-        public void KarmaEstimator_FallbackTable_MatchesPythonGolden()
-        {
-            var fx = SamsaraFixture.Fixture("samsara_karma");
-            var est = new KarmaEstimator(gameType: "xiangqi");
-            foreach (var tk in ((JObject)fx["assessor_fallback"]).Properties())
-            {
-                Assert.AreEqual(tk.Value.Value<int>(), est.FallbackAssess(tk.Name), "fallback " + tk.Name);
-            }
-        }
-
-        [Test]
-        public void KarmaEstimator_DetectionDelta_MatchesFormula()
-        {
-            var est = new KarmaEstimator(gameType: "xiangqi");
-            var mods = new JObject { ["detection_coefficient"] = 0.1, ["detection_alpha"] = 1.5 };
-            // 独立推导：Δ = C × O^α
-            Assert.AreEqual(100.0, est.CalculateDetectionDelta(100, mods), 1e-9, "O=100");
-            Assert.AreEqual(51.2, est.CalculateDetectionDelta(64, mods), 1e-9, "O=64");
-            Assert.AreEqual(0.8, est.CalculateDetectionDelta(4, mods), 1e-9, "O=4");
-            Assert.AreEqual(0.0, est.CalculateDetectionDelta(0, mods), 1e-9, "O=0");
-        }
-
-        [Test]
-        public void KarmaEstimator_IncreaseDecrease_ConsistentWithSamsara()
-        {
-            var est = new KarmaEstimator(gameType: "xiangqi");
-            est.SetLocalKarmaState(100, 120, 120);
-
-            var inc = est.IncreaseKarma(40);
-            Assert.AreEqual(40, inc["actual_increased"].Value<int>(), "actual_increased");
-            Assert.IsTrue(inc["is_overdraft"].Value<bool>(), "跨阈值应溢出");
-            Assert.AreEqual(20.0, inc["overdraft_amount"].Value<double>(), 1e-9, "溢出量");
-            Assert.AreEqual(140, inc["new_karma"].Value<int>(), "新业力");
-
-            var dec = est.DecreaseKarma(20, new JObject { ["karma_recover_multiplier"] = 1.3 });
-            Assert.AreEqual(26, dec, "int(20×1.3)=26");
-            Assert.AreEqual(114, est.GetLocalKarma(), "114");
-        }
-
-        [Test]
-        public void KarmaEstimator_SingleMax_Rejected()
-        {
-            var est = new KarmaEstimator(gameType: "xiangqi");
-            est.SetLocalKarmaState(50, 120, 120);
-            var r = est.IncreaseKarma(130);
-            Assert.AreEqual(0, r["actual_increased"].Value<int>(), "超单次上限应拒绝");
-            Assert.IsFalse(r["success"].Value<bool>(), "success=false");
-            Assert.AreEqual(50, est.GetLocalKarma(), "业力不变");
-        }
-
         // ── SchemaValidator 校验路径 ─────────────────────────────────
 
         [Test]
@@ -120,6 +73,21 @@ namespace ChessSage.Tests
             var (ok, err) = SchemaValidator.ValidateConfig("no_such_config", new JObject());
             Assert.IsFalse(ok, "未知配置名应被拒绝");
             StringAssert.Contains("未知的配置名称", err, "错误信息应说明未知配置名");
+        }
+
+        [Test]
+        public void SchemaValidator_SurfacesCoordinateAndRange()
+        {
+            // 自 OrchestratorTests 原样迁入（E2-S6）：错误串必须「点名路径 + 数值 + 合法范围」，
+            // 否则 UI 无法给出可操作建议（AGT-12 的可操作性前提）。
+            var board = TestEnv.LoadConfig("xiangqi", "board_state");
+            ((JArray)board["pieces"][3]["position"])[1] = 11;   // 纵坐标越界（高 10 ⇒ 0-9）
+
+            var (ok, err) = SchemaValidator.ValidateBoardState(board);
+            Assert.IsFalse(ok, "纵坐标越界应被拒");
+            StringAssert.Contains("pieces.3.position.1", err, "错误须定位到具体棋子与轴");
+            StringAssert.Contains("11", err, "错误须含非法数值");
+            StringAssert.Contains("0-9", err, "错误须含合法范围");
         }
     }
 }

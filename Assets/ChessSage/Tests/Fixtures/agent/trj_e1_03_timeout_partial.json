@@ -1,0 +1,80 @@
+{
+  "id": "TRJ-E1-03",
+  "version": 1,
+  "note": "S10 20s 收尾半成品（裁决 #4 + §13.6 策略 A）：第 3 轮前组合根取消（cancel_before_round=3），已有 1 次写入 ⇒ partial 预览按 f(T_stop) 计价（karma=9（board_state ×2.9））。无写入的对照场景见 AgentEngineTests.Timeout_NoWrites_FailureCard。 [E3-C] board_state scope weight 2.9 applied.",
+  "command": "把车移到 (4,8)",
+  "allowed_tools": [
+    "get_board_state",
+    "get_config_slice",
+    "get_karma_state",
+    "move_piece",
+    "apply_config_patch",
+    "set_objective",
+    "undo_last_change",
+    "commit_preview"
+  ],
+  "seed": 20260101,
+  "cancel_before_round": 3,
+  "rounds": [
+    {
+      "request_digest": "c83032b17675d4df",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "name": "get_board_state",
+            "arguments": "{}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1200,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    },
+    {
+      "request_digest": "7844bbf408e92175",
+      "response": {
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_2",
+            "name": "move_piece",
+            "arguments": "{\"action\":\"move\",\"piece_id\":\"r_chariot_1\",\"to\":[4,8]}"
+          }
+        ],
+        "finish_reason": "tool_calls",
+        "usage": {
+          "prompt_tokens": 1500,
+          "completion_tokens": 300,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0
+        }
+      }
+    }
+  ],
+  "expected": {
+    "tool_sequence": [
+      "get_board_state",
+      "move_piece"
+    ],
+    "result_type": "partial",
+    "token_eff": 3300,
+    "rounds": 2,
+    "writes": 1,
+    "cap_warned": false,
+    "timed_out": true,
+    "modified_keys": [
+      "board_state"
+    ],
+    "karma_exact": 9,
+    "karma_min": 7,
+    "karma_max": 12,
+    "trajectory_error_codes": [],
+    "scope": "board_state"
+  }
+}
