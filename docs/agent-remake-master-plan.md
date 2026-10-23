@@ -169,7 +169,8 @@
 | E1 引擎层 | ✅ 完成 | dotnet 587/587；harness 7/7；6 条黄金轨迹夹具；LlmClient 改造 +398/−20（旧行为保留） |
 | E2 集成层 | ✅ 完成 | dotnet 593/593；harness 7/7；L2 4/4；L3 594/594；旧引擎 −5,653 行、旧符号零残留；四条红线各有用例 |
 | E3A 探针与回归 | ✅ 完成 | dotnet 597/597；harness 13/13；L2 4/4；L3 598/598；9 张运行时截图（含处理态/顶格/到点两态） |
-| E3B 真实校准 | ⏳ **阻塞** | 缺 DeepSeek API key（建议 ≥10M token 额度）；base_url 双口径冒烟待做 |
+| E3B 真实校准 | ✅ 完成 | 真实 DeepSeek 调用 **197 次**；六档落点 E1/D19/B39/A47/C55/C+120（全落旧价带）；新增「补丁作用域深度权重」修复 token 结构性下限导致的档位塌缩；thinking 400 自愈 |
+| **v1.1.0 发布** | ✅ **已发布** | https://github.com/stellarissss/ChessSage-Unity/releases/tag/v1.1.0 （Linux x64 zip 42.4MB） |
 
 **已修复的真缺陷（实现期发现，非测试调桩）**：① E1 循环内误读 TokenEff（token 硬停与顶格警示双失效）；② E1 async 测试在 Unity NUnit 3.5 下 33 项无法执行；③ 离线降级阈值在异常路径永不触发；④ 减费技能开关在真实装配下恒 false；⑤ 遥测三延迟字段恒 0（补 `AgentClock` 单调时钟缝 + `ttft_proxy` 标注 + 4 条受控用例）。
 
