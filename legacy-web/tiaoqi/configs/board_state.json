@@ -25,7 +25,7 @@
     {"id": "b_piece_9", "type": "piece", "name": "黑", "side": "black", "position": [15, 13], "is_alive": true, "custom_properties": {}},
     {"id": "b_piece_10", "type": "piece", "name": "黑", "side": "black", "position": [16, 12], "is_alive": true, "custom_properties": {}}
   ],
-  "current_turn": "black",
+  "current_turn": "red",
   "move_history": [],
   "game_status": {
     "state": "playing",

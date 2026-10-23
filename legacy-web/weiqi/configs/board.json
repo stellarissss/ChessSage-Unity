@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "version": "1.0",
-    "description": "围棋棋盘几何定义与渲染配置"
+    "description": "围棋，子多者胜"
   },
   "geometry": {
     "width": 19,

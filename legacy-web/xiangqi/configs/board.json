@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "version": "2.0",
-    "description": "棋盘几何定义与渲染配置"
+    "description": "中国象棋，吃对方将帅取胜"
   },
   "geometry": {
     "width": 9,

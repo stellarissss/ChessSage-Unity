@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "version": "1.0",
-    "description": "动物棋（斗兽棋）棋盘几何定义与渲染配置 - 7列x9行格子制"
+    "description": "斗兽棋，以小搏大、抢占兽穴"
   },
   "geometry": {
     "width": 7,

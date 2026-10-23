@@ -98,15 +98,15 @@
         "1": {
           "options": [
             {
-              "id": "cheat_mastery_t1a",
-              "name": "自定义棋子",
-              "description": "允许C+类作弊",
+     "id": "cheat_mastery_t1a",
+     "name": "改天条",
+     "description": "解锁「改胜条」：可直接改写本局胜负条件",
               "cost": 1
             },
             {
-              "id": "cheat_mastery_t1b",
-              "name": "前端修改",
-              "description": "允许D类作弊",
+     "id": "cheat_mastery_t1b",
+     "name": "前端修改",
+     "description": "解锁界面与棋盘外观的修改（配色/尺寸/盘面）",
               "cost": 1
             }
           ]
@@ -114,9 +114,9 @@
         "2": {
           "options": [
             {
-              "id": "cheat_mastery_t2a",
-              "name": "效率欺诈",
-              "description": "AI评估有30%概率降1档",
+     "id": "cheat_mastery_t2a",
+     "name": "效率欺诈",
+     "description": "推演有 30% 概率减少业力消耗（×0.7）",
               "cost": 1
             },
             {
