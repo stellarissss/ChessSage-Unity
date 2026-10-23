@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using ChessSage.Core.Agent;
 using ChessSage.Core.Cheat;
 using ChessSage.Core.Orchestration;
 using Newtonsoft.Json.Linq;
@@ -27,10 +29,18 @@ namespace ChessSage.Presentation.Cheat
         enum State { Idle, Input, Processing, Preview, Danger, Offline }
 
         [Header("节奏")]
-        [Tooltip("产品级硬超时（秒）。LlmClient 默认 120s，UI 侧必须更早主动取消，避免玩家干等。")]
+        [Tooltip("产品级硬超时（秒）。裁决 #4：20s 是玩家体验底线（由 Bootstrap.AgentHardTimeoutSeconds 注入），" +
+                 "到点走收尾策略 A，不再「到点即斩断失败」。")]
         public float HardTimeoutSeconds = 20f;
-        [Tooltip("软提示阈值（秒）：超过后在处理卡片追加「仍在推演…」。")]
+        [Tooltip("【已废止】旧 8s 单发软提示阈值。生产预算 P50 ≤12s 下它会在多数正常请求上误触发，" +
+                 "已由 t=3/6/12/16s 的阶梯软提示取代（设计 §1.7）。字段保留仅为场景序列化兼容。")]
         public float SoftHintSeconds = 8f;
+
+        /// <summary>阶梯软提示时刻（秒；设计 §1.7 表，按 20s 总预算重排）。</summary>
+        static readonly float[] SoftHintLadder = { 3f, 6f, 12f, 16f };
+
+        /// <summary>取消后的等待宽限：引擎收到取消会立即以 Ok=false 收尾，正常 <100ms 完成。</summary>
+        const float CancelGraceSeconds = 1.5f;
 
         public KeyCode ToggleKey = KeyCode.I;
 
@@ -49,6 +59,32 @@ namespace ChessSage.Presentation.Cheat
         Text _auxHint;
         GameObject _examplesGrid, _historyRow, _historyGrid, _presetGrid;
         GameObject _procOverlay; Text _procStage, _procTimer, _procSub;
+        // ── E2-S4：处理态轨迹 / 实时计数器 / 顶格警示 / 阶梯软提示 / 收手 ──
+        GameObject _procTrailRoot; readonly List<Text> _procTrail = new List<Text>();
+        Text _procTokens, _procKarma, _procCap, _procHint;
+        GameObject _procSegmentsRoot; Image[] _procSegments;
+        Button _stopButton;
+        /// <summary>进度回调的跨线程邮箱（引擎线程写，主线程每帧排空）。</summary>
+        readonly object _progressLock = new object();
+        readonly Queue<AgentProgress> _progressQueue = new Queue<AgentProgress>();
+        AgentProgress _latestProgress;
+        /// <summary>最近一次提交的收手来源（区分「你收了手」与「时辰已到」两副面孔，设计 §3.5）。</summary>
+        bool _stopRequestedByUser, _timedOutByClock;
+        CancellationTokenSource _submitCts;
+        /// <summary>partial 预览的 banner（渲染预览时优先于默认文案）。</summary>
+        string _partialBanner;
+        int _hintLevel;
+        /// <summary>P1 流式预留：chunk 级增量累计（P0 非流式恒 0，只记账不展示）。</summary>
+        long _chunkTokens;
+
+        /// <summary>
+        /// 组合根注入的 deadline 工厂（Bootstrap 创建；秒 → 自动到点的 CTS）。
+        /// null 时退化为本地 CTS + 协程计时取消（EditMode/无组合根场景）。
+        /// </summary>
+        public Func<float, CancellationTokenSource> DeadlineFactory { get; private set; }
+
+        /// <summary>接线 20s 硬超时（唯一真源在组合根；面板只负责按此铸造 CTS 并显示倒计时）。</summary>
+        public void SetDeadlineFactory(Func<float, CancellationTokenSource> factory) => DeadlineFactory = factory;
         GameObject _dangerModal; Text _dangerBody;
         GameObject _detectedOverlay; Text _detectedBody;
         GameObject _previewCards; Text _previewBanner, _costBar;
@@ -364,15 +400,63 @@ namespace ChessSage.Presentation.Cheat
             var card = CheatUiKit.Panel("ProcCard", overlay.transform, new Color(0.10f, 0.12f, 0.17f, 0.98f));
             var cr = CheatUiKit.Rect(card.gameObject);
             cr.anchorMin = new Vector2(0.5f, 0.5f); cr.anchorMax = new Vector2(0.5f, 0.5f);
-            cr.pivot = new Vector2(0.5f, 0.5f); cr.sizeDelta = new Vector2(760f, 260f);
+            cr.pivot = new Vector2(0.5f, 0.5f); cr.sizeDelta = new Vector2(940f, 520f);
 
-            _procStage = CheatUiKit.Text(card.transform, "◐ 天道正在推演你的妄念…", 30, TextAnchor.MiddleCenter);
-            PlaceTopLeft(_procStage, 20f, 30f, 720f, 60f);
-            var sub = CheatUiKit.Text(card.transform, "阶段：意图解析", 24, TextAnchor.MiddleCenter, CheatUiKit.Muted);
-            PlaceTopLeft(sub, 20f, 100f, 720f, 40f);
+            // ── 标题 + 天道行话主句（设计 §1.7 处理中遮罩卡）──
+            _procStage = CheatUiKit.Text(card.transform, "☯ 天机推演", 30, TextAnchor.MiddleCenter, CheatUiKit.Gold);
+            PlaceTopLeft(_procStage, 20f, 14f, 900f, 44f);
+
+            var sub = CheatUiKit.Text(card.transform,
+                "◐ 天道阖目，暗自推演你这一手的因果……", 24, TextAnchor.MiddleCenter, CheatUiKit.Muted);
+            PlaceTopLeft(sub, 20f, 58f, 900f, 34f);
             _procSub = sub;
-            _procTimer = CheatUiKit.Text(card.transform, "已用时 0.0s（超时 20s）", 22, TextAnchor.MiddleCenter, CheatUiKit.Muted);
-            PlaceTopLeft(_procTimer, 20f, 150f, 720f, 40f);
+
+            // ── 透明轨迹（每轮/每工具一条，最多同屏 5 条；旧的渐隐上滚，设计 §3.1）──
+            var trail = CheatUiKit.NewUi("ProcTrail", card.transform);
+            PlaceTopLeft(CheatUiKit.Rect(trail), 60f, 100f, 820f, 130f);
+            _procTrailRoot = trail;
+
+            // ── 实时计数器（设计 §1.7：「已耗 X token（思索 A · 改数 B）」/「业力预估 Y · 仍在增长…」）──
+            _procTokens = CheatUiKit.Text(card.transform, "已耗 0 token（思索 0 · 改数 0）",
+                23, TextAnchor.MiddleLeft);
+            PlaceTopLeft(_procTokens, 60f, 236f, 820f, 30f);
+
+            _procKarma = CheatUiKit.Text(card.transform, "业力预估 0 · 仍在增长…",
+                23, TextAnchor.MiddleLeft, CheatUiKit.Muted);
+            PlaceTopLeft(_procKarma, 60f, 268f, 820f, 30f);
+
+            // ── 顶格警示行（琥珀→红；裁决 #3：只警示不拦截）──
+            _procCap = CheatUiKit.Text(card.transform, "", 21, TextAnchor.MiddleLeft, CheatUiKit.Amber);
+            PlaceTopLeft(_procCap, 60f, 300f, 820f, 32f);
+            _procCap.gameObject.SetActive(false);
+
+            // ── 四段进度条（按 MaxRounds 预算映射，t=6s 起显示）──
+            var segs = CheatUiKit.NewUi("ProcSegments", card.transform);
+            PlaceTopLeft(CheatUiKit.Rect(segs), 60f, 340f, 820f, 12f);
+            _procSegmentsRoot = segs;
+            _procSegments = new Image[4];
+            for (int i = 0; i < _procSegments.Length; i++)
+            {
+                var seg = CheatUiKit.Segment(segs.transform, CheatUiKit.Amber);
+                var rt = CheatUiKit.Rect(seg.gameObject);
+                rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(0f, 1f);
+                rt.pivot = new Vector2(0f, 1f);
+                rt.anchoredPosition = new Vector2(i * 210f, 0f);
+                rt.sizeDelta = new Vector2(190f, 10f);
+                _procSegments[i] = seg;
+            }
+            segs.SetActive(false);
+
+            // ── 阶梯软提示（t=3/6/12/16s，设计 §1.7 表逐字）──
+            _procHint = CheatUiKit.Text(card.transform, "", 22, TextAnchor.MiddleCenter, CheatUiKit.Amber);
+            PlaceTopLeft(_procHint, 20f, 362f, 900f, 34f);
+
+            _procTimer = CheatUiKit.Text(card.transform, "已用时 0.0s / 20s", 21, TextAnchor.MiddleCenter, CheatUiKit.Muted);
+            PlaceTopLeft(_procTimer, 20f, 400f, 900f, 28f);
+
+            // ── 「收手」按钮：t=0 起常驻可点（Esc 等效，设计 §1.7）──
+            _stopButton = CheatUiKit.StopButton(card.transform, "✋ 收 手（Esc）", RequestStop);
+            PlaceTopLeft(CheatUiKit.Rect(_stopButton.gameObject), 320f, 440f, 300f, 52f);
         }
 
         void BuildDangerModal()
@@ -445,53 +529,276 @@ namespace ChessSage.Presentation.Cheat
 
         IEnumerator SubmitRoutine(string command)
         {
-            _procStage.text = "◐ 天道正在推演你的妄念…";
-            _procSub.text = "阶段：意图解析";
+            ResetProcessingUi();
             SetState(State.Processing);
             // 防御性清失败卡：Processing 中失败卡本就被 ApplyState 隐藏，但清标志位可防止
             // 本次结果回到输入态时上一张红色失败卡残留重现（P0-2b）。
             SetFailureVisible(false);
 
-            var cts = new CancellationTokenSource();
-            var task = _controller.SubmitAsync(command, cts.Token);
-            float t = 0f; var soft = false; var timedOut = false;
+            // 20s 硬超时（裁决 #4）：CTS 由组合根注入的工厂铸造 → 自动到点取消；协程计时再兜底一次。
+            _submitCts = DeadlineFactory != null
+                ? DeadlineFactory(HardTimeoutSeconds)
+                : new CancellationTokenSource();
+
+            var task = _controller.SubmitAsync(command, _submitCts.Token, new ProgressSink(this));
+            float t = 0f;
             while (!task.IsCompleted)
             {
                 t += Time.unscaledDeltaTime;
-                _procTimer.text = $"已用时 {t:0.0}s（超时 {HardTimeoutSeconds:0}s）";
-                if (!soft && t >= SoftHintSeconds)
+                DrainProgress();
+                RenderProcessing(t);
+
+                if (!_submitCts.IsCancellationRequested && t >= HardTimeoutSeconds)
                 {
-                    soft = true;
-                    _procSub.text = "仍在推演…天道有时也会迟疑";
+                    // 到点 = 系统替玩家收手：取消当前轮 → 引擎按收尾策略 A 交付 partial / 失败卡。
+                    _timedOutByClock = true;
+                    _procHint.text = "（时辰已到）天道捻须，推演止于此处。";
+                    _stopButton.interactable = false;
+                    try { _submitCts.Cancel(); } catch (ObjectDisposedException) { }
                 }
-                if (t >= HardTimeoutSeconds && !cts.IsCancellationRequested)
-                {
-                    cts.Cancel();
-                    timedOut = true;
-                    break;
-                }
+
+                // 兜底：引擎对取消无响应（异常路径）时不再无限等待，按失败卡收口。
+                if (t >= HardTimeoutSeconds + CancelGraceSeconds) break;
                 yield return null;
             }
 
+            DrainProgress();
+
             CheatPreview preview;
-            if (timedOut)
+            if (!task.IsCompleted)
             {
                 preview = ErrorPreview($"请求超时或被取消（已等待 {HardTimeoutSeconds:0} 秒）");
             }
             else
             {
                 try { preview = task.Result; }
-                catch (System.Exception e) { preview = ErrorPreview("意图解析失败: " + e.Message); }
+                catch (Exception e) { preview = ErrorPreview("意图解析失败: " + e.Message); }
             }
-            cts.Dispose();
+
+            var cts = _submitCts;
+            _submitCts = null;
+            if (cts != null) cts.Dispose();
             _submitRoutine = null;
+            _partialBanner = BuildPartialBanner(preview);
             OnPreviewReady(preview, command);
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // E2-S4：处理态（轨迹 / 计数器 / 顶格警示 / 阶梯软提示 / 收手 / 到点收尾）
+        // ══════════════════════════════════════════════════════════════
+
+        /// <summary>进度回调出口（引擎线程调用）：只入队，绝不直接碰 UGUI。</summary>
+        sealed class ProgressSink : IProgress<AgentProgress>
+        {
+            readonly CheatCommandPanel _panel;
+            public ProgressSink(CheatCommandPanel panel) { _panel = panel; }
+            public void Report(AgentProgress value)
+            {
+                if (value != null) _panel.EnqueueProgress(value);
+            }
+        }
+
+        void EnqueueProgress(AgentProgress progress)
+        {
+            lock (_progressLock)
+            {
+                _progressQueue.Enqueue(progress);
+                _latestProgress = progress;
+            }
+        }
+
+        void DrainProgress()
+        {
+            while (true)
+            {
+                AgentProgress progress;
+                lock (_progressLock)
+                {
+                    if (_progressQueue.Count == 0) break;
+                    progress = _progressQueue.Dequeue();
+                }
+                ApplyProgress(progress);
+            }
+        }
+
+        void ApplyProgress(AgentProgress p)
+        {
+            if (p == null) return;
+            // P1 流式预留：chunk 级增量只记账（P0 恒 0，展示用轮级 usage）。
+            if (p.ChunkTokens > 0) _chunkTokens = p.ChunkTokens;
+
+            if (_procTokens != null)
+                _procTokens.text =
+                    $"已耗 {p.TokensSoFar:N0} token（思索 {p.CompletionTokens:N0} · 改数 {p.PromptTokens:N0}）";
+
+            if (_procKarma != null)
+            {
+                _procKarma.text = p.Growing
+                    ? $"业力预估 {p.ProjectedKarma} · 仍在增长…"
+                    : $"业力预估 {p.ProjectedKarma} · 已定";
+                CheatUiKit.SetWarningColor(_procKarma, p.CapWarning && p.ProjectedKarma >= 120);
+            }
+
+            // 顶格警示：琥珀→红 + 警示行（裁决 #3：只警示不拦截，确认按上限放行）。
+            if (_procCap != null)
+            {
+                _procCap.gameObject.SetActive(p.CapWarning);
+                if (p.CapWarning)
+                {
+                    _procCap.text = CheatErrorTranslator.CapWarningLine();
+                    CheatUiKit.SetWarningColor(_procCap, p.ProjectedKarma >= 120);
+                }
+            }
+
+            // 四段进度条：按已走轮次填充（MaxRounds=4 预算映射）。
+            if (_procSegments != null && p.Round > 0)
+            {
+                if (_procSegmentsRoot != null && !_procSegmentsRoot.activeSelf) _procSegmentsRoot.SetActive(true);
+                for (int i = 0; i < _procSegments.Length; i++)
+                    CheatUiKit.FillSegment(_procSegments[i], i < p.Round, CheatUiKit.Amber);
+            }
+
+            // 透明轨迹：每个工具调用一条「天道行话」（原始 JSON 参数/返回值不展示，设计 §3.1）。
+            if (!string.IsNullOrEmpty(p.LastToolName))
+                AppendTrail(ToolLine(p.LastToolName, p.LastToolOk));
+        }
+
+        /// <summary>
+        /// 工具 → 天道行话（设计 §3.2 #2/#3/#5/#6/#7/#8/#9/#10 的口径；未知工具不泄露内部名）。
+        /// </summary>
+        static string ToolLine(string tool, bool ok)
+        {
+            if (!ok) return "· 天道蹙眉：此数有误，重推。";
+            switch (tool)
+            {
+                case "get_board_state": return "· 天道抬眸，瞥了一眼你的棋局……";
+                case "get_config_slice": return "· 天道翻开棋规古卷，细阅走法章法……";
+                case "get_karma_state": return "· 天道垂眸，算了算你的业价……";
+                case "move_piece": return "· 天道以指节轻叩棋盘，棋子已移。";
+                case "apply_config_patch": return "· 笔尖掠过棋规，章法改了。";
+                case "set_objective": return "· 天道提笔，重写了胜败之数。";
+                case "undo_last_change": return "· 天道收回方才那一笔。";
+                case "commit_preview": return "· 天道搁笔：推演已定。";
+                default: return "· 天道低语，意不可测……";
+            }
+        }
+
+        /// <summary>追加一条轨迹（同屏最多 5 条，旧的渐隐上滚，设计 §3.1）。</summary>
+        void AppendTrail(string line)
+        {
+            if (_procTrailRoot == null || string.IsNullOrEmpty(line)) return;
+            if (_procTrail.Count >= 5)
+            {
+                var oldest = _procTrail[0];
+                _procTrail.RemoveAt(0);
+                if (oldest != null) Destroy(oldest.gameObject);
+            }
+            var text = CheatUiKit.Text(_procTrailRoot.transform, line, 20, TextAnchor.MiddleLeft, CheatUiKit.Muted);
+            _procTrail.Add(text);
+            for (int i = 0; i < _procTrail.Count; i++)
+            {
+                var c = _procTrail[i].color;
+                float alpha = 0.45f + 0.55f * (i + 1) / _procTrail.Count;
+                _procTrail[i].color = new Color(c.r, c.g, c.b, alpha);
+                PlaceTopLeft(_procTrail[i], 0f, i * 24f, 820f, 24f);
+            }
+        }
+
+        /// <summary>处理态回到初始（每次提交重置；也用于关屏清理）。</summary>
+        void ResetProcessingUi()
+        {
+            _latestProgress = null;
+            _stopRequestedByUser = false;
+            _timedOutByClock = false;
+            _partialBanner = null;
+            _hintLevel = 0;
+            _chunkTokens = 0;
+            lock (_progressLock) _progressQueue.Clear();
+            if (_procTrailRoot != null) ClearChildren(_procTrailRoot.transform);
+            _procTrail.Clear();
+
+            if (_procStage != null) _procStage.text = "☯ 天机推演";
+            if (_procSub != null) _procSub.text = "◐ 天道阖目，暗自推演你这一手的因果……";
+            if (_procTokens != null) _procTokens.text = "已耗 0 token（思索 0 · 改数 0）";
+            if (_procKarma != null)
+            {
+                _procKarma.text = "业力预估 0 · 仍在增长…";
+                _procKarma.color = CheatUiKit.Muted;
+            }
+            if (_procCap != null) _procCap.gameObject.SetActive(false);
+            if (_procHint != null) _procHint.text = "";
+            if (_procTimer != null) _procTimer.text = $"已用时 0.0s / {HardTimeoutSeconds:0}s";
+            if (_procSegmentsRoot != null) _procSegmentsRoot.SetActive(false);
+            if (_procSegments != null)
+                for (int i = 0; i < _procSegments.Length; i++)
+                    CheatUiKit.FillSegment(_procSegments[i], false, CheatUiKit.Amber);
+            if (_stopButton != null) _stopButton.interactable = true;
+
+            AppendTrail("· 你的妄念，天道听见了。");   // 设计 §3.2 #1：提交受理
+        }
+
+        /// <summary>每帧：倒计时 + 阶梯软提示（3/6/12/16s，设计 §1.7 表逐字；只升级不回退）。</summary>
+        void RenderProcessing(float elapsed)
+        {
+            if (_procTimer != null)
+                _procTimer.text = $"已用时 {elapsed:0.0}s / {HardTimeoutSeconds:0}s";
+
+            int level = 0;
+            for (int i = 0; i < SoftHintLadder.Length; i++)
+                if (elapsed >= SoftHintLadder[i]) level = i + 1;
+            if (level <= _hintLevel) return;
+
+            _hintLevel = level;
+            bool capped = _latestProgress != null && _latestProgress.CapWarning;
+            switch (level)
+            {
+                case 1:
+                    _procHint.text = "天道推演中……";
+                    break;
+                case 2:
+                    _procHint.text = "天道阖目，暗自推演你这一手的因果……";
+                    if (_procSegmentsRoot != null) _procSegmentsRoot.SetActive(true);
+                    break;
+                case 3:
+                    // 计数器已转红则省略（设计 §1.7：此时提示已被顶格警示行取代）。
+                    _procHint.text = capped ? "" : "推演颇深，业价渐升——想收手，还来得及。";
+                    break;
+                case 4:
+                    _procHint.text = "天机将断——天道至多再推 4 秒；再深，也是业价顶格。";
+                    break;
+            }
+        }
+
+        /// <summary>「收手」/ Esc：与 20s 到点走同一收尾（设计 §3.5：同一函数、同一计价、同一契约）。</summary>
+        public void RequestStop()
+        {
+            if (_state != State.Processing) return;
+            _stopRequestedByUser = true;
+            if (_procHint != null) _procHint.text = "你及时收手，天道推演戛然而止。";
+            if (_stopButton != null) _stopButton.interactable = false;
+            try { _submitCts?.Cancel(); } catch (ObjectDisposedException) { /* 已释放：任务早已收尾 */ }
+        }
+
+        /// <summary>半成品预览 banner（设计 §3.5：被动到点 / 主动收手 / 其他中断 三副面孔）。</summary>
+        string BuildPartialBanner(CheatPreview preview)
+        {
+            if (preview == null || !preview.Ok || !preview.Partial) return null;
+            var agent = _controller != null ? _controller.LastAgentResult : null;
+            int rounds = agent != null ? agent.Rounds : 0;
+            if (_timedOutByClock || (agent != null && agent.TimedOut))
+                return $"⏳ 天道力竭，推演半途而止——所得几何，造化自负。" +
+                       $"（时辰已到 · 天道自行收手 · 止于第 {rounds} 轮）";
+            if (_stopRequestedByUser)
+                return "✋ 你及时收手，天道推演半途而止——所得几何，造化自负。" +
+                       "（你收了手 · 省下的推演是自己造化）";
+            return "⚠️ 推演未尽，天道止于此处——所得几何，造化自负。";
         }
 
         void OnPreviewReady(CheatPreview preview, string command)
         {
             if (preview == null)
             {
+                _partialBanner = null;
                 ShowFailure(new CheatFailure { Title = "⚠️ 天道没有回应", Reason = "结果为空。" }, command, false);
                 return;
             }
@@ -526,7 +833,14 @@ namespace ChessSage.Presentation.Cheat
             foreach (var c in preview.Cards) AddDiffCard(c);
 
             var cost = preview.CostInfo;
-            _costBar.text = BuildCostText(cost);
+            var costText = BuildCostText(cost);
+            var agent = _controller != null ? _controller.LastAgentResult : null;
+            if (preview.Partial && agent != null)
+            {
+                // 半成品价（设计 §3.5）：按已耗 token 计价，预览一次揭晓、确认不重摇。
+                costText += $"（按已耗 {agent.TokenEff:N0} token 计价 · 预览一次揭晓，确认不重摇）\n";
+            }
+            _costBar.text = costText;
 
             if (cost != null && cost.Tier == CheatTier.Danger)
             {
@@ -539,9 +853,13 @@ namespace ChessSage.Presentation.Cheat
                 _confirmButton.GetComponent<Image>().color = new Color(0.20f, 0.44f, 0.28f, 1f);
             }
 
-            _previewBanner.text = preview.Partial
-                ? preview.PartialNote + "（预览 · 尚未生效）"
-                : "预览 · 尚未生效（确认后才写入对局）";
+            // 半成品 banner 的三副面孔（被动到点 / 主动收手 / 其他中断）由 BuildPartialBanner 决定；
+            // 非 partial 走既有文案（两段式契约不变）。
+            _previewBanner.text = !string.IsNullOrEmpty(_partialBanner)
+                ? _partialBanner + "（预览 · 尚未生效）"
+                : (preview.Partial
+                    ? preview.PartialNote + "（预览 · 尚未生效）"
+                    : "预览 · 尚未生效（确认后才写入对局）");
         }
 
         void AddDiffCard(DiffCard card)
@@ -926,13 +1244,20 @@ namespace ChessSage.Presentation.Cheat
         {
             if (Input.GetKeyDown(ToggleKey) && Input.GetKey(KeyCode.LeftShift) == false)
                 Toggle();
-            if (Input.GetKeyDown(KeyCode.Escape) && IsOpen && _state == State.Input)
-                Close();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                // 处理中 Esc = 「收手」（设计 §1.7：Esc 等效）；其余状态沿用「收起抽屉」。
+                if (_state == State.Processing) RequestStop();
+                else if (IsOpen && _state == State.Input) Close();
+            }
         }
 
         void OnDisable()
         {
             if (_submitRoutine != null) { StopCoroutine(_submitRoutine); _submitRoutine = null; }
+            // 切屏/暂停销毁前取消在途请求（设计 §3.4：防回调落到销毁对象）。
+            try { _submitCts?.Cancel(); } catch (ObjectDisposedException) { }
+            _submitCts = null;
             if (_routerSubscribed && _router != null) { _router.CellClicked -= OnBoardCellClicked; _routerSubscribed = false; }
         }
 

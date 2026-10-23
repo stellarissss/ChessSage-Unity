@@ -31,6 +31,9 @@ namespace ChessSage.EditorTools
         [MenuItem("ChessSage/试玩录制/作弊改规面板（离线预置）", priority = 103)]
         public static void CaptureCheatMenu() => RunInEditor("Cheat");
 
+        [MenuItem("ChessSage/试玩录制/作弊面板（在线推演三态：处理/顶格/到点）", priority = 105)]
+        public static void CaptureCheatDemoMenu() => RunInEditor("CheatDemo");
+
         [MenuItem("ChessSage/试玩录制/六道 RPG（选关/技能树/剧情/结局）", priority = 104)]
         public static void CaptureSamsaraMenu() => RunInEditor("Samsara");
 
@@ -124,6 +127,7 @@ namespace ChessSage.EditorTools
             else if (scene == "Overworld") yield return PlayOverworld(outDir);
             else if (scene == "Placement") yield return PlayPlacement(outDir);
             else if (scene == "Cheat") yield return PlayCheatPanel(outDir);
+            else if (scene == "CheatDemo") yield return PlayCheatDemo(outDir);
             else if (scene == "Samsara") yield return PlaySamsara(outDir);
             else yield return PlayOverworld(outDir);
 
@@ -380,6 +384,84 @@ namespace ChessSage.EditorTools
 
             Debug.Log($"[试玩] 作弊面板流程走通：预置「{preset.Text}」，业力 {karmaBefore} → {karmaAfter}" +
                       $"，可撤回改规={boot.Cheat?.HasRuleUndo}");
+        }
+
+        /// <summary>
+        /// 在线推演取证（E3-S4 / 任务 C 的 Editor-only demo 钩子）：
+        /// 配合本机 LLM 桩（<c>tools/verify/llm-stub.py</c>）驱动**真实** Agent 链路，
+        /// 截取「处理态 / 顶格警示 / 20s 到点」三副面孔。
+        ///
+        /// 【为什么需要它】离线预置链路（<see cref="PlayCheatPanel"/>）不经过 AgentEngine，
+        /// 因此 E2-S4 新增的三个状态（轨迹+计数器+收手 / 顶格警示 / 到点收尾）
+        /// 在没有 API key 的环境里**根本不会出现**，无法目视验收。
+        ///
+        /// 【不碰生产行为】仅在 Editor 程序集内、且仅当 CHESSSAGE_SCENE=CheatDemo 时执行；
+        /// 运行期代码零改动——面板只被公开 API 驱动
+        /// （SetOffline / Open / SimulateOpenAndSubmit / 内部 RequestStop）。
+        ///
+        /// 环境变量：
+        ///   CHESSSAGE_CHEAT_SCENARIO = cap | timeout_partial | timeout_fail（与桩服务同名场景）
+        ///   CHESSSAGE_CHEAT_COMMAND  = 提交的自然语言指令
+        ///   DEEPSEEK_BASE_URL        = http://127.0.0.1:8931（指向桩）
+        ///   DEEPSEEK_API_KEY         = 任意非空串（让 IsAvailable=true，桩不校验）
+        /// </summary>
+        IEnumerator PlayCheatDemo(string outDir)
+        {
+            var boot = UnityEngine.Object.FindObjectOfType<ChessSage.Presentation.Bootstrap>();
+            if (boot == null) { Fail("未找到 Bootstrap"); yield break; }
+            var panel = boot.CheatPanel;
+            var cheat = boot.Cheat;
+            if (panel == null || cheat == null) { Fail("作弊面板/控制器未接线"); yield break; }
+
+            var scenario = Environment.GetEnvironmentVariable("CHESSSAGE_CHEAT_SCENARIO") ?? "cap";
+            var command = Environment.GetEnvironmentVariable("CHESSSAGE_CHEAT_COMMAND") ?? "让我的马可以横着走";
+            var baseUrl = Environment.GetEnvironmentVariable("DEEPSEEK_BASE_URL") ?? "(默认线上)";
+
+            yield return Step(0.4f);
+            panel.SetOffline(false);      // 仅在 DEEPSEEK_API_KEY 非空时才真正在线
+            cheat.Reconnect();
+            panel.Open();
+            yield return Step(0.4f);
+
+            Debug.Log($"[取证] 场景={scenario} 指令「{command}」 base_url={baseUrl} 离线={cheat.Offline}");
+            yield return ShotAsync(Path.Combine(outDir, "23_cheat_online_idle.png"),
+                $"面板就绪（在线通道，{scenario}）");
+
+            if (cheat.Offline)
+            {
+                Debug.LogWarning("[取证] 仍为离线（DEEPSEEK_API_KEY 为空）——处理态/顶格/到点不可达，请检查环境变量");
+                yield break;
+            }
+
+            panel.SimulateOpenAndSubmit(command);
+
+            // ① 处理态：让计数器先动起来（第 1 轮 usage 入账后）
+            float t = 0f;
+            while (t < 5f) { t += Time.unscaledDeltaTime; yield return null; if (t >= 1.0f) break; }
+            yield return ShotAsync(Path.Combine(outDir, "24_cheat_processing.png"),
+                "处理态：天道推演中 —— token 计数器 + 轨迹行 + 收手按钮");
+
+            // ② 顶格警示：cap 场景第 1 轮即触顶（提示态，循环不拦截）
+            if (scenario == "cap")
+            {
+                t = 0f;
+                while (t < 8f) { t += Time.unscaledDeltaTime; yield return null; if (t >= 2.0f) break; }
+                yield return ShotAsync(Path.Combine(outDir, "25_cheat_cap_warning.png"),
+                    "顶格警示：投射 ≥ 单次上限 120 —— 计数器转警示色 + 警示行（循环继续，不拒绝）");
+            }
+
+            // ③ 收尾面孔：等本次提交结束（LastAgentResult 由 CheatController 在收尾时写入）
+            t = 0f;
+            while (t < 45f && cheat.LastAgentResult == null) { t += Time.unscaledDeltaTime; yield return null; }
+            yield return Step(0.5f);
+
+            var agent = cheat.LastAgentResult;
+            var label = agent == null
+                ? "未拿到 AgentResult（提交仍未收尾）"
+                : $"type={agent.Type} rounds={agent.Rounds} karma={agent.EstimatedKarmaCost} " +
+                  $"timedOut={agent.TimedOut} cap={agent.CapWarned}";
+            Debug.Log($"[取证] 收尾面孔：{label}");
+            yield return ShotAsync(Path.Combine(outDir, $"26_cheat_{scenario}_result.png"), $"收尾面孔：{label}");
         }
 
         // ── 大地图试玩脚本 ────────────────────────────────────────────────────

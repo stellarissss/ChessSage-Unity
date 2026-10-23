@@ -95,6 +95,38 @@ namespace ChessSage.Presentation.Cheat
             return btn;
         }
 
+        /// <summary>
+        /// 进度条的单段（E2-S4：处理态「四段进度条」，按 MaxRounds=4 预算每轮一段，设计 §1.7 t=6s）。
+        /// 未填充 = 暗色底，填充 = 天道金/琥珀。
+        /// </summary>
+        public static Image Segment(Transform parent, Color fillColor)
+        {
+            var img = Panel("Segment", parent, new Color(0.18f, 0.20f, 0.26f, 0.9f), raycast: false);
+            img.raycastTarget = false;
+            return img;
+        }
+
+        /// <summary>设置分段填充态（保持同一 GameObject，避免每帧重建）。</summary>
+        public static void FillSegment(Image segment, bool filled, Color fillColor)
+        {
+            if (segment == null) return;
+            segment.color = filled ? fillColor : new Color(0.18f, 0.20f, 0.26f, 0.9f);
+        }
+
+        /// <summary>
+        /// 「收手」按钮（设计 §1.7：t=0 起常驻可点，Esc 等效）。
+        /// 与普通按钮同风格，但底色更暗以降低视觉竞争——它不是主行动，是逃生门。
+        /// </summary>
+        public static Button StopButton(Transform parent, string label, System.Action onClick)
+            => Button(parent, label, 24, new Color(0.26f, 0.16f, 0.14f, 0.96f), onClick);
+
+        /// <summary>把 Text 的颜色改成「琥珀 → 红」的两级警示（顶格警示用，设计 §1.7 危险预测）。</summary>
+        public static void SetWarningColor(Text text, bool capReached)
+        {
+            if (text == null) return;
+            text.color = capReached ? Red : Amber;
+        }
+
         public static void Stretch(RectTransform rt, float left = 0f, float top = 0f, float right = 0f, float bottom = 0f)
         {
             rt.anchorMin = Vector2.zero;

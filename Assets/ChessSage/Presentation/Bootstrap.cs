@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using ChessSage.Core.Agent;
 using ChessSage.Core.Board;
 using ChessSage.Core.Cheat;
 using ChessSage.Core.Config;
@@ -45,6 +49,13 @@ namespace ChessSage.Presentation
         [Tooltip("格边长（世界单位）。")]
         public float CellSize = 1f;
 
+        /// <summary>
+        /// 作弊推演硬超时（秒）。用户裁决 #4：20s 是玩家体验底线，不得上调；
+        /// 到点由 Agent 走收尾策略 A（有写入 → 半成品预览 / 零写入 → 失败卡不收费）。
+        /// 组合根是唯一真源：面板的 HardTimeoutSeconds 由它注入（UI 只负责显示与兜底自取消）。
+        /// </summary>
+        public const float AgentHardTimeoutSeconds = 20f;
+
         [Tooltip("启动 / 切换棋种时按相机视口自适应格宽：仅在棋盘超出视野时缩小，绝不放大，" +
                  "以保证既有棋种（象棋/动物棋）视觉不变，又不让大棋盘（围棋/五子棋/跳棋）被裁掉。")]
         public bool AutoFitBoardToCamera = true;
@@ -66,9 +77,9 @@ namespace ChessSage.Presentation
 
         // ── 作弊改规链路（T3b：接入组合根，让 USP 真正可触达）────────────
         // 长生命周期：SamsaraEngine 跨棋种保留业力/识破；面板与 HUD 只建一次。
-        // 每局的 CheatController / OrchestratorEngine 在 LaunchVariant 里按新会话重建。
+        // 每局的 CheatController / AgentEngine 在 LaunchVariant 里按新会话重建。
         SamsaraEngine _samsara;
-        OrchestratorEngine _orchestrator;
+        AgentEngine _orchestrator;
         CheatController _cheat;
         CheatCommandPanel _cheatPanel;
         CheatHud _cheatHud;
@@ -133,7 +144,7 @@ namespace ChessSage.Presentation
 
         /// <summary>
         /// 构造作弊链路的<b>长生命周期</b>部件：<see cref="SamsaraEngine"/>（跨棋种保留业力/识破）、
-        /// 面板与 HUD。每局的 <see cref="CheatController"/> 与 <see cref="OrchestratorEngine"/> 在
+        /// 面板与 HUD。每局的 <see cref="CheatController"/> 与 <see cref="（已下线）旧编排器"/> 在
         /// <see cref="LaunchVariant"/> 内按当前会话重建（见 <see cref="WireCheat"/>），
         /// 从而「切换棋种 → 重建 GameSession」时面板永远绑到新对局、不会绑死旧 session。
         /// </summary>
@@ -181,11 +192,30 @@ namespace ChessSage.Presentation
 
             // 无密钥 / 断网时 LlmClient.IsAvailable=false，CheatController 自动进入离线降级
             // （UX §10.1），预置指令链路（CheatPresetLibrary）照常可走，USP 仍可演示。
-            _orchestrator = new OrchestratorEngine(new LlmClient(), ConfigsRoot()) { GameType = variantId };
+            //
+            // 【E2-S2 装配】新 Agent 引擎接入真实游戏：
+            //   ① 配置显式取自 StreamingAssets/Agent/agent_remake.json（AgentConfigLoader 候选链的最高优先项，
+            //      不存在时 loader 会记告警并回落内置生产默认值——不静默）；
+            //   ② 校验缝：SchemaValidator 硬校验 + objective_types.json 合法目标类型表
+            //      （E1 只留接口，E2 在此接线；Schema 目录同样显式指向 StreamingAssets）；
+            //   ③ 变体参数 GameType 保持（旧装配形状不变，Bootstrap→CheatController→AgentEngine 单向）。
+            SchemaValidator.SchemaDir = Path.Combine(Application.streamingAssetsPath, "Schemas");
+            SchemaValidator.ClearCache();
+
+            var agentConfig = AgentConfigLoader.Load(AgentConfigPath());
+            _orchestrator = new AgentEngine(new LlmClient(), ConfigsRoot(), agentConfig) { GameType = variantId };
+            _orchestrator.ConfigValidator = (name, cfg) => SchemaValidator.HardValidateConfig(name, cfg);
+            _orchestrator.ObjectiveTypesProvider = LoadObjectiveTypes;
             _cheat = new CheatController(_session, _samsara, _orchestrator);
 
             _cheatHud.Bind(_cheat);
             _cheatHud.SetVisible(true);
+
+            // 20s 硬超时（裁决 #4）：组合根创建「deadline 工厂」并交给面板——面板每次提交铸造 CTS，
+            // 到点由 CTS 自动取消 → 经 CheatController 的 ct 贯通到 AgentEngine 每轮 HTTP → 收尾策略 A。
+            // 面板 UI 侧仍保留既有 HardTimeoutSeconds 语义（倒计时显示 + 自取消兜底），两者同源同值。
+            _cheatPanel.HardTimeoutSeconds = AgentHardTimeoutSeconds;
+            _cheatPanel.SetDeadlineFactory(seconds => new CancellationTokenSource(TimeSpan.FromSeconds(seconds)));
 
             _cheatPanel.Bind(_cheat, _router, Screen, _cheatHud);
             _cheatPanel.SetVisible(true);
@@ -342,6 +372,31 @@ namespace ChessSage.Presentation
 
         /// <summary>配置根目录（实例便捷访问，供 hub 等使用）。</summary>
         public string ConfigsRootPath => ConfigsRoot();
+
+        /// <summary>Agent 配置路径（显式候选；缺失时 AgentConfigLoader 记告警并回落内置生产默认值）。</summary>
+        static string AgentConfigPath()
+            => Path.Combine(Application.streamingAssetsPath, "Agent", AgentConfigLoader.ConfigFileName);
+
+        /// <summary>
+        /// 读关卡目标类型表（objective_types.json 的键集合）——set_objective 的白名单真源。
+        /// 文件缺失/损坏时返回空表（该工具会拒绝一切目标并给出合法类型提示，不静默放行）。
+        /// </summary>
+        static IReadOnlyList<string> LoadObjectiveTypes()
+        {
+            var types = new List<string>();
+            try
+            {
+                var path = Path.Combine(ConfigsRoot(), "global", "objective_types.json");
+                if (!File.Exists(path)) return types;
+                var root = Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(path));
+                foreach (var prop in root.Properties()) types.Add(prop.Name);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[ChessSage] objective_types.json 读取失败：{e.Message}（set_objective 将全量拒绝）");
+            }
+            return types;
+        }
 
         /// <summary>定位配置根目录。优先 StreamingAssets（运行时），回退 Assets（编辑器模式）。</summary>
         public static string ConfigsRoot()
