@@ -417,10 +417,16 @@ namespace ChessSage.Core.Samsara
             State.SetSandboxMode(enabled);
         }
 
-        /// <summary>当前技能树解锁的作弊分类集合（基础 E/F/A/B/C 恒可用）。</summary>
-        public HashSet<string> GetAllowedClassifications()
+        /// <summary>当前技能树解锁的工具名集合（天机型谱；门控换轴 ADR-6，E2-S3）。</summary>
+        public HashSet<string> GetAllowedTools()
         {
-            return State.GetAllowedClassifications();
+            return State.GetAllowedTools();
+        }
+
+        /// <summary>apply_config_patch 的已解锁作用域（t1b ⇒ ui_config / board）。</summary>
+        public HashSet<string> GetAllowedPatchTargets()
+        {
+            return State.GetAllowedPatchTargets();
         }
     }
 }

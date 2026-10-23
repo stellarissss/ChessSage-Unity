@@ -3,34 +3,14 @@ using Newtonsoft.Json.Linq;
 
 namespace ChessSage.Core.Orchestration
 {
-    /// <summary>分类规范与业力状态等编排层的轻量模型。</summary>
-    public static class Classification
-    {
-        public const string A = "A";
-        public const string B = "B";
-        public const string C = "C";
-        public const string CPlus = "C+";
-        public const string D = "D";
-        public const string E = "E";
-        public const string F = "F";
+    // 【E2-S7 下线记录】本文件原有「作弊分类规范」段（A/B/C/C+/D/E/F taxonomy），随旧双层级编排器
+    // 一并删除：token→业力计价（KarmaFormula/TokenLedger）与工具权限门控（GetAllowedTools）已完全
+    // 取代「LLM 分类 + 价目表」轴。保留的两段是仍被 RPG 层与工具层消费的通用设施：
+    //   · `KarmaState`：Samsara 的 KarmaAssessor 快照（M5-B 遗留契约，RPG 层在用）；
+    //   · `JsonHelpers`：全 Core 的 JSON 取值助手（缺省值/类型不匹配的统一处理）。
+    // 旧符号守卫见 QA §4.4.1-P4（LegacyFreeProbe，E3-S4 落地；本期以 grep + 反射断言先行把关）。
 
-        /// <summary>
-        /// 将 LLM 输出的分类规整到合法集合；无法识别的输入一律归为 E(闲聊)。
-        /// 对齐 ai_orchestrator_base.py 的 _normalize_classification。
-        /// </summary>
-        public static string Normalize(string cls)
-        {
-            if (string.IsNullOrEmpty(cls)) return E;
-            var c = cls.Trim().ToUpperInvariant();
-            if (c == "A" || c == "B" || c == "C" || c == "C+" || c == "D" || c == "E" || c == "F")
-                return c;
-            if (c.StartsWith("C+", StringComparison.Ordinal)) return CPlus;
-            if (c.StartsWith("D", StringComparison.Ordinal)) return D;
-            return E;
-        }
-    }
-
-    /// <summary>业力评估阶段产物：估算成本 + 局势摘要 + 技能修饰器（对齐 RPG 的 karma_state）。</summary>
+    /// <summary>业力评估产物：估算成本 + 局势摘要 + 技能修饰器（对齐 RPG 的 karma_state；Samsara 侧在用）。</summary>
     public sealed class KarmaState
     {
         public int Cost;

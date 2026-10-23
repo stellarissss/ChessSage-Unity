@@ -94,7 +94,7 @@ namespace ChessSage.Core.Orchestration
         ///
         /// 背景（缺陷 D-05）：C 类改规（<c>HandleActionCWithLogAsync</c> / C+ 类）传给校验层的
         /// 配置名是 <c>pieces_red</c> / <c>pieces_black</c> / <c>pieces_white</c>（见
-        /// <c>OrchestratorEngine.SideConfigFor</c>），而硬校验的 switch 只写了 <c>case "pieces"</c>，
+        /// 旧编排器的 SideConfigFor），而硬校验的 switch 只写了 <c>case "pieces"</c>，
         /// 于是这些 side 变体落到 <c>default</c> 分支被**静默放行**，非法棋规原语得以注入对局。
         ///
         /// 归一化后所有 <c>pieces_*</c> 复用同一条 <c>pieces</c> 校验路径，从根上杜绝

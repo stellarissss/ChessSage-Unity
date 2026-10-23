@@ -104,15 +104,15 @@ namespace ChessSage.Core.Samsara
                     {
                         ["options"] = new JArray
                         {
-                            Option("cheat_mastery_t1a", "自定义棋子", "允许C+类作弊", 1),
-                            Option("cheat_mastery_t1b", "前端修改", "允许D类作弊", 1),
+                            Option("cheat_mastery_t1a", "改天条", "解锁「改胜条」：可直接改写本局胜负条件", 1),
+                            Option("cheat_mastery_t1b", "前端修改", "解锁界面与棋盘外观的修改（配色/尺寸/盘面）", 1),
                         },
                     },
                     ["2"] = new JObject
                     {
                         ["options"] = new JArray
                         {
-                            Option("cheat_mastery_t2a", "效率欺诈", "AI评估有30%概率降1档", 1),
+                            Option("cheat_mastery_t2a", "效率欺诈", "推演有 30% 概率减少业力消耗（×0.7）", 1),
                             Option("cheat_mastery_t2b", "高级规则", "允许修改胜利条件/核心规则", 1),
                         },
                     },

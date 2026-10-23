@@ -22,14 +22,14 @@ namespace ChessSage.Core.Orchestration
         /// <summary>密钥前缀：剥离时先去掉，还原时补回。</summary>
         public const string SecretPrefix = "sk-";
 
-        /// <summary>默认 Base URL（DeepSeek 兼容 OpenAI 的 chat/completions 接口）。</summary>
-        public const string DefaultBaseUrl = "https://api.deepseek.com/v1";
+        /// <summary>默认 Base URL（DeepSeek 兼容 OpenAI 的 chat/completions 接口；D-5 裁决裸域名）。</summary>
+        public const string DefaultBaseUrl = "https://api.deepseek.com";
 
         /// <summary>默认模型：DeepSeek 网关的实际模型 ID。</summary>
         public const string DefaultModelName = "deepseek-flash";
 
         /// <summary>默认 API 密钥（**混淆形式**，含迷惑字符，不可直接调用）。</summary>
-        public const string DefaultApiKeyMasked = "sk-b317699fz4b6c48a9wb3a093a5k5911c8a0";
+        public const string DefaultApiKeyMasked = "sk-f0297664z948b4b25w9d599e7ak88455305";
 
         /// <summary>还原用的剥离正则：只保留十六进制字符（0-9 a-f A-F）。</summary>
         static readonly Regex UnmaskRe = new Regex("[^0-9a-fA-F]", RegexOptions.Compiled);

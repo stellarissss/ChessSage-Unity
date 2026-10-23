@@ -865,12 +865,55 @@ namespace ChessSage.Core.Samsara
             return GetBool("sandbox_mode", false);
         }
 
-        /// <summary>返回当前技能树解锁的所有作弊分类（基础 E/F/A/B/C 恒可用）。</summary>
-        public HashSet<string> GetAllowedClassifications()
+        /// <summary>
+        /// 天机型谱·恒可用工具（门控换轴 ADR-6 / 设计侧 §2.3）。E2-S3 起取代旧的作弊分类轴 A–F。
+        ///
+        /// 【为什么 apply_config_patch 在恒可用集】
+        /// 8 工具模型把旧 A/B/C/C+/D/D2 折叠进同一补丁通道；设计侧 §2.3 明确
+        /// patch_piece_moves / patch_mechanism **恒可用**（旧 A/B/C 不得降级）。
+        /// 且 cheat_mastery.t1a / t1b 是 **tier1 的互斥选项**——把补丁工具绑到任一分支上，
+        /// 另一分支的玩家与全部新档都会失去改规能力（USP 直接断掉）。
+        ///
+        /// 恒可用：3 读（览局/阅卷/问业力）+ 3 写元（移子/回退/收尾）+ 1 补丁通道。
+        /// 特权：<c>cheat_mastery_t1a</c> ⇒ <c>set_objective</c>（改胜条）；
+        ///       <c>cheat_mastery_t1b</c> ⇒ 补丁作用域 ui_config / board（见 <see cref="GetAllowedPatchTargets"/>）。
+        /// 【零持久化】本集合与作用域集合都是运行时派生，不进 _data/存档（ADR-6 约束、QA §4.1）。
+        /// </summary>
+        public static readonly string[] AlwaysAllowedTools =
         {
-            var allowed = new HashSet<string> { "E", "F", "A", "B", "C" };
-            if (IsSkillUnlocked("cheat_mastery_t1a", 1)) allowed.Add("C+");
-            if (IsSkillUnlocked("cheat_mastery_t1b", 1)) allowed.Add("D");
+            "get_board_state",
+            "get_config_slice",
+            "get_karma_state",
+            "move_piece",
+            "undo_last_change",
+            "commit_preview",
+            "apply_config_patch",
+        };
+
+        /// <summary>补丁作用域·恒可用（旧 A/B/C 的落点）。</summary>
+        public static readonly string[] AlwaysAllowedPatchTargets =
+        {
+            "board_state", "pieces_red", "pieces_black", "pieces_white", "rules",
+        };
+
+        /// <summary>t1b（前端修改，旧 D）解锁的补丁作用域。</summary>
+        public static readonly string[] T1B_PatchTargets = { "ui_config", "board" };
+
+        /// <summary>返回当前技能树解锁的工具名集合（天机型谱；恒可用集见 <see cref="AlwaysAllowedTools"/>）。</summary>
+        public HashSet<string> GetAllowedTools()
+        {
+            var allowed = new HashSet<string>(AlwaysAllowedTools, StringComparer.Ordinal);
+            // t1a「自定义棋子」（旧 C+ 分支）→ 改胜条能力（旧 A2/C 核心，ADR-6 第二条）。
+            if (IsSkillUnlocked("cheat_mastery_t1a", 1)) allowed.Add("set_objective");
+            return allowed;
+        }
+
+        /// <summary>返回 apply_config_patch 已解锁的配置作用域（ADR-6 第三条：t1b ⇒ ui_config / board）。</summary>
+        public HashSet<string> GetAllowedPatchTargets()
+        {
+            var allowed = new HashSet<string>(AlwaysAllowedPatchTargets, StringComparer.Ordinal);
+            if (IsSkillUnlocked("cheat_mastery_t1b", 1))
+                foreach (var target in T1B_PatchTargets) allowed.Add(target);
             return allowed;
         }
 
@@ -1143,10 +1186,15 @@ namespace ChessSage.Core.Samsara
         public JObject GetFrontendState()
         {
             var modifiers = GetSkillModifiers();
-            var allowed = new List<string>(GetAllowedClassifications());
+            var allowed = new List<string>(GetAllowedTools());
             allowed.Sort(StringComparer.Ordinal);
             var allowedArray = new JArray();
             foreach (var item in allowed) allowedArray.Add(item);
+
+            var patchTargets = new List<string>(GetAllowedPatchTargets());
+            patchTargets.Sort(StringComparer.Ordinal);
+            var patchTargetsArray = new JArray();
+            foreach (var item in patchTargets) patchTargetsArray.Add(item);
 
             var realmDetections = new JObject();
             foreach (var realmKey in SamsaraConstants.Realms) realmDetections[realmKey] = GetRealmDetection(realmKey);
@@ -1170,7 +1218,8 @@ namespace ChessSage.Core.Samsara
             result["cheat_count"] = GetInt("cheat_count", 0);
             result["overdraft_count"] = GetInt("overdraft_count", 0);
             result["sandbox_mode"] = GetBool("sandbox_mode", false);
-            result["allowed_classifications"] = allowedArray;
+            result["allowed_tools"] = allowedArray;
+            result["allowed_patch_targets"] = patchTargetsArray;
             result["skill_modifiers"] = modifiers;
             result["alignment"] = GetAlignment();
             result["detection_state"] = GetDetectionState();

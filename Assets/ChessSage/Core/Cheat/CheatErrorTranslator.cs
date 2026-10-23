@@ -9,7 +9,7 @@ namespace ChessSage.Core.Cheat
     /// <summary>
     /// 代价透明计算（UX §6 / §8）：施展前把业力代价、溢出量、识破增量与风险档位一次算清。
     ///
-    /// 公式与 <c>KarmaEstimator.CalculateDetectionDelta</c> 完全一致（Δ = C_coef × O^α），
+    /// 公式与 Samsara 侧识破模型完全一致（Δ = C_coef × O^α），
     /// 因此"预览里看到的识破风险"与"确认后真正结算的风险"同源。
     /// </summary>
     public static class CheatCostCalculator
@@ -117,9 +117,25 @@ namespace ChessSage.Core.Cheat
             var failure = PresentCore(result);
             // 失败卡的 Reason 文本区仅 260px 高：HTTP 错误体 / LLM 原文动辄数百字，直接渲染会溢出卡片。
             // 统一在出口处截到 120 字以内——技术细节（状态码、错误体原文）不入玩家文案（P0-2a 复盘）。
-            if (failure != null) failure.Reason = ClampReason(failure.Reason);
+            if (failure != null)
+            {
+                // 顶格警示（裁决 #3）：失败/半成品结算后追加一行，与「clamp 放行」语义一致（设计 §1.7 / §3.5）。
+                if (!failure.IsFun && GetBool(result, "cap_warned", false))
+                {
+                    var cap = CapWarningLine();
+                    failure.Reason = string.IsNullOrEmpty(failure.Reason) ? cap : failure.Reason + " " + cap;
+                }
+                failure.Reason = ClampReason(failure.Reason);
+            }
             return failure;
         }
+
+        /// <summary>
+        /// 投射顶格警示行（替代旧「早停拦截」文案；文案归属设计侧，工程侧先落 §1.7/§5.5 语义骨架）。
+        /// 口径：**不拦截**——业价按上限放行，收不收手由玩家决断。
+        /// </summary>
+        public static string CapWarningLine(int singleMax = 120)
+            => $"⚠️ 业力已触顶 {singleMax}——再推也是顶格；确认时按上限放行（天道不拦，由你决断）。";
 
         static CheatFailure PresentCore(JObject result)
         {
@@ -127,8 +143,12 @@ namespace ChessSage.Core.Cheat
 
             var type = GetStr(result, "type");
             var msg = GetStr(result, "message");
+            // Agent 工具层的结构化失败是 {ok:false, errorCode, error, hint}（键名 error）；
+            // 失败卡统一从 message 取文案，故此处做一次键名归一。
+            if (string.IsNullOrEmpty(msg)) msg = GetStr(result, "error");
             var cls = GetStr(result, "classification");
             var blocked = GetBool(result, "karma_blocked", false);
+            var code = GetStr(result, "error_code");
 
             if (type == "fun")
                 return new CheatFailure { IsFun = true, Title = "天道回应", Reason = msg };
@@ -175,6 +195,59 @@ namespace ChessSage.Core.Cheat
 
             if (type == "error")
             {
+                // ── E2-S5：Agent 工具层的结构化错误（{ok:false,errorCode,error,hint} 的三种落地形态）──
+                // ① 门控拒绝：工具未解锁（TOOL_LOCKED）或作用域未解锁（SCOPE_LOCKED）→ 出路是技能树。
+                if (code == "TOOL_LOCKED" || code == "SCOPE_LOCKED")
+                {
+                    var f = new CheatFailure
+                    {
+                        Title = "🔒 此术尚未解锁",
+                        Reason = code == "SCOPE_LOCKED"
+                            ? "天道未允：这类改动尚未解锁（界面/棋盘尺寸属「前端修改」）。"
+                            : "天道未允：该能力需在技能树解锁。",
+                    };
+                    f.Actions.Add(new CheatAction("前往技能树", CheatActionKind.GoSkillTree));
+                    f.Actions.Add(new CheatAction("换个说法", CheatActionKind.ChangeWording));
+                    return f;
+                }
+
+                // ② 参数损坏 / 补丁被拒：天道写歪了笔，自愈失败 → 可重试或换个说法（不给玩家看机器契约）。
+                if (IsCorruptArgsCode(code))
+                {
+                    // 硬校验失败（SchemaValidator）自带可操作细节（坐标 + 范围），必须原样翻成人话保留——
+                    // 这是 UX §7「为什么不行 + 怎么改能行」的硬要求，不能退化成通用兜底文案。
+                    var detail = code == "CONFIG_INVALID"
+                        ? TranslateValidationMessage(msg)
+                        : (code == "PATH_REJECTED" || code == "UNKNOWN_OBJECTIVE_TYPE" || code == "NO_UNDO"
+                            ? msg
+                            : "这一步的写法不合天规，天道已自行重推仍未成。");
+                    var f = new CheatFailure
+                    {
+                        Title = "⚠️ 天道落笔失准",
+                        Reason = string.IsNullOrEmpty(detail)
+                            ? "换个说法，或拆成两小步。"
+                            : detail,
+                    };
+                    f.Actions.Add(new CheatAction("重新施展", CheatActionKind.Retry));
+                    f.Actions.Add(new CheatAction("换个说法", CheatActionKind.ChangeWording));
+                    return f;
+                }
+
+                // ③ 20s 到点·零写入（设计 §3.2 #17 / §3.5 A-2）：不收费，出路是重说/拆步/预置。
+                if (code == "TIMEOUT")
+                {
+                    var f = new CheatFailure
+                    {
+                        Title = "🌑 天机已断（20 秒到点）",
+                        Reason = "天道力竭，此番推演，一事无成。妄念已散，不耗业力。",
+                    };
+                    f.Actions.Add(new CheatAction("换个说法", CheatActionKind.ChangeWording));
+                    f.Actions.Add(new CheatAction("拆成两小步", CheatActionKind.SplitSteps,
+                        "拆成两小步：先只改一处，再说下一处"));
+                    f.Actions.Add(new CheatAction("改用预置指令", CheatActionKind.UsePreset));
+                    return f;
+                }
+
                 if (msg.Contains("未设置API密钥") || msg.Contains("未设置") && msg.Contains("密钥"))
                 {
                     var f = new CheatFailure
@@ -261,6 +334,32 @@ namespace ChessSage.Core.Cheat
             return generic;
         }
 
+        /// <summary>
+        /// 工具层「参数损坏 / 补丁被拒」类错误码（E2-S5 第二类）。
+        /// 覆盖：JSON 解析失败、inputSchema 不合法、SchemaValidator 硬校验失败、路径白名单拒绝、
+        /// RFC6902 补丁语法/应用失败、op 数或写调用限额、幻觉工具名、未知目标类型、空回退栈。
+        /// </summary>
+        static bool IsCorruptArgsCode(string code)
+        {
+            switch (code)
+            {
+                case "BAD_ARGS_JSON":
+                case "SCHEMA_INVALID":
+                case "CONFIG_INVALID":
+                case "PATH_REJECTED":
+                case "INVALID_PATCH":
+                case "PATCH_APPLY_FAILED":
+                case "OPS_LIMIT_EXCEEDED":
+                case "WRITE_LIMIT_EXCEEDED":
+                case "UNKNOWN_TOOL":
+                case "UNKNOWN_OBJECTIVE_TYPE":
+                case "NO_UNDO":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>把 Reason 截到 120 字以内（超长以 … 收尾）：失败卡文本区容量有限，技术性长文必须截断。</summary>
         static string ClampReason(string reason)
         {
@@ -274,6 +373,10 @@ namespace ChessSage.Core.Cheat
             if (string.IsNullOrEmpty(raw)) return "发生了未知校验错误。";
 
             var text = raw;
+            // Agent 工具层的硬校验错误形如 "pieces_red 验证失败: [pieces.0.position.0] 12 超出棋盘范围 (0-8)"：
+            // 先剥掉 "<target> 验证失败:" 前缀，保留可操作细节（坐标/范围）供下面的翻译。
+            var verifyPrefix = Regex.Match(text, @"^[A-Za-z0-9_]+\s*验证失败[:：]\s*");
+            if (verifyPrefix.Success) text = text.Substring(verifyPrefix.Length);
             foreach (var prefix in new[]
             {
                 "Schema校验失败，重试2次后仍有错误:", "Schema校验失败:", "规则未发生实质性变化，重试2次后仍未修改",

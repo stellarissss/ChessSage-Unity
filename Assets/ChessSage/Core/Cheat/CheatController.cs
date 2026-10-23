@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ChessSage.Core.Agent;
 using ChessSage.Core.Config;
 using ChessSage.Core.Game;
 using ChessSage.Core.Json;
@@ -14,20 +15,23 @@ namespace ChessSage.Core.Cheat
 {
     /// <summary>
     /// 作弊改规的**协调器**（Core 层，零引擎依赖）。它是「面板视图」与「三套引擎」之间的唯一黏合点：
-    ///   · <see cref="OrchestratorEngine"/>：自然语言 → 意图/补丁/预估代价（**只预估，不改状态**）；
+    ///   · <see cref="AgentEngine"/>：自然语言 → 工具循环/补丁/预估代价（**只预估，不改状态**）；
     ///   · <see cref="SamsaraEngine"/>：真正的业力/识破状态机（**扣费与结算在这里**）；
     ///   · <see cref="GameSession"/>：当前对局（配置快照 + 应用改规）。
     ///
     /// 【关键集成顺序 · UX §11.1】提交只做预估、不动业力；**扣费与识破结算必须发生在玩家"确认"之后**：
-    ///   1. 同步预估器状态 → 2. 提交预估 → 3. 进预览（什么都没变）
-    ///   → 4. 确认：入改规栈 → 应用配置 → IncreaseKarma → 溢出则 HandleOverdraft → 5. 回同步预估器。
+    ///   1. 同步评估器状态 → 2. 提交预估 → 3. 进预览（什么都没变）
+    ///   → 4. 确认：入改规栈 → 应用配置 → IncreaseKarma → 溢出则 HandleOverdraft → 5. 回同步评估器。
     /// 顺序错误会产生两类经典 bug：先扣费再预览（取消后业力白扣）、不同步预估器（门控/预估全错）。
+    ///
+    /// 【E2-S1 适配】引擎字段/构造参数换成 <see cref="AgentEngine"/>（同形构造：client + baseDir）；
+    /// 其余契约与流程**一行不动**（ConvertResult / OfflinePreview / SubmitPreset 均原样）。
     /// </summary>
     public sealed class CheatController
     {
         readonly GameSession _session;
         readonly SamsaraEngine _samsara;
-        readonly OrchestratorEngine _engine;
+        readonly AgentEngine _engine;
         readonly CheatRuleStack _rules = new CheatRuleStack();
         readonly CheatHistory _history = new CheatHistory();
 
@@ -37,7 +41,13 @@ namespace ChessSage.Core.Cheat
         /// <summary>连续失败次数（≥2 自动引导预置指令，UX §4.2）。</summary>
         public int ConsecutiveFailures { get; private set; }
 
-        public CheatController(GameSession session, SamsaraEngine samsara, OrchestratorEngine engine)
+        /// <summary>
+        /// 最近一次提交的 Agent 结果对象（引擎侧完整遥测：TimedOut / CapWarned / PartialNote / TokenEff / Rounds）。
+        /// UI 的 partial banner 与「到点收尾」两副面孔（设计 §3.5）靠它取措辞；失败卡仍走 ConvertResult 的既有契约。
+        /// </summary>
+        public AgentResult LastAgentResult { get; private set; }
+
+        public CheatController(GameSession session, SamsaraEngine samsara, AgentEngine engine)
         {
             _session = session;
             _samsara = samsara;
@@ -78,18 +88,42 @@ namespace ChessSage.Core.Cheat
         public JObject GetObjective() => _samsara?.GetCurrentObjective() ?? new JObject();
         public JObject SkillModifiers() => _samsara?.GetSkillModifiers() ?? new JObject();
 
-        /// <summary>把真实 RPG 状态同步进编排层预估器（§11.1 步骤 1/5）。</summary>
+        /// <summary>
+        /// 把真实 RPG 状态同步进 Agent 引擎的业力真源（§11.1 步骤 1/5）。
+        ///
+        /// 【为什么不只用 5 参便捷重载】业力结算的减费链（设计 D-6 / 裁决 #6：业力乘数）在
+        /// <c>KarmaFormula</c> 里读的是 AgentKarmaState 的三个技能开关 + SkillModifiers；
+        /// 5 参重载会把它们留成 false，导致「地狱折扣 / 效率欺诈」在真实游戏里永不生效（E2 发现的
+        /// 集成缺口）。此处一次性把真源镜像齐：业力/上限/识破/道境/技能修饰符/工具门控。
+        /// </summary>
         public void SyncAssessor()
         {
             if (_engine == null || _samsara == null) return;
-            _engine.KarmaAssessor.SetLocalKarmaState(Karma, KarmaMax, KarmaSingleMax);
-            _engine.KarmaAssessor.SetRealmDetection(Detection, _samsara.GetCurrentRealm());
+            var mods = SkillModifiers();
+            _engine.SyncKarmaState(new AgentKarmaState
+            {
+                Karma = Karma,
+                KarmaMax = KarmaMax,
+                SingleMax = KarmaSingleMax,
+                Detection = Detection,
+                Realm = _samsara.GetCurrentRealm(),
+                SkillModifiers = mods,
+                AllowedTools = BuildAllowedTools(),
+                EfficiencyFraud = GetBool(mods, "efficiency_fraud"),
+                HellHungryDiscount = GetBool(mods, "hell_hungry_discount"),
+                HeavenAsuraDiscount = GetBool(mods, "heaven_asura_discount"),
+            });
         }
 
         // ── 提交（预估，不改状态）──────────────────────────────────────
 
-        /// <summary>提交自然语言指令。离线时直接返回离线引导。</summary>
-        public async Task<CheatPreview> SubmitAsync(string command, CancellationToken ct = default)
+        /// <summary>
+        /// 提交自然语言指令。离线时直接返回离线引导。
+        /// <paramref name="progress"/>（可选）= 轮级进度回调（<see cref="AgentProgress"/>；
+        /// P0 每轮一次，面板据此刷新计数器/轨迹/顶格警示）。
+        /// </summary>
+        public async Task<CheatPreview> SubmitAsync(string command, CancellationToken ct = default,
+            IProgress<AgentProgress> progress = null)
         {
             if (_session == null)
                 return ErrorPreview("没有进行中的对局");
@@ -107,22 +141,26 @@ namespace ChessSage.Core.Cheat
             {
                 ["configs"] = oldConfigs,
                 ["skill_modifiers"] = SkillModifiers(),
-                ["allowed_classifications"] = AllowedClassifications(),
+                // 门控换轴（E2-S3）：工具名集合 + 补丁作用域集合（旧分类轴键已彻底移除，无兼容回显）。
+                ["allowed_tools"] = ToJArray(BuildAllowedTools()),
+                ["allowed_patch_targets"] = ToJArray(BuildAllowedPatchTargets()),
             };
 
+            LastAgentResult = null;
             JObject result;
             try
             {
-                result = await _engine.ProcessCommandAsync(text, context, ct).ConfigureAwait(false);
+                result = await _engine.ProcessCommandAsync(text, context, ct, progress).ConfigureAwait(false);
+                LastAgentResult = _engine.LastResult;
             }
             catch (OperationCanceledException)
             {
-                ConsecutiveFailures++;
+                RegisterFailure();
                 return ErrorPreview("请求超时或被取消");
             }
             catch (Exception e)
             {
-                ConsecutiveFailures++;
+                RegisterFailure();
                 return ErrorPreview($"意图解析失败: {e.Message}");
             }
 
@@ -131,11 +169,22 @@ namespace ChessSage.Core.Cheat
             if (type == "applied" || type == "partial" || type == "fun")
                 ConsecutiveFailures = 0;
             else
-                ConsecutiveFailures++;
+                RegisterFailure();
 
-            if (ConsecutiveFailures >= 2) Offline = true;
             if (preview != null && preview.Ok) _history.Add(text);
             return preview;
+        }
+
+        /// <summary>
+        /// 记一次失败并按 UX §4.2 的阈值降级：连续 2 次失败 → 离线（预置链路接管）。
+        /// 【E2-S1 修正】旧实现只在「拿到结果对象」的路径上判阈值；Agent 引擎对传输失败是**抛异常**
+        /// （§5.3 约定：由 CheatController 的 catch 计入），若 catch 里不判阈值，红线③「连续 2 次失败
+        /// → Offline=true」永远不会触发。此处把阈值判定收敛到唯一入口（两段式契约不受影响）。
+        /// </summary>
+        void RegisterFailure()
+        {
+            ConsecutiveFailures++;
+            if (ConsecutiveFailures >= 2) Offline = true;
         }
 
         /// <summary>提交离线预置指令：绕过 LLM，直接生成补丁快照，仍走预览/确认/代价链路。</summary>
@@ -312,11 +361,28 @@ namespace ChessSage.Core.Cheat
             }
         }
 
-        JArray AllowedClassifications()
+        /// <summary>当前已解锁的工具名集合（天机型谱；供 context 组装与 UI/测试读取）。</summary>
+        public string[] BuildAllowedTools()
+        {
+            if (_samsara == null) return new string[0];
+            var list = new List<string>(_samsara.GetAllowedTools());
+            list.Sort(StringComparer.Ordinal);
+            return list.ToArray();
+        }
+
+        /// <summary>apply_config_patch 的已解锁作用域（t1b ⇒ ui_config / board）。</summary>
+        public string[] BuildAllowedPatchTargets()
+        {
+            if (_samsara == null) return new string[0];
+            var list = new List<string>(_samsara.GetAllowedPatchTargets());
+            list.Sort(StringComparer.Ordinal);
+            return list.ToArray();
+        }
+
+        static JArray ToJArray(string[] items)
         {
             var arr = new JArray();
-            if (_samsara == null) return arr;
-            foreach (var c in _samsara.GetAllowedClassifications()) arr.Add(c);
+            if (items != null) foreach (var item in items) arr.Add(item);
             return arr;
         }
 
